@@ -1,9 +1,9 @@
-indexing
-	description: "A JSON converter for DS_HASH_TABLE"
-	author: "Paul Cohen"
-	date: "$Date: $"
-	revision: "$Revision: $"
-	file: "$HeadURL: $"
+indexing 
+    description: "A JSON converter for DS_HASH_TABLE [ANY, HASHABLE]"
+    author: "Paul Cohen"
+    date: "$Date: $"
+    revision: "$Revision: $"
+    file: "$HeadURL: $"
 
 class JSON_DS_HASH_TABLE_CONVERTER
 
@@ -22,18 +22,18 @@ feature {NONE} -- Initialization
         
 feature -- Access
 
-    json: JSON_OBJECT
+    value: JSON_OBJECT
             
     object: DS_HASH_TABLE [ANY, HASHABLE]
             
 feature -- Conversion
 
-    from_json (j: like json): like object is
+    from_json (j: like value): like object is
         local
             keys: ARRAY [JSON_STRING]
             i: INTEGER
-            key: HASHABLE
-            value: ANY
+            h: HASHABLE
+            a: ANY
         do
             keys := j.current_keys
             create Result.make (keys.count)
@@ -42,19 +42,19 @@ feature -- Conversion
             until
                 i > keys.count
             loop
-                key ?= factory.eiffel_object (keys [i], void)
-                check key /= Void end
-                value := factory.eiffel_object (j.item (keys [i]), Void)
-                Result.put (value, key)
+                h ?= json.object (keys [i], void)
+                check h /= Void end
+                a := json.object (j.item (keys [i]), Void)
+                Result.put (a, h)
                 i := i + 1
             end
         end
         
-    to_json (o: like object): like json is
+    to_json (o: like object): like value is
         local
             c: DS_HASH_TABLE_CURSOR [ANY, HASHABLE]
-            key: JSON_STRING
-            value: JSON_VALUE
+            js: JSON_STRING
+            jv: JSON_VALUE
             failed: BOOLEAN
         do
             create Result.make
@@ -64,10 +64,10 @@ feature -- Conversion
             until
                 c.after
             loop
-                create key.make_json (c.key.out)
-                value := factory.json_value (c.item)
-                if value /= Void then
-                    Result.put (value, key)
+                create js.make_json (c.key.out)
+                jv := json.value (c.item)
+                if jv /= Void then
+                    Result.put (jv, js)
                 else
                     failed := True
                 end 

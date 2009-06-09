@@ -1,9 +1,9 @@
 indexing
-	description: "A JSON converter for DS_LINKED_LIST"
-	author: "Paul Cohen"
-	date: "$Date: $"
-	revision: "$Revision: $"
-	file: "$HeadURL: $"
+    description: "A JSON converter for DS_LINKED_LIST [ANY]"
+    author: "Paul Cohen"
+    date: "$Date: $"
+    revision: "$Revision: $"
+    file: "$HeadURL: $"
 
 class JSON_DS_LINKED_LIST_CONVERTER
 
@@ -22,13 +22,13 @@ feature {NONE} -- Initialization
         
 feature -- Access
 
-    json: JSON_ARRAY
+    value: JSON_ARRAY
             
     object: DS_LINKED_LIST [ANY]
             
 feature -- Conversion
 
-    from_json (j: like json): like object is
+    from_json (j: like value): like object is
         local
             i: INTEGER
         do
@@ -38,12 +38,12 @@ feature -- Conversion
             until
                 i > j.count
             loop
-                Result.put_last (factory.eiffel_object (j [i], Void))
+                Result.put_last (json.object (j [i], Void))
                 i := i + 1
             end
         end
         
-    to_json (o: like object): like json is
+    to_json (o: like object): like value is
         local
             c: DS_LIST_CURSOR [ANY]
         do
@@ -54,7 +54,7 @@ feature -- Conversion
             until
                 c.after
             loop
-                Result.add (factory.json_value (c.item))
+                Result.add (json.value (c.item))
                 c.forth
             end
         end
