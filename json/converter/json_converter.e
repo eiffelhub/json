@@ -12,7 +12,7 @@ inherit
 
 feature -- Access
 
-    json: JSON_VALUE is
+    value: JSON_VALUE is
             -- JSON value
         deferred
         end
@@ -24,17 +24,18 @@ feature -- Access
             
 feature -- Conversion
 
-    from_json (j: like json): like object is
+    from_json (j: like value): like object is
             -- Convert from JSON value. Returns Void if unable to convert
         deferred
         end
         
-    to_json (o: like object): like json is
+    to_json (o: like object): like value is
             -- Convert to JSON value
         deferred
         end
 
 invariant
-    eiffel_object: object /= Void -- An empty object must be created at creation time!
+    has_eiffel_object: object /= Void -- An empty object must be created at creation time!
     
 end -- class JSON_CONVERTER
+
