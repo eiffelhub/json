@@ -1,95 +1,140 @@
 indexing
-	description: "factory for creating JSON objects"
-	author: "Paul Cohen"
+    description: "Factory for creating JSON objects"
+    author: "Paul Cohen"
+    date: "$Date: $"
+    revision: "$Revision: $"
+    file: "$HeadURL: $"
 
 class JSON_FACTORY
 
+inherit
+    {NONE} KL_EXCEPTIONS
+        
 feature -- Access
         
-    json_value (object: ?ANY): JSON_VALUE is
-            -- JSON value from Eiffel object. Returns Void if unable to 
-            -- convert. Check `unconvertable_types' to see which types 
-            -- lack a JSON_CONVERTER.
+    value (an_object: ?ANY): JSON_VALUE is
+            -- JSON value from Eiffel object. Raises an "eJSON exception" if 
+            -- unable to convert value.
         local
             b: BOOLEAN
+            i: INTEGER
             i8: INTEGER_8
             i16: INTEGER_16
             i32: INTEGER_32
             i64: INTEGER_64
+            n8: NATURAL_8
+            n16: NATURAL_16
+            n32: NATURAL_32
+            n64: NATURAL_64
             r32: REAL_32
             r64: REAL_64
+            a: ARRAY [ANY]
+            c: CHARACTER
             s8: STRING_8
             ucs: UC_STRING
+            ja: JSON_ARRAY
             jc: JSON_CONVERTER
         do
             -- Try to convert from basic Eiffel types. Note that we check with
             -- `conforms_to' since the client may have subclassed the base class
             -- that these basic types are derived from.
-            if object = Void then
+            if an_object = Void then
                 create {JSON_NULL} Result
-            elseif object.conforms_to (a_boolean) then
-                b ?= object
+            elseif an_object.conforms_to (a_boolean) then
+                b ?= an_object
                 create {JSON_BOOLEAN} Result.make_boolean (b)
-            elseif object.conforms_to (an_integer_8) then
-                i8 ?= object
+            elseif an_object.conforms_to (an_integer_8) then
+                i8 ?= an_object
                 create {JSON_NUMBER} Result.make_integer (i8)
-            elseif object.conforms_to (an_integer_16) then
-                i16 ?= object
+            elseif an_object.conforms_to (an_integer_16) then
+                i16 ?= an_object
                 create {JSON_NUMBER} Result.make_integer (i16)
-            elseif object.conforms_to (an_integer_32) then
-                i32 ?= object
+            elseif an_object.conforms_to (an_integer_32) then
+                i32 ?= an_object
                 create {JSON_NUMBER} Result.make_integer (i32)
---            elseif object.conforms_to (an_integer_64) then
---                i64 ?= object
---                create {JSON_NUMBER} Result.make_integer (i64)
-            elseif object.conforms_to (a_real_32) then
-                r32 ?= object
+            elseif an_object.conforms_to (an_integer_64) then
+                i64 ?= an_object
+                create {JSON_NUMBER} Result.make_integer (i64)
+            elseif an_object.conforms_to (a_natural_8) then
+                n8 ?= an_object
+                create {JSON_NUMBER} Result.make_natural (n8)
+            elseif an_object.conforms_to (a_natural_16) then
+                n16 ?= an_object
+                create {JSON_NUMBER} Result.make_natural (n16)
+            elseif an_object.conforms_to (a_natural_32) then
+                n32 ?= an_object
+                create {JSON_NUMBER} Result.make_natural (n32)
+            elseif an_object.conforms_to (a_natural_64) then
+                n64 ?= an_object
+                create {JSON_NUMBER} Result.make_natural (n64)
+            elseif an_object.conforms_to (a_real_32) then
+                r32 ?= an_object
                 create {JSON_NUMBER} Result.make_real (r32)
-            elseif object.conforms_to (a_real_64) then
-                r64 ?= object
+            elseif an_object.conforms_to (a_real_64) then
+                r64 ?= an_object
                 create {JSON_NUMBER} Result.make_real (r64)
-            elseif object.conforms_to (a_string_8) then
-                s8 ?= object
-                create {JSON_STRING} Result.make_json (s8)
-            elseif object.conforms_to (a_uc_string) then
-                ucs ?= object
+            elseif an_object.conforms_to (an_array) then
+                a ?= an_object
+                create ja.make_array
+                from
+                    i := a.lower
+                until
+                    i > a.upper
+                loop
+                    ja.add (value (a @ i))
+                    i := i + 1
+                end
+                Result := ja
+            elseif an_object.conforms_to (a_character) then
+                c ?= an_object
+                create {JSON_STRING} Result.make_json (c.out)
+            elseif an_object.conforms_to (a_uc_string) then
+                ucs ?= an_object
                 create {JSON_STRING} Result.make_json (ucs.to_utf8)
+            elseif an_object.conforms_to (a_string_8) then
+                s8 ?= an_object
+                create {JSON_STRING} Result.make_json (s8)
             end
             
             if Result = Void then
                 -- Now check the converters
-                jc := converter_for (object)
+                jc := converter_for (an_object)
                 if jc /= Void then
-                    Result := jc.to_json (object)
+                    Result := jc.to_json (an_object)
                 else
-                    unconvertable_types.put_last (object.generator)
+                    raise (exception_failed_to_convert_to_json (an_object))
                 end
             end
         end
 
-    eiffel_object (value: JSON_VALUE; base_class: ?STRING): ANY is
+    object (a_value: JSON_VALUE; base_class: ?STRING): ANY is
             -- Eiffel object from JSON value. If `base_class' /= Void an eiffel
-            -- object based on `base_class' will be returned. Returns Void if 
-            -- unable to convert, ie. there is no JSON_CONVERTER for the given
-            -- `base_class'. Check `unconvertable_types' to see which types 
-            -- lack a JSON_CONVERTER.
+            -- object based on `base_class' will be returned. Raises an "eJSON 
+            -- exception" if unable to convert value.
         require
-            value_not_void: value /= Void
+            a_value_not_void: a_value /= Void
         local
             jc: JSON_CONVERTER
             jb: JSON_BOOLEAN
             jn: JSON_NUMBER
             js: JSON_STRING
+            ja: JSON_ARRAY
+            jo: JSON_OBJECT
+            i: INTEGER
+            a: ARRAY [ANY]
+            t: DS_HASH_TABLE [ANY, UC_STRING]
+            keys: ARRAY [JSON_STRING]
+            ucs: UC_STRING
         do
             if base_class = Void then
-                if value.generator.is_equal ("JSON_NULL") then
+                if a_value.generator.is_equal ("JSON_NULL") then
                     Result := Void
-                elseif value.generator.is_equal ("JSON_BOOLEAN") then
-                    jb ?= value
+                elseif a_value.generator.is_equal ("JSON_BOOLEAN") then
+                    jb ?= a_value
                     check jb /= Void end
                     Result := jb.item
-                elseif value.generator.is_equal ("JSON_NUMBER") then
-                    jn ?= value
+                elseif a_value.generator.is_equal ("JSON_NUMBER") then
+                    jn ?= a_value
                     check jn /= Void end
                     if jn.item.is_integer_8 then
                         Result := jn.item.to_integer_8
@@ -99,42 +144,117 @@ feature -- Access
                         Result := jn.item.to_integer_32
                     elseif jn.item.is_integer_64 then
                         Result := jn.item.to_integer_64
-                    elseif jn.item.is_real then
-                        Result := jn.item.to_real
+                    elseif jn.item.is_natural_64 then
+                        Result := jn.item.to_natural_64
                     elseif jn.item.is_double then
                         Result := jn.item.to_double
                     end
-                elseif value.generator.is_equal ("JSON_STRING") then
-                    js ?= value
+                elseif a_value.generator.is_equal ("JSON_STRING") then
+                    js ?= a_value
                     check js /= Void end
-                    Result := js.item
+                    create ucs.make_from_string (js.item)
+                    Result := ucs
+                elseif a_value.generator.is_equal ("JSON_ARRAY") then
+                    ja ?= a_value
+                    check ja /= Void end
+                    from
+                        create a.make (1, ja.count)
+                        i := 1
+                    until 
+                        i > ja.count
+                    loop
+                        a.put (object (ja [i], Void), i)
+                        i := i + 1
+                    end
+                    Result := a
+                elseif a_value.generator.is_equal ("JSON_OBJECT") then
+                    jo ?= a_value
+                    check jo /= Void end
+                    keys := jo.current_keys
+                    create t.make (keys.count)
+                    from
+                        i := keys.lower
+                    until
+                        i > keys.upper
+                    loop
+                        ucs ?= object (keys [i], Void)
+                        check ucs /= Void end
+                        t.put (object (jo.item (keys [i]), Void), ucs)
+                        i := i + 1
+                    end
+                    Result := t
                 end
             else
                 if converters.has (base_class) then
                     jc := converters @ base_class
-                    Result := jc.from_json (value)
+                    Result := jc.from_json (a_value)
                 else
-                    Result := Void
+                    raise (exception_failed_to_convert_to_eiffel (a_value, base_class))
                 end
             end
         end
 
-    converter_for (object: ANY): JSON_CONVERTER is
+    object_from_json (json: STRING; base_class: ?STRING): ANY is
+            -- Eiffel object from JSON representation. If `base_class' /= Void an 
+            -- Eiffel object based on `base_class' will be returned. Raises an 
+            -- "eJSON exception" if unable to convert value.
+        require
+            json_not_void: json /= Void
+        local
+            jv: JSON_VALUE
+        do
+            json_parser.set_representation (json)
+            jv := json_parser.parse
+            Result := object (jv, base_class)
+        end
+
+    converter_for (an_object: ANY): JSON_CONVERTER is
             -- Converter for objects. Returns Void if none found.
         require
-            object_not_void: object /= Void
+            an_object_not_void: an_object /= Void
         do
-            if converters.has (object.generator) then
-                Result := converters @ object.generator
+            if converters.has (an_object.generator) then
+                Result := converters @ an_object.generator
             end
         end
         
-    unconvertable_types: DS_LINKED_LIST [STRING] is
-            -- Name of types for which no converter was found
-        once
+    json_reference (s: STRING): JSON_OBJECT is
+            -- A JSON (Dojo style) reference object using `s' as the
+            -- reference value. The caller is responsable for ensuring
+            -- the validity of `s' as a json reference.
+        require
+            s_not_void: s /= Void
+        local
+            js_key, js_value: JSON_STRING
+        do
             create Result.make
+            create js_key.make_json ("$ref")
+            create js_value.make_json (s)
+            Result.put (js_value, js_key)
         end
-
+    
+    json_references (l: DS_LIST [STRING]): JSON_ARRAY is
+            -- A JSON array of JSON (Dojo style) reference objects using the 
+            -- strings in `l' as reference values. The caller is responsable 
+            -- for ensuring the validity of all strings in `l' as json 
+            -- references.
+        require
+            l_not_void: l /= Void
+        local
+            c: DS_LIST_CURSOR [STRING]
+        do
+            create Result.make_array
+            from
+                c := l.new_cursor
+                c.start
+            until
+                c.after
+            loop
+                Result.add (json_reference (c.item))
+                c.forth
+            end
+        end
+        
 feature -- Change
 
     add_converter (jc: JSON_CONVERTER) is
@@ -155,6 +275,32 @@ feature {NONE} -- Implementation
             create Result.make (10)
         end
 
+feature {NONE} -- Implementation (Exceptions)
+
+    exception_prefix: STRING is "eJSON exception: "
+    
+    exception_failed_to_convert_to_eiffel (a_value: JSON_VALUE; base_class: ?STRING): STRING is
+            -- Exception message for failing to convert a JSON_VALUE to an instance of `a'.
+        do
+            Result := exception_prefix + "Failed to convert JSON_VALUE to an Eiffel object: " + a_value.generator
+            if base_class /= Void then
+                Result.append (" -> " + base_class)
+            end
+        end
+
+    exception_failed_to_convert_to_json (an_object: ?ANY): STRING is
+            -- Exception message for failing to convert `a' to a JSON_VALUE.
+        do
+            Result := exception_prefix + "Failed to convert Eiffel object to a JSON_VALUE: " + an_object.generator
+        end
+
+feature {NONE} -- Implementation (JSON parser)
+
+    json_parser: JSON_PARSER is
+        once
+            create Result.make_parser ("")
+        end
+
 feature {NONE} -- Implementation (Basic Eiffel objects)
 
     a_boolean: BOOLEAN
@@ -167,10 +313,25 @@ feature {NONE} -- Implementation (Basic Eiffel objects)
 
     an_integer_64: INTEGER_64
 
+    a_natural_8: NATURAL_8
+
+    a_natural_16: NATURAL_16
+
+    a_natural_32: NATURAL_32
+
+    a_natural_64: NATURAL_64
+    
     a_real_32: REAL_32
 
     a_real_64: REAL_64
 
+    an_array: ARRAY [ANY] is
+        once
+            Result := <<>>
+        end
+    
+    a_character: CHARACTER
+    
     a_string_8: STRING_8 is
         once
             Result := ""
