@@ -432,7 +432,7 @@ feature {NONE} -- Implementation
             Result := has_next
         end
 
-	is_valid_start_symbol : BOOLEAN
+    is_valid_start_symbol : BOOLEAN
 		-- expecting `{' or `[' as start symbol
 		do
 			Result :=representation.starts_with ("{") or representation.starts_with ("[")
