@@ -44,7 +44,7 @@ feature -- Tests Pass
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/pass2.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("pass2.json",parse_json.is_parsed = True)
     		end
 
@@ -54,7 +54,7 @@ feature -- Tests Pass
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/pass3.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("pass3.json",parse_json.is_parsed = True)
     		end
 
@@ -65,7 +65,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail1.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail1.json",parse_json.is_parsed = False)
     		end
 
@@ -75,7 +75,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail2.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail2.json",parse_json.is_parsed = False)
     		end
 
@@ -85,7 +85,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail3.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail3.json",parse_json.is_parsed = False)
     		end
 
@@ -95,7 +95,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail4.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail4.json",parse_json.is_parsed = False)
     		end
 
@@ -105,7 +105,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail5.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail5.json",parse_json.is_parsed = False)
     		end
 
@@ -116,7 +116,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail6.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail6.json",parse_json.is_parsed = False )
     		end
 
@@ -147,7 +147,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail9.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail9.json",parse_json.is_parsed = False)
     		end
 
@@ -168,7 +168,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail11.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail11.json",parse_json.is_parsed = False)
     		end
 
@@ -178,7 +178,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail12.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail12.json",parse_json.is_parsed = False)
     		end
 
@@ -198,7 +198,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail14.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail14.json",parse_json.is_parsed = False)
     		end
 
@@ -218,7 +218,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail16.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail16.json",parse_json.is_parsed = False)
     		end
 
@@ -248,7 +248,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail19.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail19.json",parse_json.is_parsed = False)
     		end
 
@@ -258,7 +258,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail20.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail20.json",parse_json.is_parsed = False)
     		end
 
@@ -268,7 +268,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail21.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail21.json",parse_json.is_parsed = False)
     		end
 
@@ -279,7 +279,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail22.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail22.json",parse_json.is_parsed = False)
     		end
 
@@ -289,7 +289,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail23.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail23.json",parse_json.is_parsed = False)
     		end
 
@@ -299,7 +299,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail24.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail24.json",parse_json.is_parsed = False)
     		end
 
@@ -342,7 +342,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail28.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail28.json",parse_json.is_parsed = False)
     		end
 
@@ -353,7 +353,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail29.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail29.json",parse_json.is_parsed = False )
     		end
 
@@ -364,7 +364,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail30.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail30.json",parse_json.is_parsed = False)
     		end
 
@@ -374,7 +374,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail31.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail31.json",parse_json.is_parsed = False)
     		end
 
@@ -384,7 +384,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail32.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail32.json",parse_json.is_parsed = False)
     		end
 
@@ -394,7 +394,7 @@ feature -- Tests Failures
     				create file_reader
     				json_file:=file_reader.read_json_from ("./suite/fail33.json")
 					create parse_json.make_parser (json_file)
-					json_value := parse_json.parse
+					json_value := parse_json.parse_json
 		  			assert ("fail33.json",parse_json.is_parsed = False)
     		end
 feature -- JSON_FROM_FILE
