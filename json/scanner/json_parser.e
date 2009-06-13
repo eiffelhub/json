@@ -63,10 +63,16 @@ feature -- Commands
 
     parse_json: ?JSON_VALUE is
             -- Parse JSON data `representation'
+            -- start ::= object | array
         do
-            Result := parse
-            if extra_elements then
-                is_parsed := False
+        	if is_valid_start_symbol then
+           		Result := parse
+            	if extra_elements then
+                	is_parsed := False
+            	end
+            else
+            	is_parsed := False
+            	report_error ("Syntax error unexpected token, expecting `{' or `['")
             end
         end
 
@@ -425,6 +431,12 @@ feature {NONE} -- Implementation
             end
             Result := has_next
         end
+
+	is_valid_start_symbol : BOOLEAN
+		-- expecting `{' or `[' as start symbol
+		do
+			Result :=representation.starts_with ("{") or representation.starts_with ("[")
+		end
 
 feature {NONE} -- Constants
 

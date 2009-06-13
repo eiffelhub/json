@@ -23,7 +23,9 @@ feature -- Commands
     set_representation (a_json: STRING) is
             -- Set `representation'.
         do
-            representation := a_json
+        	a_json.left_adjust
+        	a_json.right_adjust
+			representation := a_json
             index := 1
         end
 
