@@ -35,6 +35,7 @@ feature -- Visitor Pattern
 		deferred
 		end
 
+
 	visit_json_number (a_json_number: JSON_NUMBER) is
 			-- Visit `a_json_number'.
 		require
@@ -55,5 +56,6 @@ feature -- Visitor Pattern
 			a_json_string_not_void: a_json_string /= Void
 		deferred
 		end
+
 
 end
