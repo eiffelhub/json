@@ -48,7 +48,6 @@
 		</cluster>
 		<cluster name="kl_kernel" location="${GOBO}\library\kernel\">
 			<cluster name="kl_basic" location="$|basic\"/>
-			<cluster name="kl_elks" location="$|elks\"/>
 			<cluster name="kl_io" location="$|io\"/>
 			<cluster name="kl_misc" location="$|misc\"/>
 			<cluster name="kl_unicode" location="$|unicode\"/>
@@ -98,7 +97,6 @@
 		<cluster name="ut_utility" location="${GOBO}\library\utility\">
 			<cluster name="ut_error" location="$|error\"/>
 			<cluster name="ut_formatter" location="$|formatter\"/>
-			<cluster name="ut_command" location="$|command\"/>
 			<cluster name="ut_config" location="$|config\"/>
 			<cluster name="ut_support" location="$|support\"/>
 			<cluster name="ut_transcoder" location="$|transcoder\"/>
