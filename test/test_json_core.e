@@ -2,7 +2,7 @@ class TEST_JSON_CORE
     
 inherit
     TS_TEST_CASE
-    SHARED_JSON_FACTORY
+    SHARED_EJSON
     
 create
     make_default
@@ -539,8 +539,8 @@ feature -- Test
 
     test_json_array is
         local
-            a: ARRAY [INTEGER]
-            a2: ARRAY [ANY]
+            ll: LINKED_LIST [INTEGER_8]
+            ll2: LINKED_LIST [ANY]
             ja: JSON_ARRAY
             jn: JSON_NUMBER
             jrep: STRING
@@ -548,51 +548,52 @@ feature -- Test
             i, n: INTEGER
         do
             -- Eiffel value -> JSON value -> JSON representation
-            a := <<0, 1, 1, 2, 3, 5>>
-            -- Note: Currently there is now way of creating a JSON_ARRAY from
-            -- an ARRAY. We could also iterate over the array `a' and create
-            -- JSON_NUMBERs and add them to the JSON array below; however we 
-            -- do it simple with manifest integers instead!
+            create ll.make
+            ll.extend (0)
+            ll.extend (1)
+            ll.extend (1)
+            ll.extend (2)
+            ll.extend (3)
+            ll.extend (5)
+            -- Note: Currently there is no simple way of creating a JSON_ARRAY
+            -- from an LINKED_LIST.
             create ja.make_array
-            create jn.make_integer (0)
-            ja.add (jn)
-            create jn.make_integer (1)
-            ja.add (jn)
-            create jn.make_integer (1)
-            ja.add (jn)
-            create jn.make_integer (2)
-            ja.add (jn)
-            create jn.make_integer (3)
-            ja.add (jn)
-            create jn.make_integer (5)
-            ja.add (jn)
+            from
+                ll.start
+            until
+                ll.after
+            loop
+                create jn.make_integer (ll.item)
+                ja.add (jn)
+                ll.forth
+            end
             assert ("ja /= Void", ja /= Void)
             assert ("ja.representation.is_equal (%"[0,1,1,2,3,5]%")", ja.representation.is_equal ("[0,1,1,2,3,5]"))
             -- Eiffel value -> JSON value -> JSON representation with factory
             ja := Void
-            ja ?= json.value (a)
+            ja ?= json.value (ll)
             assert ("ja /= Void", ja /= Void)
             assert ("ja.representation.is_equal (%"[0,1,1,2,3,5]%")", ja.representation.is_equal ("[0,1,1,2,3,5]"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
             -- that can represent the value of the JSON number, in this case 
-            -- it means we will get an ARRAY [ANY] containing the INTEGER_8
-            -- values <<0, 1, 1, 2, 3, 5>>
+            -- it means we will get an LINKED_LIST [ANY] containing the INTEGER_8
+            -- values 0, 1, 1, 2, 3, 5
             jrep := "[0,1,1,2,3,5]"
             create parser.make_parser (jrep)
             ja := Void
             ja ?= parser.parse
             assert ("ja /= Void", ja /= Void)
-            a2 ?= json.object (ja, Void)
-            assert ("a2 /= Void", a2 /= Void)
-            a.compare_objects
-            a2.compare_objects
-            assert ("a2.is_equal (a)", a2.is_equal (a))
+            ll2 ?= json.object (ja, Void)
+            assert ("ll2 /= Void", ll2 /= Void)
+            --ll.compare_objects
+            --ll2.compare_objects
+            assert ("ll2.is_equal (ll)", ll2.is_equal (ll))
         end
 
     test_json_object is
         local
-            t, t2: DS_HASH_TABLE [ANY, UC_STRING]
+            t, t2: HASH_TABLE [ANY, UC_STRING]
             i: INTEGER
             ucs_key, ucs: UC_STRING
             a: ARRAY [INTEGER]

@@ -8,7 +8,7 @@ indexing
 deferred class JSON_CONVERTER
 
 inherit    
-    SHARED_JSON_FACTORY
+    SHARED_EJSON
 
 feature -- Access
 

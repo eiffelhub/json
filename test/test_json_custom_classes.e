@@ -1,7 +1,7 @@
 class TEST_JSON_CUSTOM_CLASSES
     
 inherit
-    SHARED_JSON_FACTORY
+    SHARED_EJSON
  
     TS_TEST_CASE
     

@@ -1,11 +1,11 @@
 indexing
-    description: "Factory for creating JSON objects"
+    description: "Core factory class for creating JSON objects and corresponding Eiffel objects."
     author: "Paul Cohen"
     date: "$Date: $"
     revision: "$Revision: $"
     file: "$HeadURL: $"
 
-class JSON_FACTORY
+class EJSON
 
 inherit
     {NONE} KL_EXCEPTIONS
@@ -121,8 +121,8 @@ feature -- Access
             ja: JSON_ARRAY
             jo: JSON_OBJECT
             i: INTEGER
-            a: ARRAY [ANY]
-            t: DS_HASH_TABLE [ANY, UC_STRING]
+            ll: LINKED_LIST [ANY]
+            t: HASH_TABLE [ANY, UC_STRING]
             keys: ARRAY [JSON_STRING]
             ucs: UC_STRING
         do
@@ -158,15 +158,15 @@ feature -- Access
                     ja ?= a_value
                     check ja /= Void end
                     from
-                        create a.make (1, ja.count)
+                        create ll.make ()
                         i := 1
                     until 
                         i > ja.count
                     loop
-                        a.put (object (ja [i], Void), i)
+                        ll.extend (object (ja [i], Void))
                         i := i + 1
                     end
-                    Result := a
+                    Result := ll
                 elseif a_value.generator.is_equal ("JSON_OBJECT") then
                     jo ?= a_value
                     check jo /= Void end
@@ -342,4 +342,4 @@ feature {NONE} -- Implementation (Basic Eiffel objects)
             create Result.make_from_string ("")
         end
         
-end -- class JSON_FACTORY
+end -- class EJSON

@@ -1,7 +1,7 @@
 class TEST_DS
     
 inherit
-    SHARED_JSON_FACTORY
+    SHARED_GOBO_EJSON
  
     TS_TEST_CASE
     
