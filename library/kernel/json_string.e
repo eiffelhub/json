@@ -1,6 +1,6 @@
 note
 
-    description:"[
+    description: "[
         A JSON_STRING represent a string in JSON.
         A string is a collection of zero or more Unicodes characters, wrapped in double
         quotes, using blackslash espaces.
