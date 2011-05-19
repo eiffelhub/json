@@ -1,4 +1,4 @@
-indexing
+note
     description: "A JSON converter for DS_LINKED_LIST [ANY]"
     author: "Paul Cohen"
     date: "$Date: $"
@@ -15,7 +15,7 @@ create
     
 feature {NONE} -- Initialization
     
-    make is
+    make
         do
             create object.make
         end
@@ -28,7 +28,7 @@ feature -- Access
             
 feature -- Conversion
 
-    from_json (j: like value): like object is
+    from_json (j: like value): like object
         local
             i: INTEGER
         do
@@ -43,7 +43,7 @@ feature -- Conversion
             end
         end
         
-    to_json (o: like object): like value is
+    to_json (o: like object): like value
         local
             c: DS_LIST_CURSOR [ANY]
         do

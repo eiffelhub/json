@@ -1,4 +1,4 @@
-indexing 
+note 
     description: "A JSON converter for DS_HASH_TABLE [ANY, HASHABLE]"
     author: "Paul Cohen"
     date: "$Date: $"
@@ -15,7 +15,7 @@ create
     
 feature {NONE} -- Initialization
     
-    make is
+    make
         do
             create object.make (0)
         end
@@ -28,7 +28,7 @@ feature -- Access
             
 feature -- Conversion
 
-    from_json (j: like value): like object is
+    from_json (j: like value): like object
         local
             keys: ARRAY [JSON_STRING]
             i: INTEGER
@@ -50,7 +50,7 @@ feature -- Conversion
             end
         end
         
-    to_json (o: like object): like value is
+    to_json (o: like object): like value
         local
             c: DS_HASH_TABLE_CURSOR [ANY, HASHABLE]
             js: JSON_STRING
