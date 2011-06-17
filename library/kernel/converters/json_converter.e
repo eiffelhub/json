@@ -19,8 +19,9 @@ feature -- Access
 
 feature -- Conversion
 
-    from_json (j: attached  like to_json): like object
-            -- Convert from JSON value. Returns Void if unable to convert
+    from_json (j: attached  like to_json): detachable like object
+            -- Convert from JSON value. 
+			-- Returns Void if unable to convert
         deferred
         end
 
@@ -32,5 +33,4 @@ feature -- Conversion
 invariant
     has_eiffel_object: object /= Void -- An empty object must be created at creation time!
 
-end -- class JSON_CONVERTER
-
+end
