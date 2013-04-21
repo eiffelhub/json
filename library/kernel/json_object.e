@@ -22,6 +22,8 @@ class
 inherit
     JSON_VALUE
 
+	TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
+
 create
     make
 
@@ -117,6 +119,14 @@ feature -- Mesurement
 			-- Number of field
 		do
 			Result := object.count
+		end
+
+feature -- Access
+
+	new_cursor: TABLE_ITERATION_CURSOR [JSON_VALUE, JSON_STRING]
+			-- Fresh cursor associated with current structure
+		do
+			Result := object.new_cursor
 		end
 
 feature -- Status report
