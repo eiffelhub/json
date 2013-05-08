@@ -5,7 +5,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make (a_name: UC_STRING) is
+    make (a_name: UC_STRING)
         do
             set_name (a_name)
             create book_index.make (10)
@@ -15,7 +15,7 @@ feature -- Access
 
     name: UC_STRING
     
-    books: DS_LIST [BOOK] is
+    books: DS_LIST [BOOK]
         local
             c: DS_HASH_TABLE_CURSOR [DS_LIST [BOOK], UC_STRING]
         do
@@ -31,7 +31,7 @@ feature -- Access
             end    
         end
     
-    books_by_author (an_author: UC_STRING): DS_LIST [BOOK] is
+    books_by_author (an_author: UC_STRING): DS_LIST [BOOK]
         do
             if book_index.has (an_author) then
                 Result := book_index @ an_author
@@ -42,12 +42,12 @@ feature -- Access
         
 feature -- Status setting
     
-    set_name (a_name: UC_STRING) is
+    set_name (a_name: UC_STRING)
         do
             name := a_name
         end
         
-    add_book (a_book: BOOK) is
+    add_book (a_book: BOOK)
         local
             l: DS_LIST [BOOK]
         do
@@ -60,7 +60,7 @@ feature -- Status setting
             l.put_last (a_book)
         end
         
-    add_books (book_list: like books) is
+    add_books (book_list: like books)
         local
             c: DS_LIST_CURSOR [BOOK]
         do

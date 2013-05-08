@@ -1,23 +1,23 @@
 class TEST_DS
-    
+
 inherit
     SHARED_GOBO_EJSON
- 
+
     TS_TEST_CASE
-    
+
 create
     make_default
 
 feature {NONE} -- Initialization
 
-    make is
+    make
             -- Create test object.
         do
         end
 
 feature -- Test
 
-    test_ds_linked_list_converter is
+    test_ds_linked_list_converter
         local
             jc: JSON_DS_LINKED_LIST_CONVERTER
             l: DS_LINKED_LIST [STRING]
@@ -39,7 +39,7 @@ feature -- Test
             assert ("l2 /= Void", l2 /= Void)
         end
 
-    test_ds_hash_table_converter is
+    test_ds_hash_table_converter
         local
             tc: JSON_DS_HASH_TABLE_CONVERTER
             t: DS_HASH_TABLE [STRING, STRING]
@@ -50,6 +50,7 @@ feature -- Test
         do
             create tc.make
             json.add_converter (tc)
+            json.add_converter (create {JSON_UC_STRING_CONVERTER}.make)
             create t.make (2)
             t.put ("foo", "1")
             t.put ("bar", "2")

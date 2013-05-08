@@ -9,8 +9,18 @@
 		</file_rule>
 		<option trace="false" profile="false" debug="false" warning="true" full_class_checking="true" void_safety="none" syntax="standard" namespace="EJSON.Library">
 		</option>
-		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true">
+			<condition>
+				<custom name="GOBO_EIFFEL" excluded_value="ge"/>
+			</condition>
+		</library>
+		<library name="free_elks" location="$GOBO/library/free_elks/library.ecf" readonly="true">
+			<condition>
+				<custom name="GOBO_EIFFEL" value="ge"/>
+			</condition>
+		</library>
 		<library name="json" location="json.ecf" readonly="true"/>
+		<library name="gobo_kernel" location="$ISE_LIBRARY\library\gobo\gobo_kernel.ecf"/>
 		<library name="gobo_structure" location="$ISE_LIBRARY\library\gobo\gobo_structure.ecf"/>
 		<cluster name="json_gobo" location=".\gobo" recursive="true" />
 	</target>

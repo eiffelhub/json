@@ -5,7 +5,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make (a_name: UC_STRING) is
+    make (a_name: UC_STRING)
         do
             set_name (a_name)
         end
@@ -16,7 +16,7 @@ feature -- Access
     
 feature -- Status setting
     
-    set_name (a_name: UC_STRING) is
+    set_name (a_name: UC_STRING)
         do
             name := a_name
         end

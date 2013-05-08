@@ -5,7 +5,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make (a_title: UC_STRING; an_author: AUTHOR; an_isbn: UC_STRING) is
+    make (a_title: UC_STRING; an_author: AUTHOR; an_isbn: UC_STRING)
         do
             set_title (a_title)
             set_author (an_author)
@@ -22,17 +22,17 @@ feature -- Access
     
 feature -- Status setting
     
-    set_title (a_title: UC_STRING) is
+    set_title (a_title: UC_STRING)
         do
             title := a_title
         end
         
-    set_author (an_author: AUTHOR) is
+    set_author (an_author: AUTHOR)
         do
             author := an_author
         end
 
-    set_isbn (an_isbn: UC_STRING) is
+    set_isbn (an_isbn: UC_STRING)
         do
             isbn := an_isbn
         end

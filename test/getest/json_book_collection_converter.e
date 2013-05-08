@@ -1,4 +1,4 @@
-indexing
+note
     description: "A JSON converter for BOOK_COLLECTION"
     author: "Paul Cohen"
     date: "$Date$"
@@ -8,29 +8,29 @@ class JSON_BOOK_COLLECTION_CONVERTER
 
 inherit
     JSON_CONVERTER
-    
+
 create
     make
-    
+
 feature {NONE} -- Initialization
-    
-    make is
+
+    make
         local
             ucs: UC_STRING
         do
             create ucs.make_from_string ("")
             create object.make (ucs)
         end
-        
+
 feature -- Access
 
     value: JSON_OBJECT
-            
+
     object: BOOK_COLLECTION
-            
+
 feature -- Conversion
 
-    from_json (j: like value): like object is
+    from_json (j: like value): like object
         local
             ucs: UC_STRING
             ll: DS_LINKED_LIST [BOOK]
@@ -38,7 +38,7 @@ feature -- Conversion
             ja: JSON_ARRAY
             i: INTEGER
         do
-            ucs ?= json.object (j.item (name_key), Void)
+            ucs ?= json.object (j.item (name_key), "UC_STRING")
             check ucs /= Void end
             create Result.make (ucs)
             ja ?= j.item (books_key)
@@ -57,22 +57,22 @@ feature -- Conversion
             check ll /= Void end
             Result.add_books (ll)
         end
-        
-    to_json (o: like object): like value is
+
+    to_json (o: like object): like value
         do
             create Result.make
             Result.put (json.value (o.name), name_key)
             Result.put (json.value (o.books), books_key)
         end
-  
+
 feature    {NONE} -- Implementation
 
-    name_key: JSON_STRING is
+    name_key: JSON_STRING
         once
             create Result.make_json ("name")
         end
 
-    books_key: JSON_STRING is
+    books_key: JSON_STRING
         once
             create Result.make_json ("books")
         end

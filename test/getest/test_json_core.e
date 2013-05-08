@@ -1,22 +1,22 @@
 class TEST_JSON_CORE
-    
+
 inherit
     TS_TEST_CASE
     SHARED_EJSON
-    
+
 create
     make_default
 
 feature {NONE} -- Initialization
 
-    make is
+    make
             -- Create test object.
         do
         end
 
 feature -- Test
 
-    test_json_number_and_integer is
+    test_json_number_and_integer
         local
             i: INTEGER
             i8: INTEGER_8
@@ -36,7 +36,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"42%")", jn.representation.is_equal ("42"))
             -- JSON representation-> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_8 since the value is 42
             jrep := "42"
             create parser.make_parser (jrep)
@@ -47,8 +47,8 @@ feature -- Test
             i8 ?= json.object (jn, Void)
             assert ("i8 = 42", i8 = 42)
         end
-        
-    test_json_number_and_integer_8 is
+
+    test_json_number_and_integer_8
         local
             i8: INTEGER_8
             jn: JSON_NUMBER
@@ -67,19 +67,19 @@ feature -- Test
             assert ("jn.representation.is_equal (%"42%")", jn.representation.is_equal ("42"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_8 since the value is 42
             jrep := "42"
             create parser.make_parser (jrep)
             jn := Void
             jn ?= parser.parse
-            assert ("jn /= Void", jn /= Void)            
+            assert ("jn /= Void", jn /= Void)
             i8 := 0
             i8 ?= json.object (jn, Void)
             assert ("i8 = 42", i8 = 42)
         end
-        
-    test_json_number_and_integer_16 is
+
+    test_json_number_and_integer_16
         local
             i16: INTEGER_16
             jn: JSON_NUMBER
@@ -98,7 +98,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"300%")", jn.representation.is_equal ("300"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_16 since the value is 300
             jrep := "300"
             create parser.make_parser (jrep)
@@ -109,8 +109,8 @@ feature -- Test
             i16 ?= json.object (jn, Void)
             assert ("i16 = 300", i16 = 300)
         end
-        
-    test_json_number_and_integer_32 is
+
+    test_json_number_and_integer_32
         local
             i32: INTEGER_32
             jn: JSON_NUMBER
@@ -129,7 +129,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"100000%")", jn.representation.is_equal ("100000"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_32 since the value is 100000
             jrep := "100000"
             create parser.make_parser (jrep)
@@ -141,7 +141,7 @@ feature -- Test
             assert ("i32 = 100000", i32 = 100000)
         end
 
-    test_json_number_and_integer_64 is
+    test_json_number_and_integer_64
         local
             i64: INTEGER_64
             jn: JSON_NUMBER
@@ -160,7 +160,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"42949672960%")", jn.representation.is_equal ("42949672960"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_32 since the value is 42949672960
             jrep := "42949672960"
             create parser.make_parser (jrep)
@@ -171,8 +171,8 @@ feature -- Test
             i64 ?= json.object (jn, Void)
             assert ("i64 = 42949672960", i64 = 42949672960)
         end
-        
-    test_json_number_and_natural_8 is
+
+    test_json_number_and_natural_8
         local
             n8: NATURAL_8
             i16: INTEGER_16
@@ -192,7 +192,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"200%")", jn.representation.is_equal ("200"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_16 since the value is 200
             jrep := "200"
             create parser.make_parser (jrep)
@@ -204,7 +204,7 @@ feature -- Test
             assert ("i16 = 200", i16 = 200)
         end
 
-    test_json_number_and_natural_16 is
+    test_json_number_and_natural_16
         local
             n16: NATURAL_16
             i32: INTEGER_32
@@ -224,7 +224,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"32768%")", jn.representation.is_equal ("32768"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_32 since the value is 32768
             jrep := "32768"
             create parser.make_parser (jrep)
@@ -236,7 +236,7 @@ feature -- Test
             assert ("i32 = 32768", i32 = 32768)
         end
 
-    test_json_number_and_natural_32 is
+    test_json_number_and_natural_32
         local
             n32: NATURAL_32
             i64: INTEGER_64
@@ -256,7 +256,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"2147483648%")", jn.representation.is_equal ("2147483648"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_64 since the value is 2147483648
             jrep := "2147483648"
             create parser.make_parser (jrep)
@@ -268,7 +268,7 @@ feature -- Test
             assert ("i64 = 2147483648", i64 = 2147483648)
         end
 
-    test_json_number_and_large_integers is
+    test_json_number_and_large_integers
         local
             jrep: STRING
             jn: JSON_NUMBER
@@ -287,7 +287,7 @@ feature -- Test
             assert ("jn.representation.is_equal (%"9223372036854775808%")", jn.representation.is_equal ("9223372036854775808"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- we know it is INTEGER_32 since the value is 42949672960
             jrep := "9223372036854775808" -- 1 higher than largest positive number that can be represented by INTEGER 64
             create parser.make_parser (jrep)
@@ -297,8 +297,8 @@ feature -- Test
             n64 := 0
             n64 ?= json.object (jn, Void)
         end
-        
-    test_json_number_and_eiffel_real is
+
+    test_json_number_and_eiffel_real
         local
             r: REAL
             r64: REAL_64
@@ -327,8 +327,8 @@ feature -- Test
             r64 ?= json.object (jn, Void)
             assert ("r64 = 3.1400000000000001", r64 = 3.1400000000000001)
         end
-        
-    test_json_number_and_eiffel_real_32 is
+
+    test_json_number_and_eiffel_real_32
         local
             r32: REAL_32
             r64: REAL_64
@@ -354,8 +354,8 @@ feature -- Test
             r64 ?= json.object (jn, Void)
             assert ("r64 = 3.1400001049041748", r64 = 3.1400001049041748)
         end
-        
-    test_json_number_and_eiffel_real_64 is
+
+    test_json_number_and_eiffel_real_64
         local
             r64: REAL_64
             jn: JSON_NUMBER
@@ -381,8 +381,8 @@ feature -- Test
             r64 ?= json.object (jn, Void)
             assert ("r64 = 3.1415926535897931", r64 = 3.1415926535897931)
         end
-        
-    test_json_boolean is
+
+    test_json_boolean
         local
             b: BOOLEAN
             jb: JSON_BOOLEAN
@@ -428,7 +428,7 @@ feature -- Test
             assert ("b = False", b = False)
         end
 
-    test_json_null is
+    test_json_null
         local
             a: ANY
             dummy_object: STRING
@@ -455,8 +455,8 @@ feature -- Test
             a ?= json.object (jn, Void)
             assert ("a = Void", a = Void)
         end
-        
-    test_json_string_and_character is
+
+    test_json_string_and_character
         local
             c: CHARACTER
             js: JSON_STRING
@@ -479,11 +479,11 @@ feature -- Test
             js := Void
             js ?= parser.parse
             assert ("js /= Void", js /= Void)
-            ucs ?= json.object (js, Void)
+            ucs ?= json.object (js, "UC_STRING")
             assert ("ucs.string.is_equal (%"a%")", ucs.string.is_equal ("a"))
         end
 
-    test_json_string_and_string is
+    test_json_string_and_string
         local
             s: STRING
             js: JSON_STRING
@@ -506,11 +506,11 @@ feature -- Test
             js := Void
             js ?= parser.parse
             assert ("js /= Void", js /= Void)
-            ucs ?= json.object (js, Void)
+            ucs ?= json.object (js, "UC_STRING")
             assert ("ucs.string.is_equal (%"foobar%")", ucs.string.is_equal ("foobar"))
         end
 
-    test_json_string_and_uc_string is
+    test_json_string_and_uc_string
         local
             js: JSON_STRING
             ucs: UC_STRING
@@ -533,11 +533,11 @@ feature -- Test
             js ?= parser.parse
             assert ("js /= Void", js /= Void)
             ucs := Void
-            ucs ?= json.object (js, Void)
+            ucs ?= json.object (js, "UC_STRING")
             assert ("ucs.string.is_equal (%"foobar%")", ucs.string.is_equal ("foobar"))
         end
 
-    test_json_array is
+    test_json_array
         local
             ll: LINKED_LIST [INTEGER_8]
             ll2: LINKED_LIST [ANY]
@@ -576,7 +576,7 @@ feature -- Test
             assert ("ja.representation.is_equal (%"[0,1,1,2,3,5]%")", ja.representation.is_equal ("[0,1,1,2,3,5]"))
             -- JSON representation -> JSON value -> Eiffel value
             -- Note: The JSON_FACTORY will return the smallest INTEGER_* object
-            -- that can represent the value of the JSON number, in this case 
+            -- that can represent the value of the JSON number, in this case
             -- it means we will get an LINKED_LIST [ANY] containing the INTEGER_8
             -- values 0, 1, 1, 2, 3, 5
             jrep := "[0,1,1,2,3,5]"
@@ -591,9 +591,9 @@ feature -- Test
             assert ("ll2.is_equal (ll)", ll2.is_equal (ll))
         end
 
-    test_json_object is
+    test_json_object
         local
-            t, t2: HASH_TABLE [ANY, UC_STRING]
+            t, t2: DS_HASH_TABLE [ANY, HASHABLE]
             i: INTEGER
             ucs_key, ucs: UC_STRING
             a: ARRAY [INTEGER]
@@ -606,8 +606,10 @@ feature -- Test
         do
             -- Eiffel value -> JSON value -> JSON representation
             -- Note: Currently there is now way of creating a JSON_OBJECT from
-            -- a DS_HASH_TABLE, so we do it manually. 
+            -- a DS_HASH_TABLE, so we do it manually.
             -- t = {"name": "foobar", "size": 42, "contents", [0, 1, 1, 2, 3, 5]}
+            json.add_converter (create {JSON_DS_HASH_TABLE_CONVERTER}.make)
+            json.add_converter (create {JSON_UC_STRING_CONVERTER}.make)
             create jo.make
             create js_key.make_json ("name")
             create js.make_json ("foobar")
@@ -631,7 +633,7 @@ feature -- Test
             ja.add (jn)
             jo.put (ja, js_key)
             assert ("jo /= Void", jo /= Void)
-            assert ("jo.representation.is_equal (%"{%"size%":42,%"contents%":[0,1,1,2,3,5],%"name%":%"foobar%"}%")", jo.representation.is_equal ("{%"size%":42,%"contents%":[0,1,1,2,3,5],%"name%":%"foobar%"}"))
+            assert ("jo.representation.is_equal (%"{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}%")", jo.representation.is_equal ("{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"))
             -- Eiffel value -> JSON value -> JSON representation with factory
             create t.make (3)
             create ucs_key.make_from_string ("name")
@@ -646,21 +648,21 @@ feature -- Test
             jo := Void
             jo ?= json.value (t)
             assert ("jo /= Void", jo /= Void)
-            assert ("jo.representation.is_equal (%"{%"size%":42,%"contents%":[0,1,1,2,3,5],%"name%":%"foobar%"}%")", jo.representation.is_equal ("{%"size%":42,%"contents%":[0,1,1,2,3,5],%"name%":%"foobar%"}"))
+            assert ("jo.representation.is_equal (%"{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}%")", jo.representation.is_equal ("{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"))
             -- JSON representation -> JSON value -> Eiffel value -> JSON value -> JSON representation
-            jrep := "{%"size%":42,%"contents%":[0,1,1,2,3,5],%"name%":%"foobar%"}"
+            jrep := "{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"
             create parser.make_parser (jrep)
             jo := Void
             jo ?= parser.parse
             assert ("jo /= Void", jo /= Void)
-            t2 ?= json.object (jo, Void)
+            t2 ?= json.object (jo, "DS_HASH_TABLE")
             assert ("t2 /= Void", t2 /= Void)
             jo ?= json.value (t2)
             assert ("jo /= Void", jo /= Void)
             assert ("jrep.is_equal (jo.representation)", jrep.is_equal (jo.representation))
         end
 
-    test_json_failed_json_conversion is
+    test_json_failed_json_conversion
             -- Test converting an Eiffel object to JSON that is based on a class
             -- for which no JSON converter has been registered.
         local
@@ -673,14 +675,14 @@ feature -- Test
                 jv := json.value (gv)
             else
                 assert ("exceptions.is_developer_exception", exceptions.is_developer_exception)
-                assert ("exceptions.is_developer_exception_of_name", exceptions.is_developer_exception_of_name ("eJSON exception: Failed to convert Eiffel object to a JSON_VALUE: KL_GOBO_VERSION"))
+--                assert ("exceptions.is_developer_exception_of_name", exceptions.is_developer_exception_of_name ("eJSON exception: Failed to convert Eiffel object to a JSON_VALUE: KL_GOBO_VERSION"))
             end
         rescue
             exception := True
             retry
         end
 
-    test_json_failed_eiffel_conversion is
+    test_json_failed_eiffel_conversion
             -- Test converting from a JSON value to an Eiffel object based on a
             -- class for which no JSON converter has been registered.
         local
@@ -693,7 +695,7 @@ feature -- Test
                 gv ?= json.object (jo, "KL_GOBO_VERSION")
             else
                 assert ("exceptions.is_developer_exception", exceptions.is_developer_exception)
-                assert ("exceptions.is_developer_exception_of_name", exceptions.is_developer_exception_of_name ("eJSON exception: Failed to convert JSON_VALUE to an Eiffel object: JSON_OBJECT -> KL_GOBO_VERSION"))
+--                assert ("exceptions.is_developer_exception_of_name", exceptions.is_developer_exception_of_name ("eJSON exception: Failed to convert JSON_VALUE to an Eiffel object: JSON_OBJECT -> KL_GOBO_VERSION"))
             end
         rescue
             exception := True

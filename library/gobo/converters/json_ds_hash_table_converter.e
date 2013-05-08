@@ -34,9 +34,11 @@ feature -- Conversion
             i: INTEGER
             h: HASHABLE
             a: ANY
+            ucs: UC_STRING
         do
             keys := j.current_keys
             create Result.make (keys.count)
+            create ucs.make_empty
             from
                 i := 1
             until
@@ -44,7 +46,13 @@ feature -- Conversion
             loop
                 h ?= json.object (keys [i], void)
                 check h /= Void end
+                if attached {STRING_32} h and attached Json.converter_for (ucs) then
+                	h ?= json.object (keys [i], ucs.generator)
+                end
                 a := json.object (j.item (keys [i]), Void)
+                if attached {STRING_32} a and attached Json.converter_for (ucs) then
+                	a := json.object (j.item (keys [i]), ucs.generator)
+                end
                 Result.put (a, h)
                 i := i + 1
             end
