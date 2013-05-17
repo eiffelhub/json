@@ -26,7 +26,7 @@
 		</library>
 		<cluster name="json" location=".\" recursive="true">
 			<file_rule>
-				<exclude>^/gobo$</exclude>
+                                <exclude>.*/?gobo.*</exclude>
 			</file_rule>
 		</cluster>
 	</target>

@@ -26,12 +26,8 @@
 		</library>
 		<cluster name="json" location=".\" recursive="true">
 			<file_rule>
-				<exclude>^/gobo$</exclude>
-				<exclude>^/kernel$</exclude>
-				<exclude>^/extras$</exclude>
+				<exclude>.*/?gobo.*</exclude>
 			</file_rule>
-			<cluster name="kernel" location=".\kernel\" recursive="true"/>
-			<cluster name="extras" location=".\extras\" recursive="true"/>
 		</cluster>
 	</target>
 </system>
