@@ -46,7 +46,7 @@ feature -- Conversion
                 jv := j.item (keys [i])
                 if jv /= Void then
 	                a := json.object (jv, Void)
-	                if a /= Void then
+	                if a /= Void and h /= Void then
 	                	Result.put (a, h)
 	                else
 	                	check a_attached: a /= Void end

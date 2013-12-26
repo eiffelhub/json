@@ -14,15 +14,20 @@
 			<warning name="syntax" enabled="false"/>
 			<warning name="vjrv" enabled="false"/>
 		</option>
-		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf" readonly="true"/>
+		<library name="base" location="$ISE_LIBRARY/library/base/base-safe.ecf" readonly="true">
+			<condition>
+				<custom name="GOBO_EIFFEL" excluded_value="ge"/>
+			</condition>
+		</library>
+		<library name="free_elks" location="$GOBO/library/free_elks/library.ecf" readonly="true">
+			<condition>
+				<custom name="GOBO_EIFFEL" value="ge"/>
+			</condition>
+		</library>
 		<cluster name="json" location=".\" recursive="true">
 			<file_rule>
-				<exclude>^/gobo$</exclude>
-				<exclude>^/kernel$</exclude>
-				<exclude>^/extras$</exclude>
+                                <exclude>.*/?gobo.*</exclude>
 			</file_rule>
-			<cluster name="kernel" location=".\kernel\" recursive="true"/>
-			<cluster name="extras" location=".\extras\" recursive="true"/>
 		</cluster>
 	</target>
 </system>

@@ -1,2 +1,8 @@
 *.swp
 EIFGENs
+TESTGEN
+ejson_test.h
+ejson_test*.c
+ejson_test.sh
+ejson_test*.o
+ejson_test
