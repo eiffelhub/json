@@ -11,6 +11,21 @@ class
 inherit
 
 	EXCEPTIONS
+		redefine
+			default_create
+		end
+
+create
+	default_create
+
+feature {NONE} -- Initialization
+
+	default_create
+			-- Create with no converters.
+		do
+			create converters.make (10)
+			create json_parser
+		end
 
 feature -- Access
 
@@ -205,9 +220,6 @@ feature {NONE} -- Implementation
 
 	converters: HASH_TABLE [JSON_CONVERTER, IMMUTABLE_STRING_8]
 			-- Converters hashed by generator (base class)
-		once
-			create Result.make (10)
-		end
 
 	default_json_array_converter: JSON_CONVERTER
 			-- Default converter for JSON_ARRAY.
@@ -246,9 +258,7 @@ feature {NONE} -- Implementation (Exceptions)
 feature {NONE} -- Implementation (JSON parser)
 
 	json_parser: JSON_PARSER
-		once
-			create Result.make_parser ("")
-		end
+			-- JSON parser.
 
 feature {NONE} -- Implementation (Type Helper)
 
