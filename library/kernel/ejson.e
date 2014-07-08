@@ -150,7 +150,7 @@ feature -- Access
 					if attached converter_of (a_type) as l_converter then
 						Result := l_converter.from_json (a_value)
 					else
-						raise (exception_failed_to_convert_to_eiffel (a_value, base_class_of (a_type)))
+						raise (exception_failed_to_convert_to_eiffel (a_value, a_type))
 					end
 				end
 			end
@@ -250,22 +250,22 @@ feature {NONE} -- Implementation
 feature {NONE} -- Implementation (Exceptions)
 
 	exception_prefix: STRING = "eJSON exception: "
+			-- Prefix for all EJSON exception.
 
-	exception_failed_to_convert_to_eiffel (a_value: JSON_VALUE; base_class: detachable STRING): STRING
-			-- Exception message for failing to convert a JSON_VALUE to an instance of `a'.
+	exception_failed_to_convert_to_eiffel (a_value: JSON_VALUE; a_type: TYPE [detachable ANY]): STRING
+			-- Exception message for failing to convert a JSON_VALUE to an instance of `a_value'.
+		require
+			a_type_attached: a_type /= Void
 		do
-			Result := exception_prefix + "Failed to convert JSON_VALUE to an Eiffel object: " + a_value.generator
-			if base_class /= Void then
-				Result.append (" -> {" + base_class + "}")
-			end
+			Result := exception_prefix + "Failed to convert JSON_VALUE to an Eiffel object: " + a_value.generator + " -> {" + base_class_of (a_type) + "}"
 		end
 
-	exception_failed_to_convert_to_json (an_object: detachable ANY): STRING
-			-- Exception message for failing to convert `a' to a JSON_VALUE.
+	exception_failed_to_convert_to_json (a_object: detachable ANY): STRING
+			-- Exception message for failing to convert `a_object' to a JSON_VALUE.
 		do
 			Result := exception_prefix + "Failed to convert Eiffel object to a JSON_VALUE"
-			if an_object /= Void then
-				Result.append (" : {" + an_object.generator + "}")
+			if a_object /= Void then
+				Result.append (" : {" + a_object.generator + "}")
 			end
 		end
 
