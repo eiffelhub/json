@@ -10,13 +10,16 @@ class
 inherit
 
 	JSON_VISITOR
+		redefine
+			default_create
+		end
 
 create
-	make
+	default_create
 
 feature {NONE} -- Initialization
 
-	make
+	default_create
 			-- Create a new instance.
 		do
 			create to_json.make_empty
