@@ -44,22 +44,21 @@ feature -- Access
 		end
 
 	representation: STRING
-		local
-			i: INTEGER
+			-- <Precursor>
 		do
-			Result := "["
-			from
-				i := 1
-			until
-				i > count
-			loop
-				Result.append (i_th (i).representation)
-				i := i + 1
-				if i <= count then
+			create Result.make (count * 2 + 1)
+			Result.append_character ('[')
+			if is_empty then
+				Result.append_character (']')
+			else
+				across
+					Current as it
+				loop
+					Result.append (it.item.representation)
 					Result.append_character (',')
 				end
+				Result [Result.count] := ']'
 			end
-			Result.append_character (']')
 		end
 
 feature -- Visitor pattern
@@ -93,6 +92,12 @@ feature -- Status report
 			-- Is `i' a valid index?
 		do
 			Result := (1 <= i) and (i <= count)
+		end
+
+	is_empty: BOOLEAN
+			-- Has no items?
+		do
+			Result := values.is_empty
 		end
 
 feature -- Change Element
@@ -136,14 +141,11 @@ feature -- Report
 	hash_code: INTEGER
 			-- Hash code value
 		do
-			from
-				values.start
-				Result := values.item.hash_code
-			until
-				values.off
+			Result := 0
+			across
+				values as it
 			loop
-				Result := ((Result \\ 8388593) |<< 8) + values.item.hash_code
-				values.forth
+				Result := ((Result \\ 8388593) |<< 8) + it.item.hash_code
 			end
 			Result := Result \\ values.count
 		end

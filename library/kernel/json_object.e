@@ -215,26 +215,23 @@ feature -- Access
 		end
 
 	representation: STRING
-		local
-			t: HASH_TABLE [JSON_VALUE, JSON_STRING]
+			-- <Precursor>
 		do
-			create Result.make (2)
+			create Result.make (count * 2 + 1)
 			Result.append_character ('{')
-			from
-				t := map_representation
-				t.start
-			until
-				t.after
-			loop
-				Result.append (t.key_for_iteration.representation)
-				Result.append_character (':')
-				Result.append (t.item_for_iteration.representation)
-				t.forth
-				if not t.after then
+			if is_empty then
+				Result.append_character ('}')
+			else
+				across
+					map_representation as it
+				loop
+					Result.append (it.key.representation)
+					Result.append_character (':')
+					Result.append (it.item.representation)
 					Result.append_character (',')
 				end
+				Result [Result.count] := '}'
 			end
-			Result.append_character ('}')
 		end
 
 feature -- Mesurement
@@ -283,14 +280,11 @@ feature -- Report
 	hash_code: INTEGER
 			-- Hash code value
 		do
-			from
-				object.start
-				Result := object.out.hash_code
-			until
-				object.off
+			Result := 0
+			across
+				Current as it
 			loop
-				Result := ((Result \\ 8388593) |<< 8) + object.item_for_iteration.hash_code
-				object.forth
+				Result := ((Result \\ 8388593) |<< 8) + it.item.hash_code
 			end
 				-- Ensure it is a positive value.
 			Result := Result.hash_code

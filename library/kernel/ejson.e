@@ -18,7 +18,6 @@ feature -- Access
 			-- JSON value from Eiffel object. Raises an "eJSON exception" if
 			-- unable to convert value.
 		local
-			i: INTEGER
 			ja: JSON_ARRAY
 		do
 				-- Try to convert from basic Eiffel types. Note that we check with
@@ -50,19 +49,16 @@ feature -- Access
 				create {JSON_NUMBER} Result.make_real (r64)
 			elseif attached {ARRAY [detachable ANY]} an_object as a then
 				create ja.make_array
-				from
-					i := a.lower
-				until
-					i > a.upper
+				across
+					a as it
 				loop
-					if attached value (a @ i) as v then
-						ja.add (v)
+					if attached value (it.item) as l_value then
+						ja.extend (l_value)
 					else
 						check
 							value_attached: False
 						end
 					end
-					i := i + 1
 				end
 				Result := ja
 			elseif attached {CHARACTER_8} an_object as c8 then
@@ -97,10 +93,8 @@ feature -- Access
 			if a_value = Void then
 				Result := Void
 			else
-				if base_class = Void then
-					if a_value = Void then
-						Result := Void
-					elseif attached {JSON_NULL} a_value then
+				if a_type = Void then
+					if attached {JSON_NULL} a_value then
 						Result := Void
 					elseif attached {JSON_BOOLEAN} a_value as jb then
 						Result := jb.item
@@ -185,24 +179,19 @@ feature -- Access
 			Result.put (js_value, js_key)
 		end
 
-	json_references (l: LIST [STRING]): JSON_ARRAY
+	json_references (a_list: LIST [STRING]): JSON_ARRAY
 			-- A JSON array of JSON (Dojo style) reference objects using the
-			-- strings in `l' as reference values. The caller is responsable
-			-- for ensuring the validity of all strings in `l' as json
+			-- strings in `a_list' as reference values. The caller is responsable
+			-- for ensuring the validity of all strings in `a_list' as json
 			-- references.
 		require
-			l_not_void: l /= Void
-		local
-			c: ITERATION_CURSOR [STRING]
+			a_list_not_void: a_list /= Void
 		do
 			create Result.make_array
-			from
-				c := l.new_cursor
-			until
-				c.after
+			across
+				a_list as it
 			loop
-				Result.add (json_reference (c.item))
-				c.forth
+				Result.extend (json_reference (it.item))
 			end
 		end
 
