@@ -37,9 +37,9 @@ feature -- Access
 			-- <Precursor>
 		do
 			if item then
-				Result := "true"
+				Result := True_value
 			else
-				Result := "false"
+				Result := False_value
 			end
 		end
 
@@ -59,5 +59,13 @@ feature -- Status report
 		do
 			Result := item.out
 		end
+
+feature {NONE} -- Implementation
+
+	True_value: STRING_8 = "true"
+			-- JSON true value.
+
+	False_value: STRING_8 = "false"
+			-- JSON False value.
 
 end
