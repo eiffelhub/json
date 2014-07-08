@@ -765,7 +765,7 @@ feature -- Test
 			jrep := "{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"
 			create parser.make_parser (jrep)
 			if attached {JSON_OBJECT} parser.parse as l_jo then
-				if attached {HASH_TABLE [detachable ANY, STRING_GENERAL]} json.object (l_jo, Void) as l_t2 then
+				if attached {HASH_TABLE [detachable ANY, HASHABLE]} json.object (l_jo, Void) as l_t2 then
 					if attached json.value (l_t2) as l_jo_2 then
 						assert ("jrep.is_equal (jo.representation)", jrep.is_equal (l_jo_2.representation))
 					else
