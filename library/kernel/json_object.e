@@ -120,7 +120,7 @@ feature -- Change Element
 		local
 			l_value: JSON_VALUE
 		do
-			if l_value /= Void then
+			if value /= Void then
 				l_value := value
 			else
 				create {JSON_NULL} l_value
