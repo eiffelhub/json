@@ -121,30 +121,9 @@ feature -- Access
 					elseif attached {JSON_STRING} a_value as js then
 						create {STRING_32} Result.make_from_string (js.unescaped_string_32)
 					elseif attached {JSON_ARRAY} a_value as ja then
-						from
-							create ll.make
-							i := 1
-						until
-							i > ja.count
-						loop
-							ll.extend (object (ja [i], Void))
-							i := i + 1
-						end
-						Result := ll
+						Result := default_json_array_converter.from_json (ja)
 					elseif attached {JSON_OBJECT} a_value as jo then
-						keys := jo.current_keys
-						create t.make (keys.count)
-						from
-							i := keys.lower
-						until
-							i > keys.upper
-						loop
-							if attached {STRING_GENERAL} object (keys [i], Void) as s then
-								t.put (object (jo.item (keys [i]), Void), s)
-							end
-							i := i + 1
-						end
-						Result := t
+						Result := default_json_object_converter.from_json (jo)
 					end
 				else
 					if attached converter_of (a_type) as l_converter then
@@ -247,6 +226,18 @@ feature {NONE} -- Implementation
 			create Result.make (10)
 		end
 
+	default_json_array_converter: JSON_CONVERTER
+			-- Default converter for JSON_ARRAY.
+		once
+			create {JSON_LINKED_LIST_CONVERTER} Result
+		end
+
+	default_json_object_converter: JSON_CONVERTER
+			-- Default converter for JSON_OBJECT.
+		once
+			create {JSON_HASH_TABLE_CONVERTER} Result
+		end
+
 feature {NONE} -- Implementation (Exceptions)
 
 	exception_prefix: STRING = "eJSON exception: "
@@ -291,7 +282,6 @@ feature {NONE} -- Implementation (Type Helper)
 				Result := Result.tail (Result.count - 1)
 					-- Remove attachment mark.
 			end
-
 			check
 				first_character_is_alhpabetic: Result [1].is_alpha
 			end
