@@ -111,7 +111,7 @@ feature -- Change Element
 			has_new_value: old values.count + 1 = values.count and values.first = v
 		end
 
-	add, extend (v: JSON_VALUE)
+	extend (v: JSON_VALUE)
 		require
 			v_not_void: v /= Void
 		do

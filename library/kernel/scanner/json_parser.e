@@ -261,7 +261,7 @@ feature -- Commands
 					skip_white_spaces
 					l_value := parse
 					if is_parsed and then l_value /= Void then
-						Result.add (l_value)
+						Result.extend (l_value)
 						next
 						skip_white_spaces
 						c := actual

@@ -672,7 +672,7 @@ feature -- Test
 				ll.after
 			loop
 				create jn.make_integer (ll.item)
-				ja.add (jn)
+				ja.extend (jn)
 				ll.forth
 			end
 			assert ("ja /= Void", ja /= Void)
@@ -729,17 +729,17 @@ feature -- Test
 			create js_key.make_json ("contents")
 			create ja.make_array
 			create jn.make_integer (0)
-			ja.add (jn)
+			ja.extend (jn)
 			create jn.make_integer (1)
-			ja.add (jn)
+			ja.extend (jn)
 			create jn.make_integer (1)
-			ja.add (jn)
+			ja.extend (jn)
 			create jn.make_integer (2)
-			ja.add (jn)
+			ja.extend (jn)
 			create jn.make_integer (3)
-			ja.add (jn)
+			ja.extend (jn)
 			create jn.make_integer (5)
-			ja.add (jn)
+			ja.extend (jn)
 			jo.put (ja, js_key)
 			assert ("jo /= Void", jo /= Void)
 			assert ("jo.representation.is_equal (%"{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}%")", jo.representation.is_equal ("{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"))
