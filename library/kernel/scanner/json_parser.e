@@ -131,7 +131,7 @@ feature -- Commands
 			l_json_string: detachable JSON_STRING
 			l_value: detachable JSON_VALUE
 		do
-			create Result.make
+			create Result
 				-- check if is an empty object {}
 			next
 			skip_white_spaces
@@ -244,7 +244,7 @@ feature -- Commands
 			l_value: detachable JSON_VALUE
 			c: like actual
 		do
-			create Result.make_array
+			create Result
 				--check if is an empty array []
 			next
 			skip_white_spaces

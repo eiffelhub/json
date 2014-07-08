@@ -31,7 +31,7 @@ feature -- Conversion
 	to_json (o: attached like from_json): JSON_OBJECT
 			-- <Precursor>
 		do
-			create Result.make
+			create Result
 			Result.put (json.value (o.title), title_key)
 			Result.put (json.value (o.isbn), isbn_key)
 			Result.put (json.value (o.author), author_key)

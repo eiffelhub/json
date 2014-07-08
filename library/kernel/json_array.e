@@ -17,18 +17,27 @@ class
 inherit
 
 	JSON_VALUE
+		redefine
+			default_create
+		end
 
 	ITERABLE [JSON_VALUE]
+		undefine
+			default_create
+		end
 
 	DEBUG_OUTPUT
+		undefine
+			default_create
+		end
 
 create
-	make_array
+	default_create
 
 feature {NONE} -- Initialization
 
-	make_array
-			-- Initialize JSON Array
+	default_create
+			-- Initialize JSON Array.
 		do
 			create values.make (10)
 		end

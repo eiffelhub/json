@@ -28,7 +28,7 @@ feature -- Conversion
 	to_json (o: like new_object): detachable JSON_ARRAY
 			-- <Precursor>
 		do
-			create Result.make_array
+			create Result
             across
 				o as it
             until

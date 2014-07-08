@@ -665,7 +665,7 @@ feature -- Test
 			ll.extend (5)
 				-- Note: Currently there is no simple way of creating a JSON_ARRAY
 				-- from an LINKED_LIST.
-			create ja.make_array
+			create ja
 			from
 				ll.start
 			until
@@ -719,7 +719,7 @@ feature -- Test
 				-- Note: Currently there is now way of creating a JSON_OBJECT from
 				-- a HASH_TABLE, so we do it manually.
 				-- t = {"name": "foobar", "size": 42, "contents", [0, 1, 1, 2, 3, 5]}
-			create jo.make
+			create jo
 			create js_key.make_json ("name")
 			create js.make_json ("foobar")
 			jo.put (js, js_key)
@@ -727,7 +727,7 @@ feature -- Test
 			create jn.make_integer (42)
 			jo.put (jn, js_key)
 			create js_key.make_json ("contents")
-			create ja.make_array
+			create ja
 			create jn.make_integer (0)
 			ja.extend (jn)
 			create jn.make_integer (1)
@@ -785,7 +785,7 @@ feature -- Test
 			jo: JSON_OBJECT
 		do
 			create ht.make (1)
-			create jo.make
+			create jo
 			ht.force ("", jo)
 			assert ("ht.has_key (jo)", ht.has_key (jo))
 		end
@@ -818,7 +818,7 @@ feature -- Test
 			exception: BOOLEAN
 		do
 			if not exception then
-				create jo.make
+				create jo
 				gv := json.object (jo, {OPERATING_ENVIRONMENT})
 			else
 				assert ("exceptions.is_developer_exception", json.is_developer_exception)

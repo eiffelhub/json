@@ -27,7 +27,7 @@ feature -- Conversion
 	to_json (o: attached like from_json): JSON_OBJECT
 			-- <Precursor>
 		do
-			create Result.make
+			create Result
 			Result.put (json.value (o.name), name_key)
 		end
 

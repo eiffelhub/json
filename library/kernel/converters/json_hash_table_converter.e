@@ -45,7 +45,7 @@ feature -- Conversion
 		local
 			js: JSON_STRING
 		do
-			create Result.make
+			create Result
 			across
 				o as it
 			until

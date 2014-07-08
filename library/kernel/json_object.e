@@ -20,17 +20,26 @@ class
 inherit
 
 	JSON_VALUE
+		redefine
+			default_create
+		end
 
 	TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
+		undefine
+			default_create
+		end
 
 	DEBUG_OUTPUT
+		undefine
+			default_create
+		end
 
 create
-	make
+	default_create
 
 feature {NONE} -- Initialization
 
-	make
+	default_create
 			-- Initialize
 		do
 			create object.make (10)

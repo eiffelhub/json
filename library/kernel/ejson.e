@@ -48,7 +48,7 @@ feature -- Access
 			elseif attached {REAL_64} an_object as r64 then
 				create {JSON_NUMBER} Result.make_real (r64)
 			elseif attached {ARRAY [detachable ANY]} an_object as a then
-				create ja.make_array
+				create ja
 				across
 					a as it
 				loop
@@ -83,11 +83,6 @@ feature -- Access
 			-- Eiffel object from JSON value. If `base_class' /= Void an eiffel
 			-- object based on `base_class' will be returned. Raises an "eJSON
 			-- exception" if unable to convert value.
-		local
-			i: INTEGER
-			ll: LINKED_LIST [detachable ANY]
-			t: HASH_TABLE [detachable ANY, STRING_GENERAL]
-			keys: ARRAY [JSON_STRING]
 		do
 			if a_value = Void then
 				Result := Void
@@ -172,7 +167,7 @@ feature -- Access
 		local
 			js_key, js_value: JSON_STRING
 		do
-			create Result.make
+			create Result
 			create js_key.make_json ("$ref")
 			create js_value.make_json (s)
 			Result.put (js_value, js_key)
@@ -186,7 +181,7 @@ feature -- Access
 		require
 			a_list_not_void: a_list /= Void
 		do
-			create Result.make_array
+			create Result
 			across
 				a_list as it
 			loop
