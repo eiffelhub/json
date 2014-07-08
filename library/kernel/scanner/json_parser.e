@@ -40,13 +40,10 @@ feature -- Status report
 			-- Current errors as string
 		do
 			create Result.make_empty
-			from
-				errors.start
-			until
-				errors.after
+			across
+				errors as it
 			loop
-				Result.append_string (errors.item + "%N")
-				errors.forth
+				Result.append_string (it.item + "%N")
 			end
 		end
 
@@ -491,13 +488,9 @@ feature {NONE} -- Implementation
 					Result := True
 					i := 3
 				until
-					i > 6 or Result = False
+					i > 6 or not Result
 				loop
-					inspect a_unicode [i]
-					when '0'..'9', 'a'..'f', 'A'..'F' then
-					else
-						Result := False
-					end
+					Result := a_unicode [i].is_alpha_numeric
 					i := i + 1
 				end
 			end

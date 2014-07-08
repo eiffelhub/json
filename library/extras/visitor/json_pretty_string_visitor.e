@@ -12,7 +12,7 @@ inherit
 create
 	make, make_custom
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make (a_output: like output)
 			-- Create a new instance

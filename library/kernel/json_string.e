@@ -62,11 +62,8 @@ feature -- Conversion
 	unescaped_string_8: STRING_8
 			-- Unescaped string from `item'.
 			--| note: valid only if `item' does not encode any unicode character.
-		local
-			s: like item
 		do
-			s := item
-			create Result.make (s.count)
+			create Result.make (item.count)
 			unescape_to_string_8 (Result)
 		end
 
@@ -74,11 +71,8 @@ feature -- Conversion
 			-- Unescaped string 32 from `item'
 			--| some encoders uses UTF-8 , and not the recommended pure json encoding
 			--| thus, let's support the UTF-8 encoding during decoding.
-		local
-			s: READABLE_STRING_8
 		do
-			s := item
-			create Result.make (s.count)
+			create Result.make (item.count)
 			unescape_to_string_32 (Result)
 		end
 
