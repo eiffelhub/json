@@ -36,7 +36,7 @@ feature -- Access
 feature -- Status report
 
 	is_open_token (c: CHARACTER): BOOLEAN
-			-- Characters which open a type
+			-- Characters which open a type.
 		do
 			inspect c
 			when j_OBJECT_OPEN, j_ARRAY_OPEN, j_STRING, j_PLUS, j_MINUS, j_DOT then
@@ -46,7 +46,7 @@ feature -- Status report
 		end
 
 	is_close_token (c: CHARACTER): BOOLEAN
-			-- Characters which close a type
+			-- Characters which close a type.
 		do
 			inspect c
 			when j_OBJECT_CLOSE, j_ARRAY_CLOSE, j_STRING then
@@ -74,7 +74,7 @@ feature -- Status report
 		end
 
 	is_special_control (c: CHARACTER): BOOLEAN
-			--Control Characters
+			-- Control Characters.
 			-- \b\f\n\r\t
 		do
 			inspect c

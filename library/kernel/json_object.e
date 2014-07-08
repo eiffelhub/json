@@ -220,7 +220,7 @@ feature -- Access
 		end
 
 	current_keys: ARRAY [JSON_STRING]
-			-- array containing actually used keys
+			-- array containing actually used keys.
 		do
 			Result := object.current_keys
 		end

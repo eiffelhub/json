@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_with_escaped_json (s: READABLE_STRING_8)
-			-- Initialize with an_item already escaped
+			-- Initialize with an_item already escaped.
 		require
 			item_not_void: s /= Void
 		do

@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	i_th alias "[]" (i: INTEGER): JSON_VALUE
-			-- Item at `i'-th position
+			-- Item at `i'-th position.
 		require
 			is_valid_index: valid_index (i)
 		do
@@ -74,7 +74,7 @@ feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR)
 			-- Accept `a_visitor'.
-			-- (Call `visit_json_array' procedure on `a_visitor'.)
+			-- (Call `visit_json_array' procedure on `a_visitor'.).
 		do
 			a_visitor.visit_json_array (Current)
 		end
@@ -82,7 +82,7 @@ feature -- Visitor pattern
 feature -- Access
 
 	new_cursor: ITERATION_CURSOR [JSON_VALUE]
-			-- Fresh cursor associated with current structure
+			-- Fresh cursor associated with current structure.
 		do
 			Result := values.new_cursor
 		end
@@ -121,6 +121,7 @@ feature -- Change Element
 		end
 
 	extend (v: JSON_VALUE)
+			-- Add `v'.
 		require
 			v_not_void: v /= Void
 		do
@@ -163,7 +164,7 @@ feature -- Conversion
 
 	array_representation: ARRAYED_LIST [JSON_VALUE]
 			-- Representation as a sequences of values
-			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object
+			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object.
 		do
 			Result := values
 		end

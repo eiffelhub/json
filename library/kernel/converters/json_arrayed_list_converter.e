@@ -18,6 +18,7 @@ create
 feature -- Factory
 
 	new_object (nb: INTEGER): ARRAYED_LIST [detachable ANY]
+			-- <Precursor>
 		do
 			create Result.make (nb)
 		end

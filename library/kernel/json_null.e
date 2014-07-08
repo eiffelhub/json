@@ -20,6 +20,7 @@ feature --Access
 		end
 
 	representation: STRING
+			-- <Precursor>
 		do
 			Result := Null_value
 		end

@@ -17,7 +17,7 @@ create
 feature {NONE} -- Initialization
 
 	make
-			-- Create a new instance
+			-- Create a new instance.
 		do
 			create to_json.make_empty
 		end
@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	to_json: STRING
-			-- JSON representation
+			-- JSON representation.
 
 feature -- Visitor Pattern
 

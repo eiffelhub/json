@@ -49,7 +49,7 @@ feature -- Status report
 			-- Current errors
 
 	current_errors: STRING
-			-- Current errors as string
+			-- Current errors as string.
 		do
 			create Result.make_empty
 			across
@@ -62,7 +62,7 @@ feature -- Status report
 feature -- Element change
 
 	report_error (e: STRING)
-			-- Report error `e'
+			-- Report error `e'.
 		require
 			e_not_void: e /= Void
 		do
@@ -73,7 +73,7 @@ feature -- Commands
 
 	parse_json: detachable JSON_VALUE
 			-- Parse JSON data `representation'
-			-- start ::= object | array
+			-- start ::= object | array.
 		do
 			if is_valid_start_symbol then
 				Result := parse
@@ -87,7 +87,7 @@ feature -- Commands
 		end
 
 	parse: detachable JSON_VALUE
-			-- Parse JSON data `representation'
+			-- Parse JSON data `representation'.
 		local
 			c: CHARACTER
 		do
@@ -188,7 +188,7 @@ feature -- Commands
 		end
 
 	parse_string: detachable JSON_STRING
-			-- Parsed string
+			-- Parsed string.
 		local
 			has_more: BOOLEAN
 			l_json_string: STRING
@@ -290,7 +290,7 @@ feature -- Commands
 		end
 
 	parse_number: detachable JSON_NUMBER
-			-- Parsed number
+			-- Parsed number.
 		local
 			sb: STRING
 			flag: BOOLEAN
@@ -366,7 +366,7 @@ feature -- Commands
 		end
 
 	read_unicode: STRING
-			-- Read Unicode and return value
+			-- Read Unicode and return value.
 		local
 			i: INTEGER
 		do
@@ -490,7 +490,7 @@ feature {NONE} -- Implementation
 		end
 
 	is_valid_unicode (a_unicode: STRING): BOOLEAN
-			-- is 'a_unicode' a valid Unicode based on this regular expression
+			-- is 'a_unicode' a valid Unicode based on this regular expression.
 			-- "\\u[0-9a-fA-F]{4}"
 		local
 			i: INTEGER
@@ -527,7 +527,7 @@ feature {NONE} -- Implementation
 		end
 
 	is_valid_start_symbol: BOOLEAN
-			-- expecting `{' or `[' as start symbol
+			-- expecting `{' or `[' as start symbol.
 		do
 			if attached representation as s and then s.count > 0 then
 				Result := s [1] = '{' or s [1] = '['
