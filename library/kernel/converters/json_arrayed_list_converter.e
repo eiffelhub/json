@@ -15,7 +15,7 @@ inherit
 create
 	default_create
 
-feature {NONE} -- Factory
+feature -- Factory
 
 	new_object (nb: INTEGER): ARRAYED_LIST [detachable ANY]
 		do

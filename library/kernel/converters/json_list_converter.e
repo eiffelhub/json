@@ -16,44 +16,31 @@ feature -- Conversion
 
 	from_json (j: attached like to_json): detachable like new_object
 			-- <Precursor>
-		local
-			i: INTEGER
 		do
 			Result := new_object (j.count)
-			from
-				i := 1
-			until
-				i > j.count
+			across
+				j as it
 			loop
-				Result.extend (json.object (j [i], Void))
-				i := i + 1
+				Result.extend (json.object (it.item, Void))
 			end
 		end
 
 	to_json (o: like new_object): detachable JSON_ARRAY
 			-- <Precursor>
-		local
-			c: ITERATION_CURSOR [detachable ANY]
-			jv: detachable JSON_VALUE
-			failed: BOOLEAN
 		do
 			create Result.make_array
-			from
-				c := o.new_cursor
-			until
-				c.after
-			loop
-				jv := json.value (c.item)
-				if jv /= Void then
-					Result.add (jv)
-				else
-					failed := True
-				end
-				c.forth
-			end
-			if failed then
-				Result := Void
-			end
+            across
+				o as it
+            until
+                Result = Void
+            loop
+                if attached json.value (it.item) as l_value then
+					Result.extend (l_value)
+                else
+			        Result := Void
+			            -- Failed
+                end
+            end
 		end
 
 feature -- Factory
