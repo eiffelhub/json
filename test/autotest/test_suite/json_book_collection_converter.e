@@ -12,25 +12,12 @@ inherit
 	JSON_CONVERTER
 
 create
-	make
-
-feature {NONE} -- Initialization
-
-	make
-		local
-			ucs: STRING_32
-		do
-			create ucs.make_from_string ("")
-			create object.make (ucs)
-		end
-
-feature -- Access
-
-	object: BOOK_COLLECTION
+	default_create
 
 feature -- Conversion
 
-	from_json (j: like to_json): detachable like object
+	from_json (j: like to_json): detachable BOOK_COLLECTION
+			-- <Precursor>
 		local
 			l_books: LINKED_LIST [BOOK]
 		do
@@ -58,7 +45,8 @@ feature -- Conversion
 			end
 		end
 
-	to_json (o: like object): JSON_OBJECT
+	to_json (o: attached like from_json): JSON_OBJECT
+			-- <Precursor>
 		do
 			create Result.make
 			Result.put (json.value (o.name), name_key)

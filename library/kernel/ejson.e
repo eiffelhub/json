@@ -93,7 +93,6 @@ feature -- Access
 			ll: LINKED_LIST [detachable ANY]
 			t: HASH_TABLE [detachable ANY, STRING_GENERAL]
 			keys: ARRAY [JSON_STRING]
-			l_base_class: like base_class_of
 		do
 			if a_value = Void then
 				Result := Void
@@ -148,11 +147,10 @@ feature -- Access
 						Result := t
 					end
 				else
-					l_base_class := base_class_of (a_type)
-					if converters.has_key (l_base_class) and then attached converters.found_item as jc then
-						Result := jc.from_json (a_value)
+					if attached converter_of (a_type) as l_converter then
+						Result := l_converter.from_json (a_value)
 					else
-						raise (exception_failed_to_convert_to_eiffel (a_value, l_base_class))
+						raise (exception_failed_to_convert_to_eiffel (a_value, base_class_of (a_type)))
 					end
 				end
 			end
@@ -171,12 +169,24 @@ feature -- Access
 			end
 		end
 
-	converter_for (an_object: ANY): detachable JSON_CONVERTER
-			-- Converter for objects. Returns Void if none found.
+	converter_of (a_type: TYPE [detachable ANY]): detachable JSON_CONVERTER
+			-- Converter of `a_type',
+			-- or Void if none registered.
 		require
-			an_object_not_void: an_object /= Void
+			a_type_attached: a_type /= Void
 		do
-			if converters.has_key (an_object.generator) then
+			if converters.has_key (base_class_of (a_type)) then
+				Result := converters.found_item
+			end
+		end
+
+	converter_for (a_object: ANY): detachable JSON_CONVERTER
+			-- Converter for `a_object',
+			-- or Void if none registered.
+		require
+			an_object_not_void: a_object /= Void
+		do
+			if converters.has_key (a_object.generator) then
 				Result := converters.found_item
 			end
 		end
@@ -224,9 +234,9 @@ feature -- Change
 		require
 			jc_not_void: jc /= Void
 		do
-			converters.force (jc, jc.object.generator)
+			converters.force (jc, base_class_of (jc.type))
 		ensure
-			has_converter: converter_for (jc.object) /= Void
+			has_converter: converter_of (jc.type) /= Void
 		end
 
 feature {NONE} -- Implementation

@@ -26,11 +26,11 @@ feature -- Test
 			parser: JSON_PARSER
 			jrep: STRING
 		do
-			create jbc.make
+			create jbc
 			json.add_converter (jbc)
-			create jbcc.make
+			create jbcc
 			json.add_converter (jbcc)
-			create jac.make
+			create jac
 			json.add_converter (jac)
 			jrep := "{%"name%":%"Test collection%",%"books%":[{%"title%":%"eJSON: The Definitive Guide%",%"isbn%":%"123123-413243%",%"author%":{%"name%":%"Foo Bar%"}}]}"
 			create parser.make_parser (jrep)

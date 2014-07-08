@@ -12,28 +12,10 @@ inherit
 
 	JSON_CONVERTER
 
-feature {NONE} -- Initialization
-
-	make
-		do
-			object := new_object (0)
-		end
-
-feature -- Access
-
-	object: LIST [detachable ANY]
-
-feature {NONE} -- Factory
-
-	new_object (nb: INTEGER): like object
-		deferred
-		ensure
-			Result /= Void
-		end
-
 feature -- Conversion
 
-	from_json (j: attached like to_json): detachable like object
+	from_json (j: attached like to_json): detachable like new_object
+			-- <Precursor>
 		local
 			i: INTEGER
 		do
@@ -48,7 +30,8 @@ feature -- Conversion
 			end
 		end
 
-	to_json (o: like object): detachable JSON_ARRAY
+	to_json (o: like new_object): detachable JSON_ARRAY
+			-- <Precursor>
 		local
 			c: ITERATION_CURSOR [detachable ANY]
 			jv: detachable JSON_VALUE
@@ -72,5 +55,11 @@ feature -- Conversion
 				Result := Void
 			end
 		end
+
+feature -- Factory
+
+	new_object (nb: INTEGER): LIST [detachable ANY]
+	        -- Freshly created list.
+		deferred end
 
 end -- class JSON_ARRAYED_LIST_CONVERTER

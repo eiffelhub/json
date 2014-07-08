@@ -13,22 +13,12 @@ inherit
 	JSON_CONVERTER
 
 create
-	make
-
-feature {NONE} -- Initialization
-
-	make
-		do
-			create object.make (0)
-		end
-
-feature -- Access
-
-	object: HASH_TABLE [ANY, HASHABLE]
+	default_create
 
 feature -- Conversion
 
-	from_json (j: attached like to_json): like object
+	from_json (j: attached like to_json): detachable HASH_TABLE [ANY, HASHABLE]
+			-- <Precursor>
 		do
 			create Result.make (j.count)
 			across
@@ -50,7 +40,8 @@ feature -- Conversion
 			end
 		end
 
-	to_json (o: like object): detachable JSON_OBJECT
+	to_json (o: attached like from_json): detachable JSON_OBJECT
+			-- <Precursor>
 		local
 			c: HASH_TABLE_ITERATION_CURSOR [ANY, HASHABLE]
 			js: JSON_STRING

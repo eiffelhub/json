@@ -11,20 +11,13 @@ class
 inherit
 
 	JSON_LIST_CONVERTER
-		redefine
-			object
-		end
 
 create
-	make
-
-feature -- Access
-
-	object: ARRAYED_LIST [detachable ANY]
+	default_create
 
 feature {NONE} -- Factory
 
-	new_object (nb: INTEGER): like object
+	new_object (nb: INTEGER): ARRAYED_LIST [detachable ANY]
 		do
 			create Result.make (nb)
 		end

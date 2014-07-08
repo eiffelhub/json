@@ -25,11 +25,11 @@ feature
 			jhtc: JSON_HASH_TABLE_CONVERTER
 		once
 			create Result
-			create jalc.make
+			create jalc
 			Result.add_converter (jalc)
-			create jllc.make
+			create jllc
 			Result.add_converter (jllc)
-			create jhtc.make
+			create jhtc
 			Result.add_converter (jhtc)
 		end
 
