@@ -44,10 +44,11 @@ feature -- Change Element
 		require
 			key_not_present: not has_key (key)
 		local
-			l_value: like value
+			l_value: JSON_VALUE
 		do
-			l_value := value
-			if l_value = Void then
+			if value /= Void then
+				l_value := value
+			else
 				create {JSON_NULL} l_value
 			end
 			object.extend (l_value, key)
@@ -117,10 +118,11 @@ feature -- Change Element
 			-- Assuming there is no item of key `key',
 			-- insert `value' with `key'.
 		local
-			l_value: like value
+			l_value: JSON_VALUE
 		do
-			l_value := value
-			if l_value = Void then
+			if l_value /= Void then
+				l_value := value
+			else
 				create {JSON_NULL} l_value
 			end
 			object.force (l_value, key)
