@@ -84,7 +84,7 @@ feature -- Access
 			end
 		end
 
-	object (a_value: detachable JSON_VALUE; base_class: detachable STRING): detachable ANY
+	object (a_value: detachable JSON_VALUE; a_type: detachable TYPE [detachable ANY]): detachable ANY
 			-- Eiffel object from JSON value. If `base_class' /= Void an eiffel
 			-- object based on `base_class' will be returned. Raises an "eJSON
 			-- exception" if unable to convert value.
@@ -93,6 +93,7 @@ feature -- Access
 			ll: LINKED_LIST [detachable ANY]
 			t: HASH_TABLE [detachable ANY, STRING_GENERAL]
 			keys: ARRAY [JSON_STRING]
+			l_base_class: like base_class_of
 		do
 			if a_value = Void then
 				Result := Void
@@ -147,28 +148,26 @@ feature -- Access
 						Result := t
 					end
 				else
-					if converters.has_key (base_class) and then attached converters.found_item as jc then
+					l_base_class := base_class_of (a_type)
+					if converters.has_key (l_base_class) and then attached converters.found_item as jc then
 						Result := jc.from_json (a_value)
 					else
-						raise (exception_failed_to_convert_to_eiffel (a_value, base_class))
+						raise (exception_failed_to_convert_to_eiffel (a_value, l_base_class))
 					end
 				end
 			end
 		end
 
-	object_from_json (json: STRING; base_class: detachable STRING): detachable ANY
-			-- Eiffel object from JSON representation. If `base_class' /= Void an
-			-- Eiffel object based on `base_class' will be returned. Raises an
+	object_from_json (a_json: STRING; a_type: detachable TYPE [detachable ANY]): detachable ANY
+			-- Eiffel object from JSON representation. If `a_type' /= Void an
+			-- Eiffel object based on `a_type' will be returned. Raises an
 			-- "eJSON exception" if unable to convert value.
 		require
-			json_not_void: json /= Void
-		local
-			jv: detachable JSON_VALUE
+			json_not_void: a_json /= Void
 		do
-			json_parser.set_representation (json)
-			jv := json_parser.parse
-			if jv /= Void then
-				Result := object (jv, base_class)
+			json_parser.set_representation (a_json)
+			if attached json_parser.parse as l_value then
+				Result := object (l_value, a_type)
 			end
 		end
 
@@ -232,7 +231,7 @@ feature -- Change
 
 feature {NONE} -- Implementation
 
-	converters: HASH_TABLE [JSON_CONVERTER, STRING]
+	converters: HASH_TABLE [JSON_CONVERTER, IMMUTABLE_STRING_8]
 			-- Converters hashed by generator (base class)
 		once
 			create Result.make (10)
@@ -265,6 +264,35 @@ feature {NONE} -- Implementation (JSON parser)
 	json_parser: JSON_PARSER
 		once
 			create Result.make_parser ("")
+		end
+
+feature {NONE} -- Implementation (Type Helper)
+
+	base_class_of (a_type: TYPE [detachable ANY]): IMMUTABLE_STRING_8
+			-- Base class name of `a_type'.
+		local
+			i: INTEGER_32
+		do
+			Result := a_type.name
+			if a_type.is_attached then
+				check
+					first_character_is_attachment_mark: Result [1] = '!'
+				end
+				Result := Result.tail (Result.count - 1)
+					-- Remove attachment mark.
+			end
+
+			check
+				first_character_is_alhpabetic: Result [1].is_alpha
+			end
+			i := Result.index_of (' ', 2)
+			if i /= 0 then
+				Result := Result.head (i - 1)
+					-- Remove extras (spaces and generics).
+			end
+		ensure
+			valid_base_class: Result [1].is_alpha and
+				across Result.tail (Result.count - 1) as it all it.item.is_alpha_numeric or it.item = '_' end
 		end
 
 end -- class EJSON

@@ -819,7 +819,7 @@ feature -- Test
 		do
 			if not exception then
 				create jo.make
-				gv := json.object (jo, "OPERATING_ENVIRONMENT")
+				gv := json.object (jo, {OPERATING_ENVIRONMENT})
 			else
 				assert ("exceptions.is_developer_exception", json.is_developer_exception)
 			end

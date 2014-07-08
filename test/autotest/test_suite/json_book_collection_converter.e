@@ -45,7 +45,7 @@ feature -- Conversion
 				until
 					Result = Void
 				loop
-					if attached {BOOK} json.object (it.item, "BOOK") as l_book then
+					if attached {BOOK} json.object (it.item, {BOOK}) as l_book then
 						l_books.extend (l_book)
 					else
 						Result := Void

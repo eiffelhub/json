@@ -37,7 +37,7 @@ feature -- Conversion
 			if
 				attached {STRING_32} json.object (j.item (title_key), Void) as l_title and
 				attached {STRING_32} json.object (j.item (isbn_key), Void) as l_isbn and
-				attached {AUTHOR} json.object (j.item (author_key), "AUTHOR") as l_author
+				attached {AUTHOR} json.object (j.item (author_key), {AUTHOR}) as l_author
 			then
 				create Result.make (l_title, l_author, l_isbn)
 			end
