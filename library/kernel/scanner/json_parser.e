@@ -10,13 +10,25 @@ class
 inherit
 
 	JSON_READER
+		redefine
+			default_create
+		end
 
 	JSON_TOKENS
+		undefine
+			default_create
+		end
 
 create
-	make_parser
+	default_create, make_parser
 
 feature {NONE} -- Initialize
+
+	default_create
+			-- Create a default parser.
+		do
+			make_parser ("")
+		end
 
 	make_parser (a_json: STRING)
 			-- Initialize.
