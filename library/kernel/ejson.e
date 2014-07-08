@@ -69,8 +69,7 @@ feature -- Access
 				create {JSON_STRING} Result.make_json (s8)
 			elseif attached {STRING_32} an_object as s32 then
 				create {JSON_STRING} Result.make_json_from_string_32 (s32)
-			end
-			if Result = Void then
+			else
 					-- Now check the converters
 				if an_object /= Void and then attached converter_for (an_object) as jc then
 					Result := jc.to_json (an_object)
