@@ -18,7 +18,7 @@ feature
 
 	json: EJSON
 			-- A shared EJSON instance with default converters for
-			--LINKED_LIST [ANY] and HASH_TABLE [ANY, HASHABLE]
+			--LINKED_LIST [ANY] and HASH_TABLE [ANY, HASHABLE].
 		local
 			jalc: JSON_ARRAYED_LIST_CONVERTER
 			jllc: JSON_LINKED_LIST_CONVERTER

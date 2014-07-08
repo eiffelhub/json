@@ -44,15 +44,16 @@ feature {NONE} -- initialization
 feature -- Access
 
 	item: STRING
-			-- Content
+			-- Content.
 
 	hash_code: INTEGER
-			--Hash code value
+			-- Hash code value.
 		do
 			Result := item.hash_code
 		end
 
 	representation: STRING
+			-- <Precursor>
 		do
 			Result := item
 		end
@@ -61,7 +62,7 @@ feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR)
 			-- Accept `a_visitor'.
-			-- (Call `visit_json_number' procedure on `a_visitor'.)
+			-- (Call `visit_json_number' procedure on `a_visitor'.).
 		do
 			a_visitor.visit_json_number (Current)
 		end

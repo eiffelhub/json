@@ -10,20 +10,28 @@ class
 feature -- Access
 
 	j_OBJECT_OPEN: CHARACTER = '{'
+			-- Mark for object start.
 
 	j_ARRAY_OPEN: CHARACTER = '['
+			-- Mark for array start.
 
 	j_OBJECT_CLOSE: CHARACTER = '}'
+			-- Mark for object end.
 
 	j_ARRAY_CLOSE: CHARACTER = ']'
+			-- Mark for array end.
 
 	j_STRING: CHARACTER = '"'
+			-- Mark for string start and string end.
 
 	j_PLUS: CHARACTER = '+'
+			-- Mark for explicit positive number.
 
 	j_MINUS: CHARACTER = '-'
+			-- Mark for negative number.
 
 	j_DOT: CHARACTER = '.'
+			-- Mark for decimal number.
 
 feature -- Status report
 

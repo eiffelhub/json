@@ -25,15 +25,16 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	item: BOOLEAN
-			-- Content
+			-- Content.
 
 	hash_code: INTEGER
-			-- Hash code value
+			-- Hash code value.
 		do
 			Result := item.hash_code
 		end
 
 	representation: STRING
+			-- <Precursor>
 		do
 			if item then
 				Result := "true"

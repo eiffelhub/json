@@ -237,7 +237,7 @@ feature -- Access
 feature -- Mesurement
 
 	count: INTEGER
-			-- Number of field
+			-- Number of field.
 		do
 			Result := object.count
 		end
@@ -245,7 +245,7 @@ feature -- Mesurement
 feature -- Access
 
 	new_cursor: TABLE_ITERATION_CURSOR [JSON_VALUE, JSON_STRING]
-			-- Fresh cursor associated with current structure
+			-- Fresh cursor associated with current structure.
 		do
 			Result := object.new_cursor
 		end
@@ -301,7 +301,7 @@ feature -- Status report
 feature {NONE} -- Implementation
 
 	object: HASH_TABLE [JSON_VALUE, JSON_STRING]
-			-- Value container
+			-- Value container.
 
 invariant
 	object_not_void: object /= Void

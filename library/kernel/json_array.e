@@ -170,7 +170,7 @@ feature -- Status report
 feature {NONE} -- Implementation
 
 	values: ARRAYED_LIST [JSON_VALUE]
-			-- Value container
+			-- Value container.
 
 invariant
 	value_not_void: values /= Void

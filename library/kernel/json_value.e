@@ -26,7 +26,7 @@ inherit
 feature -- Access
 
 	representation: STRING
-			-- UTF-8 encoded Unicode string representation of Current
+			-- UTF-8 encoded Unicode string representation of Current.
 		deferred
 		end
 
