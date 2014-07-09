@@ -15,6 +15,15 @@ inherit
 			default_create
 		end
 
+inherit {NONE}
+
+	REFLECTOR
+		export
+			{NONE} all
+		undefine
+			default_create
+		end
+
 create
 	default_create
 
@@ -157,7 +166,7 @@ feature -- Access
 		require
 			a_type_attached: a_type /= Void
 		do
-			if converters.has_key (base_class_of (a_type)) then
+			if converters.has_key (class_name_of_type (a_type.type_id)) then
 				Result := converters.found_item
 			end
 		end
@@ -211,7 +220,7 @@ feature -- Change
 		require
 			jc_not_void: jc /= Void
 		do
-			converters.force (jc, base_class_of (jc.type))
+			converters.force (jc, class_name_of_type (jc.type.type_id))
 		ensure
 			has_converter: converter_of (jc.type) /= Void
 		end
@@ -243,7 +252,7 @@ feature {NONE} -- Implementation (Exceptions)
 		require
 			a_type_attached: a_type /= Void
 		do
-			Result := exception_prefix + "Failed to convert JSON_VALUE to an Eiffel object: " + a_value.generator + " -> {" + base_class_of (a_type) + "}"
+			Result := exception_prefix + "Failed to convert JSON_VALUE to an Eiffel object: " + a_value.generator + " -> {" + class_name_of_type (a_type.type_id) + "}"
 		end
 
 	exception_failed_to_convert_to_json (a_object: detachable ANY): STRING
@@ -259,33 +268,5 @@ feature {NONE} -- Implementation (JSON parser)
 
 	json_parser: JSON_PARSER
 			-- JSON parser.
-
-feature {NONE} -- Implementation (Type Helper)
-
-	base_class_of (a_type: TYPE [detachable ANY]): IMMUTABLE_STRING_8
-			-- Base class name of `a_type'.
-		local
-			i: INTEGER_32
-		do
-			Result := a_type.name
-			if a_type.is_attached then
-				check
-					first_character_is_attachment_mark: Result [1] = '!'
-				end
-				Result := Result.tail (Result.count - 1)
-					-- Remove attachment mark.
-			end
-			check
-				first_character_is_alhpabetic: Result [1].is_alpha
-			end
-			i := Result.index_of (' ', 2)
-			if i /= 0 then
-				Result := Result.head (i - 1)
-					-- Remove extras (spaces and generics).
-			end
-		ensure
-			valid_base_class: Result [1].is_alpha and
-				across Result.tail (Result.count - 1) as it all it.item.is_alpha_numeric or it.item = '_' end
-		end
 
 end -- class EJSON
