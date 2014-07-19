@@ -16,17 +16,17 @@ class SHARED_GOBO_EJSON
 feature
 
     json: EJSON
-            -- A shared EJSON instance with default converters for 
+            -- A shared EJSON instance with default converters for
 	    -- DS_LINKED_LIST [ANY] and DS_HASH_TABLE [ANY, HASHABLE]
         local
             jllc: JSON_DS_LINKED_LIST_CONVERTER
             jhtc: JSON_DS_HASH_TABLE_CONVERTER
         once
             create Result
-            create jllc.make
+            create jllc
             Result.add_converter (jllc)
-            create jhtc.make
+            create jhtc
             Result.add_converter (jhtc)
         end
-        
+
 end -- class SHARED_GOBO_EJSON
