@@ -25,12 +25,12 @@ inherit
 		end
 
 	TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
-		undefine
+		redefine
 			default_create
 		end
 
 	DEBUG_OUTPUT
-		undefine
+		redefine
 			default_create
 		end
 

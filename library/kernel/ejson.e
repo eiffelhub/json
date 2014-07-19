@@ -20,7 +20,7 @@ inherit {NONE}
 	REFLECTOR
 		export
 			{NONE} all
-		undefine
+		redefine
 			default_create
 		end
 

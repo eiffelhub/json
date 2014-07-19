@@ -15,7 +15,7 @@ inherit
 		end
 
 	JSON_TOKENS
-		undefine
+		redefine
 			default_create
 		end
 
