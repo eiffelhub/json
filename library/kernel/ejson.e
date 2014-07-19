@@ -95,7 +95,7 @@ feature -- Access
 				create {JSON_STRING} Result.make_json_from_string_32 (s32)
 			else
 					-- Now check the converters
-				if an_object /= Void and then attached converter_for (an_object) as jc then
+				if attached converter_for (an_object) as jc then
 					Result := jc.to_json (an_object)
 				else
 					raise (exception_failed_to_convert_to_json (an_object))
