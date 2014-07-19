@@ -23,6 +23,7 @@ feature
 			jalc: JSON_ARRAYED_LIST_CONVERTER
 			jllc: JSON_LINKED_LIST_CONVERTER
 			jhtc: JSON_HASH_TABLE_CONVERTER
+			jac: JSON_ARRAY_CONVERTER
 		once
 			create Result
 			create jalc
@@ -31,6 +32,8 @@ feature
 			Result.add_converter (jllc)
 			create jhtc
 			Result.add_converter (jhtc)
+			create jac
+			Result.add_converter (jac)
 		end
 
 end -- class SHARED_EJSON

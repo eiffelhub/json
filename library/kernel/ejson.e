@@ -71,20 +71,6 @@ feature -- Access
 				create {JSON_NUMBER} Result.make_real (r32)
 			elseif attached {REAL_64} an_object as r64 then
 				create {JSON_NUMBER} Result.make_real (r64)
-			elseif attached {ARRAY [detachable ANY]} an_object as a then
-				create ja
-				across
-					a as it
-				loop
-					if attached value (it.item) as l_value then
-						ja.extend (l_value)
-					else
-						check
-							value_attached: False
-						end
-					end
-				end
-				Result := ja
 			elseif attached {CHARACTER_8} an_object as c8 then
 				create {JSON_STRING} Result.make_json (c8.out)
 			elseif attached {CHARACTER_32} an_object as c32 then
