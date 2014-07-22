@@ -35,14 +35,22 @@ inherit
 		end
 
 create
-	default_create
+	default_create, make
 
 feature {NONE} -- Initialization
 
 	default_create
-			-- Initialize
+			-- Create an empty object.
 		do
 			create object.make (10)
+		end
+
+	make
+			-- Create an empty object.
+		obsolete
+			"Use `default_create' instead. 2014/07"
+		do
+			default_create
 		end
 
 feature -- Change Element

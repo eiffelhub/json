@@ -32,7 +32,7 @@ inherit
 		end
 
 create
-	default_create
+	default_create, make_array
 
 feature {NONE} -- Initialization
 
@@ -40,6 +40,14 @@ feature {NONE} -- Initialization
 			-- Initialize JSON Array.
 		do
 			create values.make (10)
+		end
+
+	make_array
+			-- Initialize JSON Array.
+		obsolete
+			"Use `default_create' instead. 2014/07"
+		do
+			default_create
 		end
 
 feature -- Access
@@ -126,6 +134,17 @@ feature -- Change Element
 			v_not_void: v /= Void
 		do
 			values.extend (v)
+		ensure
+			has_new_value: old values.count + 1 = values.count and values.has (v)
+		end
+
+	add (v: JSON_VALUE)
+		obsolete
+			"Use `extend' instead. 2014/07"
+		require
+			v_not_void: v /= Void
+		do
+			extend (v)
 		ensure
 			has_new_value: old values.count + 1 = values.count and values.has (v)
 		end
