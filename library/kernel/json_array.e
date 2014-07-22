@@ -69,9 +69,9 @@ feature -- Access
 				Result.append_character (']')
 			else
 				across
-					Current as it
+					Current as ic
 				loop
-					Result.append (it.item.representation)
+					Result.append (ic.item.representation)
 					Result.append_character (',')
 				end
 				Result [Result.count] := ']'
@@ -172,9 +172,9 @@ feature -- Report
 		do
 			Result := 0
 			across
-				values as it
+				values as ic
 			loop
-				Result := ((Result \\ 8388593) |<< 8) + it.item.hash_code
+				Result := ((Result \\ 8388593) |<< 8) + ic.item.hash_code
 			end
 			Result := Result \\ values.count
 		end

@@ -19,9 +19,9 @@ feature -- Conversion
 		do
 			Result := new_object (j.count)
 			across
-				j as it
+				j as ic
 			loop
-				Result.extend (json.object (it.item, Void))
+				Result.extend (json.object (ic.item, Void))
 			end
 		end
 

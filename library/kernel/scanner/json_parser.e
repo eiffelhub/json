@@ -53,9 +53,9 @@ feature -- Status report
 		do
 			create Result.make_empty
 			across
-				errors as it
+				errors as ic
 			loop
-				Result.append_string (it.item + "%N")
+				Result.append_string (ic.item + "%N")
 			end
 		end
 

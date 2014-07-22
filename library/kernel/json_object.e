@@ -242,11 +242,11 @@ feature -- Access
 				Result.append_character ('}')
 			else
 				across
-					map_representation as it
+					map_representation as ic
 				loop
-					Result.append (it.key.representation)
+					Result.append (ic.key.representation)
 					Result.append_character (':')
-					Result.append (it.item.representation)
+					Result.append (ic.item.representation)
 					Result.append_character (',')
 				end
 				Result [Result.count] := '}'
@@ -301,9 +301,9 @@ feature -- Report
 		do
 			Result := 0
 			across
-				Current as it
+				Current as ic
 			loop
-				Result := ((Result \\ 8388593) |<< 8) + it.item.hash_code
+				Result := ((Result \\ 8388593) |<< 8) + ic.item.hash_code
 			end
 				-- Ensure it is a positive value.
 			Result := Result.hash_code
