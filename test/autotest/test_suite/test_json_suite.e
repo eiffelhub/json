@@ -491,7 +491,7 @@ feature -- JSON_FROM_FILE
 			test_dir: STRING
 			i: INTEGER
 		do
-			test_dir := (create {EXECUTION_ENVIRONMENT}).current_working_directory
+			test_dir := (create {EXECUTION_ENVIRONMENT}).current_working_path.out
 			test_dir.append_character ((create {OPERATING_ENVIRONMENT}).directory_separator)
 			l_path := test_dir + fn
 			create f.make_with_name (l_path)
