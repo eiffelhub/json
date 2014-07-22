@@ -26,8 +26,8 @@ feature -- Conversion
 			until
 				Result = Void
 			loop
-				if attached json.object (ic.item, Void) as l_object then
-					if attached {HASHABLE} json.object (ic.key, Void) as h then
+				if attached json.instance (ic.item, Void) as l_object then
+					if attached {HASHABLE} json.instance (ic.key, Void) as h then
 						Result.put (l_object, h)
 					else
 						Result := Void

@@ -22,7 +22,7 @@ feature -- Conversion
 			l_books: LINKED_LIST [BOOK]
 		do
 			if
-				attached {STRING_32} json.object (j.item (name_key), Void) as l_name and
+				attached {STRING_32} json.instance (j.item (name_key), Void) as l_name and
 				attached {JSON_ARRAY} j.item (books_key) as l_json_array
 			then
 				create Result.make (l_name)
@@ -32,7 +32,7 @@ feature -- Conversion
 				until
 					Result = Void
 				loop
-					if attached {BOOK} json.object (it.item, {BOOK}) as l_book then
+					if attached {BOOK} json.instance (it.item, {BOOK}) as l_book then
 						l_books.extend (l_book)
 					else
 						Result := Void

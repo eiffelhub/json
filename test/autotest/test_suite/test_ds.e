@@ -29,7 +29,7 @@ feature -- Test
 			l.force ("bar")
 			if attached json.value (l) as l_value then
 				s := l_value.representation
-				assert ("JSON array converted to LINKED_LIST", attached {LINKED_LIST [detachable ANY]} json.object (l_value, {LINKED_LIST [detachable ANY]}))
+				assert ("JSON array converted to LINKED_LIST", attached {LINKED_LIST [detachable ANY]} json.instance (l_value, {LINKED_LIST [detachable ANY]}))
 			else
 				assert ("LINKED_LIST converted to a JSON value", False)
 			end
@@ -48,7 +48,7 @@ feature -- Test
 			t.put ("bar", "2")
 			if attached json.value (t) as l_value then
 				s := l_value.representation
-				if attached {HASH_TABLE [detachable ANY, HASHABLE]} json.object (l_value, {HASH_TABLE [ANY, HASHABLE]}) as t2 then
+				if attached {HASH_TABLE [detachable ANY, HASHABLE]} json.instance (l_value, {HASH_TABLE [ANY, HASHABLE]}) as t2 then
 					create l_ucs_key.make_from_string ("1")
 					if attached {STRING_32} t2 [l_ucs_key] as l_ucs_value then
 						assert ("ucs_value.string.is_equal (%"foo%")", l_ucs_value.string.is_equal ("foo"))

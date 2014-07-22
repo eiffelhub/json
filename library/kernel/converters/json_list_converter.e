@@ -21,7 +21,7 @@ feature -- Conversion
 			across
 				j as ic
 			loop
-				Result.extend (json.object (ic.item, Void))
+				Result.extend (json.instance (ic.item, Void))
 			end
 		end
 

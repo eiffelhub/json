@@ -19,7 +19,7 @@ feature -- Conversion
 	from_json (j: like to_json): detachable AUTHOR
 			-- <Precursor>
 		do
-			if attached {STRING_32} json.object (j.item (name_key), Void) as l_name then
+			if attached {STRING_32} json.instance (j.item (name_key), Void) as l_name then
 				create Result.make (l_name)
 			end
 		end

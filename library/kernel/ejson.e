@@ -89,9 +89,55 @@ feature -- Access
 			end
 		end
 
-	object (a_value: detachable JSON_VALUE; a_type: detachable TYPE [detachable ANY]): detachable ANY
-			-- Eiffel object from JSON value. If `base_class' /= Void an eiffel
-			-- object based on `base_class' will be returned. Raises an "eJSON
+	object (a_value: detachable JSON_VALUE; a_base_class: detachable READABLE_STRING_8): detachable ANY
+			-- Eiffel object from JSON value. If `a_base_class' /= Void an eiffel
+			-- object based on `a_base_class' will be returned. Raises an "eJSON
+			-- exception" if unable to convert value.
+		obsolete
+			"Use `instance instead. 2014/07"
+		do
+			if a_value = Void then
+				Result := Void
+			else
+				if a_base_class = Void then
+					if attached {JSON_NULL} a_value then
+						Result := Void
+					elseif attached {JSON_BOOLEAN} a_value as jb then
+						Result := jb.item
+					elseif attached {JSON_NUMBER} a_value as jn then
+						if jn.item.is_integer_8 then
+							Result := jn.item.to_integer_8
+						elseif jn.item.is_integer_16 then
+							Result := jn.item.to_integer_16
+						elseif jn.item.is_integer_32 then
+							Result := jn.item.to_integer_32
+						elseif jn.item.is_integer_64 then
+							Result := jn.item.to_integer_64
+						elseif jn.item.is_natural_64 then
+							Result := jn.item.to_natural_64
+						elseif jn.item.is_double then
+							Result := jn.item.to_double
+						end
+					elseif attached {JSON_STRING} a_value as js then
+						create {STRING_32} Result.make_from_string (js.unescaped_string_32)
+					elseif attached {JSON_ARRAY} a_value as ja then
+						Result := default_json_array_converter.from_json (ja)
+					elseif attached {JSON_OBJECT} a_value as jo then
+						Result := default_json_object_converter.from_json (jo)
+					end
+				else
+					if converters.has_key (a_base_class) and then attached converters.found_item as l_converter then
+						Result := l_converter.from_json (a_value)
+					else
+						raise (exception_failed_to_convert_to_eiffel (a_value, a_base_class))
+					end
+				end
+			end
+		end
+
+	instance (a_value: detachable JSON_VALUE; a_type: detachable TYPE [detachable ANY]): detachable ANY
+			-- Eiffel object from JSON value. If `a_type' /= Void an eiffel
+			-- object based on `a_type' will be returned. Raises an "eJSON
 			-- exception" if unable to convert value.
 		do
 			if a_value = Void then
@@ -127,13 +173,28 @@ feature -- Access
 					if attached converter_of (a_type) as l_converter then
 						Result := l_converter.from_json (a_value)
 					else
-						raise (exception_failed_to_convert_to_eiffel (a_value, a_type))
+						raise (exception_failed_to_convert_to_eiffel (a_value, class_name_of_type (a_type.type_id)))
 					end
 				end
 			end
 		end
 
-	object_from_json (a_json: STRING; a_type: detachable TYPE [detachable ANY]): detachable ANY
+	object_from_json (a_json: STRING; a_base_class: detachable READABLE_STRING_8): detachable ANY
+			-- Eiffel object from JSON representation. If `a_base_class' /= Void an
+			-- Eiffel object based on `a_base_class' will be returned. Raises an
+			-- "eJSON exception" if unable to convert value.
+		obsolete
+			"Use `instance_from_json' instead. 2014/07"
+		require
+			json_not_void: a_json /= Void
+		do
+			json_parser.set_representation (a_json)
+			if attached json_parser.parse as l_value then
+				Result := object (l_value, a_base_class)
+			end
+		end
+
+	instance_from_json (a_json: STRING; a_type: detachable TYPE [detachable ANY]): detachable ANY
 			-- Eiffel object from JSON representation. If `a_type' /= Void an
 			-- Eiffel object based on `a_type' will be returned. Raises an
 			-- "eJSON exception" if unable to convert value.
@@ -142,7 +203,7 @@ feature -- Access
 		do
 			json_parser.set_representation (a_json)
 			if attached json_parser.parse as l_value then
-				Result := object (l_value, a_type)
+				Result := instance (l_value, a_type)
 			end
 		end
 
@@ -233,12 +294,12 @@ feature {NONE} -- Implementation (Exceptions)
 	exception_prefix: STRING = "eJSON exception: "
 			-- Prefix for all EJSON exception.
 
-	exception_failed_to_convert_to_eiffel (a_value: JSON_VALUE; a_type: TYPE [detachable ANY]): STRING
+	exception_failed_to_convert_to_eiffel (a_value: JSON_VALUE; a_base_class: READABLE_STRING_8): STRING
 			-- Exception message for failing to convert a JSON_VALUE to an instance of `a_value'.
 		require
-			a_type_attached: a_type /= Void
+			a_type_attached: a_base_class /= Void
 		do
-			Result := exception_prefix + "Failed to convert JSON_VALUE to an Eiffel object: " + a_value.generator + " -> {" + class_name_of_type (a_type.type_id) + "}"
+			Result := exception_prefix + "Failed to convert JSON_VALUE to an Eiffel object: " + a_value.generator + " -> {" + a_base_class + "}"
 		end
 
 	exception_failed_to_convert_to_json (a_object: detachable ANY): STRING

@@ -26,9 +26,9 @@ feature -- Conversion
             until
                 i > keys.count
             loop
-                h ?= json.object (keys [i], void)
+                h ?= json.instance (keys [i], void)
                 check h /= Void end
-                a := json.object (j.item (keys [i]), Void)
+                a := json.instance (j.item (keys [i]), Void)
                 Result.put (a, h)
                 i := i + 1
             end

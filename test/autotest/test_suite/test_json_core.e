@@ -37,7 +37,7 @@ feature -- Test
 			jrep := "42"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_8} json.object (jn, Void) as l_i8 then
+				if attached {INTEGER_8} json.instance (jn, Void) as l_i8 then
 					assert ("l_i8 = 42", l_i8 = 42)
 				else
 					assert ("json.object (jn, Void) is a INTEGER_8", False)
@@ -72,7 +72,7 @@ feature -- Test
 			jrep := "42"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_8} json.object (jn, Void) as l_i8 then
+				if attached {INTEGER_8} json.instance (jn, Void) as l_i8 then
 					assert ("l_i8 = 42", l_i8 = 42)
 				else
 					assert ("json.object (jn, Void) is a INTEGER_8", False)
@@ -107,7 +107,7 @@ feature -- Test
 			jrep := "300"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_16} json.object (jn, Void) as l_i16 then
+				if attached {INTEGER_16} json.instance (jn, Void) as l_i16 then
 					assert ("l_i16 = 300", l_i16 = 300)
 				else
 					assert ("json.object (jn, Void) is a INTEGER_16", False)
@@ -142,7 +142,7 @@ feature -- Test
 			jrep := "100000"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_32} json.object (jn, Void) as l_i32 then
+				if attached {INTEGER_32} json.instance (jn, Void) as l_i32 then
 					assert ("l_i32 = 100000", l_i32 = 100000)
 				else
 					assert ("json.object (jn, Void) is a INTEGER_32", False)
@@ -177,7 +177,7 @@ feature -- Test
 			jrep := "42949672960"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_64} json.object (jn, Void) as l_i64 then
+				if attached {INTEGER_64} json.instance (jn, Void) as l_i64 then
 					assert ("l_i64 = 42949672960", l_i64 = 42949672960)
 				else
 					assert ("json.object (jn, Void) is a INTEGER_64", False)
@@ -212,7 +212,7 @@ feature -- Test
 			jrep := "200"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_16} json.object (jn, Void) as i16 then
+				if attached {INTEGER_16} json.instance (jn, Void) as i16 then
 					assert ("i16 = 200", i16 = 200)
 				else
 					assert ("json.object (jn, Void) is an INTEGER_16", False)
@@ -247,7 +247,7 @@ feature -- Test
 			jrep := "32768"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_32} json.object (jn, Void) as i32 then
+				if attached {INTEGER_32} json.instance (jn, Void) as i32 then
 					assert ("i32 = 32768", i32 = 32768)
 				else
 					assert ("json.object (jn, Void) is a INTEGER_32", False)
@@ -282,7 +282,7 @@ feature -- Test
 			jrep := "2147483648"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {INTEGER_64} json.object (jn, Void) as i64 then
+				if attached {INTEGER_64} json.instance (jn, Void) as i64 then
 					assert ("i64 = 2147483648", i64 = 2147483648)
 				else
 					assert ("json.object (jn, Void) is a INTEGER_64", False)
@@ -317,7 +317,7 @@ feature -- Test
 			jrep := "9223372036854775808" -- 1 higher than largest positive number that can be represented by INTEGER 64
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {NATURAL_64} json.object (jn, Void) as l_n64 then
+				if attached {NATURAL_64} json.instance (jn, Void) as l_n64 then
 					assert ("l_n64 = 9223372036854775808", l_n64 = 9223372036854775808)
 				else
 					assert ("json.object (jn, Void) is a NATURAL_64", False)
@@ -351,7 +351,7 @@ feature -- Test
 			jrep := "3.14"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {REAL_64} json.object (jn, Void) as r64 then
+				if attached {REAL_64} json.instance (jn, Void) as r64 then
 					assert ("3.14 <= r64 and r64 <= 3.141", 3.14 <= r64 and r64 <= 3.141)
 				else
 					assert ("json.object (jn, Void) is a REAL_64", False)
@@ -383,7 +383,7 @@ feature -- Test
 			jrep := "3.1400001049041748"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {REAL_64} json.object (l_jn, Void) as r64 then
+				if attached {REAL_64} json.instance (l_jn, Void) as r64 then
 					assert ("r64 = 3.1400001049041748", r64 = 3.1400001049041748)
 				else
 					assert ("json.object (l_jn, Void) is a REAL_64", False)
@@ -416,7 +416,7 @@ feature -- Test
 			jrep := "3.1415926535897931"
 			create parser.make_parser (jrep)
 			if attached {JSON_NUMBER} parser.parse as l_jn then
-				if attached {REAL_64} json.object (jn, Void) as l_r64 then
+				if attached {REAL_64} json.instance (jn, Void) as l_r64 then
 					assert ("l_r64 = 3.1415926535897931", l_r64 = 3.1415926535897931)
 				else
 					assert ("json.object (jn, Void) is a REAL_64", False)
@@ -446,7 +446,7 @@ feature -- Test
 				-- JSON representation -> JSON value -> Eiffel value
 			create parser.make_parser ("true")
 			if attached {JSON_BOOLEAN} parser.parse as l_jb then
-				if attached {BOOLEAN} json.object (l_jb, Void) as l_b then
+				if attached {BOOLEAN} json.instance (l_jb, Void) as l_b then
 					assert ("l_b = True", l_b = True)
 				else
 					assert ("json.object (l_jb, Void) is BOOLEAN", False)
@@ -469,7 +469,7 @@ feature -- Test
 				-- JSON representation -> JSON value -> Eiffel value
 			create parser.make_parser ("false")
 			if attached {JSON_BOOLEAN} parser.parse as l_jb then
-				if attached {BOOLEAN} json.object (l_jb, Void) as l_b then
+				if attached {BOOLEAN} json.instance (l_jb, Void) as l_b then
 					assert ("l_b = False", l_b = False)
 				else
 					assert ("json.object (l_jb, Void) is a BOOLEAN", False)
@@ -499,7 +499,7 @@ feature -- Test
 				-- JSON representation -> JSON value -> Eiffel value
 			create parser.make_parser (jrep)
 			if attached parser.parse as l_json_null then
-				assert ("a = Void", json.object (l_json_null, Void) = Void)
+				assert ("a = Void", json.instance (l_json_null, Void) = Void)
 			else
 				assert ("parser.parse /= Void", False)
 			end
@@ -527,7 +527,7 @@ feature -- Test
 			jrep := "%"a%""
 			create parser.make_parser (jrep)
 			if attached {JSON_STRING} parser.parse as l_json_str then
-				if attached {STRING_32} json.object (l_json_str, Void) as ucs then
+				if attached {STRING_32} json.instance (l_json_str, Void) as ucs then
 					assert ("ucs.string.is_equal (%"a%")", ucs.string.is_equal ("a"))
 				end
 			else
@@ -558,7 +558,7 @@ feature -- Test
 				-- JSON representation -> JSON value -> Eiffel value
 			create parser.make_parser (jrep)
 			if attached {JSON_STRING} parser.parse as l_js then
-				if attached {STRING_32} json.object (l_js, Void) as l_ucs then
+				if attached {STRING_32} json.instance (l_js, Void) as l_ucs then
 					assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal (s))
 				end
 			else
@@ -591,7 +591,7 @@ feature -- Test
 				-- JSON representation -> JSON value -> Eiffel value
 			create parser.make_parser (jrep)
 			if attached {JSON_STRING} parser.parse as l_js then
-				if attached {STRING_32} json.object (l_js, Void) as l_ucs then
+				if attached {STRING_32} json.instance (l_js, Void) as l_ucs then
 					assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal (s))
 				else
 					assert ("json.object (js, Void) /= Void", False)
@@ -623,7 +623,7 @@ feature -- Test
 				-- JSON representation -> JSON value -> Eiffel value
 			create parser.make_parser (jrep)
 			if attached {JSON_STRING} parser.parse as l_js then
-				if attached {STRING_32} json.object (l_js, Void) as l_ucs then
+				if attached {STRING_32} json.instance (l_js, Void) as l_ucs then
 					assert ("ucs.same_string (%"foo\bar%")", l_ucs.same_string ("foo\bar"))
 				end
 			else
@@ -692,7 +692,7 @@ feature -- Test
 			jrep := "[0,1,1,2,3,5]"
 			create parser.make_parser (jrep)
 			if attached {JSON_ARRAY} parser.parse as l_ja then
-				if attached {LINKED_LIST [detachable ANY]} json.object (ja, Void) as l_ll2 then
+				if attached {LINKED_LIST [detachable ANY]} json.instance (ja, Void) as l_ll2 then
 					assert ("ll2.is_equal (ll)", l_ll2.is_equal (ll))
 				else
 					assert ("json.object (ja, Void) /= Void", False)
@@ -765,7 +765,7 @@ feature -- Test
 			jrep := "{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"
 			create parser.make_parser (jrep)
 			if attached {JSON_OBJECT} parser.parse as l_jo then
-				if attached {HASH_TABLE [detachable ANY, HASHABLE]} json.object (l_jo, Void) as l_t2 then
+				if attached {HASH_TABLE [detachable ANY, HASHABLE]} json.instance (l_jo, Void) as l_t2 then
 					if attached json.value (l_t2) as l_jo_2 then
 						assert ("jrep.is_equal (jo.representation)", jrep.is_equal (l_jo_2.representation))
 					else
@@ -819,7 +819,7 @@ feature -- Test
 		do
 			if not exception then
 				create jo
-				gv := json.object (jo, {OPERATING_ENVIRONMENT})
+				gv := json.instance (jo, {OPERATING_ENVIRONMENT})
 			else
 				assert ("exceptions.is_developer_exception", json.is_developer_exception)
 			end

@@ -20,9 +20,9 @@ feature -- Conversion
 			-- <Precursor>
 		do
 			if
-				attached {STRING_32} json.object (j.item (title_key), Void) as l_title and
-				attached {STRING_32} json.object (j.item (isbn_key), Void) as l_isbn and
-				attached {AUTHOR} json.object (j.item (author_key), {AUTHOR}) as l_author
+				attached {STRING_32} json.instance (j.item (title_key), Void) as l_title and
+				attached {STRING_32} json.instance (j.item (isbn_key), Void) as l_isbn and
+				attached {AUTHOR} json.instance (j.item (author_key), {AUTHOR}) as l_author
 			then
 				create Result.make (l_title, l_author, l_isbn)
 			end

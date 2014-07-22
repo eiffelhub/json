@@ -22,7 +22,7 @@ feature -- Conversion
             until
                 i > j.count
             loop
-                Result.put_last (json.object (j [i], Void))
+                Result.put_last (json.instance (j [i], Void))
                 i := i + 1
             end
         end
