@@ -13,69 +13,60 @@ inherit
 	JSON_CONVERTER
 
 create
-	make
-
-feature {NONE} -- Initialization
-
-	make
-		do
-			create object.make (0)
-		end
-
-feature -- Access
-
-	object: HASH_TABLE [ANY, HASHABLE]
+	default_create
 
 feature -- Conversion
 
-	from_json (j: attached like to_json): like object
+	from_json (j: attached like to_json): detachable HASH_TABLE [detachable ANY, HASHABLE]
+			-- <Precursor>
 		do
 			create Result.make (j.count)
 			across
 				j as ic
+			until
+				Result = Void
 			loop
-				if attached json.object (ic.item, Void) as l_object then
-					if attached {HASHABLE} json.object (ic.key, Void) as h then
+				if attached json.instance (ic.item, Void) as l_object then
+					if attached {HASHABLE} json.instance (ic.key, Void) as h then
 						Result.put (l_object, h)
 					else
-						check
-							key_is_hashable: False
-						end
+						Result := Void
+							-- Failed
 					end
 				else
-					check
-						object_attached: False
-					end
+					Result := Void
+						-- Failed
 				end
 			end
 		end
 
-	to_json (o: like object): detachable JSON_OBJECT
+	to_json (o: attached like from_json): detachable JSON_OBJECT
+			-- <Precursor>
 		local
-			c: HASH_TABLE_ITERATION_CURSOR [ANY, HASHABLE]
 			js: JSON_STRING
-			failed: BOOLEAN
 		do
-			create Result.make
-			from
-				c := o.new_cursor
+			create Result
+			across
+				o as it
 			until
-				c.after
+				Result = Void
 			loop
-				if attached {JSON_STRING} json.value (c.key) as l_key then
-					js := l_key
+				if attached json.value (it.key) as l_value then
+					if attached {JSON_STRING} l_value as l_key then
+						js := l_key
+					else
+						create js.make_json (l_value.representation)
+					end
+					if attached json.value (it.item) as jv then
+						Result.put (jv, js)
+					else
+						Result := Void
+							-- Failed
+					end
 				else
-					create js.make_json (c.key.out)
+					Result := Void
+						-- Failed
 				end
-				if attached json.value (c.item) as jv then
-					Result.put (jv, js)
-				else
-					failed := True
-				end
-				c.forth
-			end
-			if failed then
-				Result := Void
 			end
 		end
 

@@ -14,21 +14,22 @@ inherit
 feature --Access
 
 	hash_code: INTEGER
-			-- Hash code value
+			-- Hash code value.
 		do
 			Result := null_value.hash_code
 		end
 
 	representation: STRING
+			-- <Precursor>
 		do
-			Result := "null"
+			Result := Null_value
 		end
 
 feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR)
 			-- Accept `a_visitor'.
-			-- (Call `visit_element_a' procedure on `a_visitor'.)
+			-- (Call `visit_element_a' procedure on `a_visitor'.).
 		do
 			a_visitor.visit_json_null (Current)
 		end
@@ -38,11 +39,12 @@ feature -- Status report
 	debug_output: STRING
 			-- String that should be displayed in debugger to represent `Current'.
 		do
-			Result := null_value
+			Result := Null_value
 		end
 
 feature {NONE} -- Implementation
 
-	null_value: STRING = "null"
+	Null_value: STRING = "null"
+			-- JSON null value.
 
 end

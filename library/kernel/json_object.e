@@ -20,20 +20,37 @@ class
 inherit
 
 	JSON_VALUE
+		redefine
+			default_create
+		end
 
 	TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
+		redefine
+			default_create
+		end
 
 	DEBUG_OUTPUT
+		redefine
+			default_create
+		end
 
 create
-	make
+	default_create, make
 
 feature {NONE} -- Initialization
 
-	make
-			-- Initialize
+	default_create
+			-- Create an empty object.
 		do
 			create object.make (10)
+		end
+
+	make
+			-- Create an empty object.
+		obsolete
+			"Use `default_create' instead. 2014/07"
+		do
+			default_create
 		end
 
 feature -- Change Element
@@ -44,10 +61,11 @@ feature -- Change Element
 		require
 			key_not_present: not has_key (key)
 		local
-			l_value: like value
+			l_value: JSON_VALUE
 		do
-			l_value := value
-			if l_value = Void then
+			if value /= Void then
+				l_value := value
+			else
 				create {JSON_NULL} l_value
 			end
 			object.extend (l_value, key)
@@ -117,10 +135,11 @@ feature -- Change Element
 			-- Assuming there is no item of key `key',
 			-- insert `value' with `key'.
 		local
-			l_value: like value
+			l_value: JSON_VALUE
 		do
-			l_value := value
-			if l_value = Void then
+			if value /= Void then
+				l_value := value
+			else
 				create {JSON_NULL} l_value
 			end
 			object.force (l_value, key)
@@ -209,38 +228,35 @@ feature -- Access
 		end
 
 	current_keys: ARRAY [JSON_STRING]
-			-- array containing actually used keys
+			-- array containing actually used keys.
 		do
 			Result := object.current_keys
 		end
 
 	representation: STRING
-		local
-			t: HASH_TABLE [JSON_VALUE, JSON_STRING]
+			-- <Precursor>
 		do
-			create Result.make (2)
+			create Result.make (count * 2 + 1)
 			Result.append_character ('{')
-			from
-				t := map_representation
-				t.start
-			until
-				t.after
-			loop
-				Result.append (t.key_for_iteration.representation)
-				Result.append_character (':')
-				Result.append (t.item_for_iteration.representation)
-				t.forth
-				if not t.after then
+			if is_empty then
+				Result.append_character ('}')
+			else
+				across
+					map_representation as ic
+				loop
+					Result.append (ic.key.representation)
+					Result.append_character (':')
+					Result.append (ic.item.representation)
 					Result.append_character (',')
 				end
+				Result [Result.count] := '}'
 			end
-			Result.append_character ('}')
 		end
 
 feature -- Mesurement
 
 	count: INTEGER
-			-- Number of field
+			-- Number of field.
 		do
 			Result := object.count
 		end
@@ -248,7 +264,7 @@ feature -- Mesurement
 feature -- Access
 
 	new_cursor: TABLE_ITERATION_CURSOR [JSON_VALUE, JSON_STRING]
-			-- Fresh cursor associated with current structure
+			-- Fresh cursor associated with current structure.
 		do
 			Result := object.new_cursor
 		end
@@ -283,14 +299,11 @@ feature -- Report
 	hash_code: INTEGER
 			-- Hash code value
 		do
-			from
-				object.start
-				Result := object.out.hash_code
-			until
-				object.off
+			Result := 0
+			across
+				Current as ic
 			loop
-				Result := ((Result \\ 8388593) |<< 8) + object.item_for_iteration.hash_code
-				object.forth
+				Result := ((Result \\ 8388593) |<< 8) + ic.item.hash_code
 			end
 				-- Ensure it is a positive value.
 			Result := Result.hash_code
@@ -307,7 +320,7 @@ feature -- Status report
 feature {NONE} -- Implementation
 
 	object: HASH_TABLE [JSON_VALUE, JSON_STRING]
-			-- Value container
+			-- Value container.
 
 invariant
 	object_not_void: object /= Void

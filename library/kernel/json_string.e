@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_with_escaped_json (s: READABLE_STRING_8)
-			-- Initialize with an_item already escaped
+			-- Initialize with an_item already escaped.
 		require
 			item_not_void: s /= Void
 		do
@@ -55,18 +55,15 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	item: STRING
-			-- Contents with escaped entities if any
+			-- Contents with escaped entities if any.
 
 feature -- Conversion
 
 	unescaped_string_8: STRING_8
 			-- Unescaped string from `item'.
 			--| note: valid only if `item' does not encode any unicode character.
-		local
-			s: like item
 		do
-			s := item
-			create Result.make (s.count)
+			create Result.make (item.count)
 			unescape_to_string_8 (Result)
 		end
 
@@ -74,16 +71,13 @@ feature -- Conversion
 			-- Unescaped string 32 from `item'
 			--| some encoders uses UTF-8 , and not the recommended pure json encoding
 			--| thus, let's support the UTF-8 encoding during decoding.
-		local
-			s: READABLE_STRING_8
 		do
-			s := item
-			create Result.make (s.count)
+			create Result.make (item.count)
 			unescape_to_string_32 (Result)
 		end
 
 	representation: STRING
-			-- String representation of `item' with escaped entities if any
+			-- String representation of `item' with escaped entities if any.
 		do
 			create Result.make (item.count + 2)
 			Result.append_character ('%"')
@@ -243,7 +237,7 @@ feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR)
 			-- Accept `a_visitor'.
-			-- (Call `visit_json_string' procedure on `a_visitor'.)
+			-- (Call `visit_json_string' procedure on `a_visitor'.).
 		do
 			a_visitor.visit_json_string (Current)
 		end
@@ -260,7 +254,7 @@ feature -- Comparison
 feature -- Change Element
 
 	append (a_string: STRING)
-			-- Add a_string
+			-- Add a_string.
 		require
 			a_string_not_void: a_string /= Void
 		do
@@ -270,7 +264,7 @@ feature -- Change Element
 feature -- Status report
 
 	hash_code: INTEGER
-			-- Hash code value
+			-- Hash code value.
 		do
 			Result := item.hash_code
 		end
@@ -302,7 +296,7 @@ feature {NONE} -- Implementation
 		end
 
 	hexadecimal_to_natural_32 (s: READABLE_STRING_8): NATURAL_32
-			-- Hexadecimal string `s' converted to NATURAL_32 value
+			-- Hexadecimal string `s' converted to NATURAL_32 value.
 		require
 			s_not_void: s /= Void
 			is_hexadecimal: is_hexadecimal (s)
@@ -332,7 +326,7 @@ feature {NONE} -- Implementation
 		end
 
 	escaped_json_string (s: READABLE_STRING_8): STRING_8
-			-- JSON string with '"' and '\' characters escaped
+			-- JSON string with '"' and '\' characters escaped.
 		require
 			s_not_void: s /= Void
 		local
@@ -370,7 +364,7 @@ feature {NONE} -- Implementation
 		end
 
 	escaped_json_string_32 (s: READABLE_STRING_32): STRING_8
-			-- JSON string with '"' and '\' characters and Unicode escaped
+			-- JSON string with '"' and '\' characters and Unicode escaped.
 		require
 			s_not_void: s /= Void
 		local

@@ -10,13 +10,25 @@ class
 inherit
 
 	JSON_READER
+		redefine
+			default_create
+		end
 
 	JSON_TOKENS
+		redefine
+			default_create
+		end
 
 create
-	make_parser
+	default_create, make_parser
 
 feature {NONE} -- Initialize
+
+	default_create
+			-- Create a default parser.
+		do
+			make_parser ("")
+		end
 
 	make_parser (a_json: STRING)
 			-- Initialize.
@@ -37,23 +49,20 @@ feature -- Status report
 			-- Current errors
 
 	current_errors: STRING
-			-- Current errors as string
+			-- Current errors as string.
 		do
 			create Result.make_empty
-			from
-				errors.start
-			until
-				errors.after
+			across
+				errors as ic
 			loop
-				Result.append_string (errors.item + "%N")
-				errors.forth
+				Result.append_string (ic.item + "%N")
 			end
 		end
 
 feature -- Element change
 
 	report_error (e: STRING)
-			-- Report error `e'
+			-- Report error `e'.
 		require
 			e_not_void: e /= Void
 		do
@@ -64,7 +73,7 @@ feature -- Commands
 
 	parse_json: detachable JSON_VALUE
 			-- Parse JSON data `representation'
-			-- start ::= object | array
+			-- start ::= object | array.
 		do
 			if is_valid_start_symbol then
 				Result := parse
@@ -78,7 +87,7 @@ feature -- Commands
 		end
 
 	parse: detachable JSON_VALUE
-			-- Parse JSON data `representation'
+			-- Parse JSON data `representation'.
 		local
 			c: CHARACTER
 		do
@@ -131,7 +140,7 @@ feature -- Commands
 			l_json_string: detachable JSON_STRING
 			l_value: detachable JSON_VALUE
 		do
-			create Result.make
+			create Result
 				-- check if is an empty object {}
 			next
 			skip_white_spaces
@@ -179,7 +188,7 @@ feature -- Commands
 		end
 
 	parse_string: detachable JSON_STRING
-			-- Parsed string
+			-- Parsed string.
 		local
 			has_more: BOOLEAN
 			l_json_string: STRING
@@ -244,7 +253,7 @@ feature -- Commands
 			l_value: detachable JSON_VALUE
 			c: like actual
 		do
-			create Result.make_array
+			create Result
 				--check if is an empty array []
 			next
 			skip_white_spaces
@@ -261,7 +270,7 @@ feature -- Commands
 					skip_white_spaces
 					l_value := parse
 					if is_parsed and then l_value /= Void then
-						Result.add (l_value)
+						Result.extend (l_value)
 						next
 						skip_white_spaces
 						c := actual
@@ -281,7 +290,7 @@ feature -- Commands
 		end
 
 	parse_number: detachable JSON_NUMBER
-			-- Parsed number
+			-- Parsed number.
 		local
 			sb: STRING
 			flag: BOOLEAN
@@ -357,7 +366,7 @@ feature -- Commands
 		end
 
 	read_unicode: STRING
-			-- Read Unicode and return value
+			-- Read Unicode and return value.
 		local
 			i: INTEGER
 		do
@@ -481,7 +490,7 @@ feature {NONE} -- Implementation
 		end
 
 	is_valid_unicode (a_unicode: STRING): BOOLEAN
-			-- is 'a_unicode' a valid Unicode based on this regular expression
+			-- is 'a_unicode' a valid Unicode based on this regular expression.
 			-- "\\u[0-9a-fA-F]{4}"
 		local
 			i: INTEGER
@@ -491,13 +500,9 @@ feature {NONE} -- Implementation
 					Result := True
 					i := 3
 				until
-					i > 6 or Result = False
+					i > 6 or not Result
 				loop
-					inspect a_unicode [i]
-					when '0'..'9', 'a'..'f', 'A'..'F' then
-					else
-						Result := False
-					end
+					Result := a_unicode [i].is_alpha_numeric
 					i := i + 1
 				end
 			end
@@ -522,7 +527,7 @@ feature {NONE} -- Implementation
 		end
 
 	is_valid_start_symbol: BOOLEAN
-			-- expecting `{' or `[' as start symbol
+			-- expecting `{' or `[' as start symbol.
 		do
 			if attached representation as s and then s.count > 0 then
 				Result := s [1] = '{' or s [1] = '['

@@ -12,16 +12,16 @@ inherit
 create
 	make, make_custom
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make (a_output: like output)
-			-- Create a new instance
+			-- Create a new instance.
 		do
 			make_custom (a_output, 1, 1)
 		end
 
 	make_custom (a_output: like output; a_object_count_inlining, a_array_count_inlining: INTEGER)
-			-- Create a new instance
+			-- Create a new instance.
 		do
 			output := a_output
 			create indentation.make_empty
@@ -33,7 +33,7 @@ feature -- Initialization
 feature -- Access
 
 	output: STRING_32
-			-- JSON representation
+			-- JSON representation.
 
 	indentation: like output
 

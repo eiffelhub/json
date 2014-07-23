@@ -9,6 +9,7 @@ class
 feature -- Access
 
 	read_json_from (a_path: STRING): detachable STRING
+			-- Read JSON file at `a_path'.
 		local
 			l_file: PLAIN_TEXT_FILE
 			template_content: STRING

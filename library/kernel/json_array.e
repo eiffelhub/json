@@ -17,26 +17,43 @@ class
 inherit
 
 	JSON_VALUE
+		redefine
+			default_create
+		end
 
 	ITERABLE [JSON_VALUE]
+		undefine
+			default_create
+		end
 
 	DEBUG_OUTPUT
+		undefine
+			default_create
+		end
 
 create
-	make_array
+	default_create, make_array
 
 feature {NONE} -- Initialization
 
-	make_array
-			-- Initialize JSON Array
+	default_create
+			-- Initialize JSON Array.
 		do
 			create values.make (10)
+		end
+
+	make_array
+			-- Initialize JSON Array.
+		obsolete
+			"Use `default_create' instead. 2014/07"
+		do
+			default_create
 		end
 
 feature -- Access
 
 	i_th alias "[]" (i: INTEGER): JSON_VALUE
-			-- Item at `i'-th position
+			-- Item at `i'-th position.
 		require
 			is_valid_index: valid_index (i)
 		do
@@ -44,29 +61,28 @@ feature -- Access
 		end
 
 	representation: STRING
-		local
-			i: INTEGER
+			-- <Precursor>
 		do
-			Result := "["
-			from
-				i := 1
-			until
-				i > count
-			loop
-				Result.append (i_th (i).representation)
-				i := i + 1
-				if i <= count then
+			create Result.make (count * 2 + 1)
+			Result.append_character ('[')
+			if is_empty then
+				Result.append_character (']')
+			else
+				across
+					Current as ic
+				loop
+					Result.append (ic.item.representation)
 					Result.append_character (',')
 				end
+				Result [Result.count] := ']'
 			end
-			Result.append_character (']')
 		end
 
 feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR)
 			-- Accept `a_visitor'.
-			-- (Call `visit_json_array' procedure on `a_visitor'.)
+			-- (Call `visit_json_array' procedure on `a_visitor'.).
 		do
 			a_visitor.visit_json_array (Current)
 		end
@@ -74,7 +90,7 @@ feature -- Visitor pattern
 feature -- Access
 
 	new_cursor: ITERATION_CURSOR [JSON_VALUE]
-			-- Fresh cursor associated with current structure
+			-- Fresh cursor associated with current structure.
 		do
 			Result := values.new_cursor
 		end
@@ -95,6 +111,12 @@ feature -- Status report
 			Result := (1 <= i) and (i <= count)
 		end
 
+	is_empty: BOOLEAN
+			-- Has no items?
+		do
+			Result := values.is_empty
+		end
+
 feature -- Change Element
 
 	put_front (v: JSON_VALUE)
@@ -106,11 +128,23 @@ feature -- Change Element
 			has_new_value: old values.count + 1 = values.count and values.first = v
 		end
 
-	add, extend (v: JSON_VALUE)
+	extend (v: JSON_VALUE)
+			-- Add `v'.
 		require
 			v_not_void: v /= Void
 		do
 			values.extend (v)
+		ensure
+			has_new_value: old values.count + 1 = values.count and values.has (v)
+		end
+
+	add (v: JSON_VALUE)
+		obsolete
+			"Use `extend' instead. 2014/07"
+		require
+			v_not_void: v /= Void
+		do
+			extend (v)
 		ensure
 			has_new_value: old values.count + 1 = values.count and values.has (v)
 		end
@@ -136,14 +170,11 @@ feature -- Report
 	hash_code: INTEGER
 			-- Hash code value
 		do
-			from
-				values.start
-				Result := values.item.hash_code
-			until
-				values.off
+			Result := 0
+			across
+				values as ic
 			loop
-				Result := ((Result \\ 8388593) |<< 8) + values.item.hash_code
-				values.forth
+				Result := ((Result \\ 8388593) |<< 8) + ic.item.hash_code
 			end
 			Result := Result \\ values.count
 		end
@@ -152,7 +183,7 @@ feature -- Conversion
 
 	array_representation: ARRAYED_LIST [JSON_VALUE]
 			-- Representation as a sequences of values
-			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object
+			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object.
 		do
 			Result := values
 		end
@@ -168,7 +199,7 @@ feature -- Status report
 feature {NONE} -- Implementation
 
 	values: ARRAYED_LIST [JSON_VALUE]
-			-- Value container
+			-- Value container.
 
 invariant
 	value_not_void: values /= Void

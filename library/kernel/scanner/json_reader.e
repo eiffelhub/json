@@ -13,7 +13,7 @@ create
 feature {NONE} -- Initialization
 
 	make (a_json: STRING)
-			-- Initialize Reader
+			-- Initialize Reader.
 		do
 			set_representation (a_json)
 		end
@@ -30,7 +30,7 @@ feature -- Commands
 		end
 
 	read: CHARACTER
-			-- Read character
+			-- Read character.
 		do
 			if not representation.is_empty then
 				Result := representation.item (index)
@@ -38,7 +38,7 @@ feature -- Commands
 		end
 
 	next
-			-- Move to next index
+			-- Move to next index.
 		require
 			has_more_elements: has_next
 		do
@@ -48,7 +48,7 @@ feature -- Commands
 		end
 
 	previous
-			-- Move to previous index
+			-- Move to previous index.
 		require
 			not_is_first: has_previous
 		do
@@ -58,7 +58,7 @@ feature -- Commands
 		end
 
 	skip_white_spaces
-			-- Remove white spaces
+			-- Remove white spaces.
 		local
 			c: like actual
 		do
@@ -73,7 +73,7 @@ feature -- Commands
 		end
 
 	json_substring (start_index, end_index: INTEGER_32): STRING
-			-- JSON representation between `start_index' and `end_index'
+			-- JSON representation between `start_index' and `end_index'.
 		do
 			Result := representation.substring (start_index, end_index)
 		end
@@ -95,12 +95,12 @@ feature -- Status report
 feature -- Access
 
 	representation: STRING
-			-- Serialized representation of the original JSON string
+			-- Serialized representation of the original JSON string.
 
 feature {NONE} -- Implementation
 
 	actual: CHARACTER
-			-- Current character or '%U' if none
+			-- Current character or '%U' if none.
 		do
 			if index > representation.count then
 				Result := '%U'
@@ -110,7 +110,7 @@ feature {NONE} -- Implementation
 		end
 
 	index: INTEGER
-			-- Actual index
+			-- Actual index.
 
 invariant
 	representation_not_void: representation /= Void

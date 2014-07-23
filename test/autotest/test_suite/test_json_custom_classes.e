@@ -26,16 +26,16 @@ feature -- Test
 			parser: JSON_PARSER
 			jrep: STRING
 		do
-			create jbc.make
+			create jbc
 			json.add_converter (jbc)
-			create jbcc.make
+			create jbcc
 			json.add_converter (jbcc)
-			create jac.make
+			create jac
 			json.add_converter (jac)
 			jrep := "{%"name%":%"Test collection%",%"books%":[{%"title%":%"eJSON: The Definitive Guide%",%"isbn%":%"123123-413243%",%"author%":{%"name%":%"Foo Bar%"}}]}"
 			create parser.make_parser (jrep)
 			if attached {JSON_OBJECT} parser.parse as l_json_object then
-				if attached {BOOK_COLLECTION} json.object (l_json_object, "BOOK_COLLECTION") as l_collection then
+				if attached {BOOK_COLLECTION} json.instance (l_json_object, {BOOK_COLLECTION}) as l_collection then
 					if attached {JSON_OBJECT} json.value (l_collection) as l_json_object_2 then
 						assert ("JSON representation is correct", l_json_object_2.representation.same_string (jrep))
 					else

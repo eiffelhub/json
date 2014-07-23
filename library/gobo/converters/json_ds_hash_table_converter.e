@@ -10,25 +10,9 @@ class JSON_DS_HASH_TABLE_CONVERTER
 inherit
     JSON_CONVERTER
 
-create
-    make
-
-feature {NONE} -- Initialization
-
-    make
-        do
-            create object.make (0)
-        end
-
-feature -- Access
-
-    value: JSON_OBJECT
-
-    object: DS_HASH_TABLE [ANY, HASHABLE]
-
 feature -- Conversion
 
-    from_json (j: like value): detachable like object
+    from_json (j: like to_json): detachable DS_HASH_TABLE [ANY, HASHABLE]
         local
             keys: ARRAY [JSON_STRING]
             i: INTEGER
@@ -42,22 +26,22 @@ feature -- Conversion
             until
                 i > keys.count
             loop
-                h ?= json.object (keys [i], void)
+                h ?= json.instance (keys [i], void)
                 check h /= Void end
-                a := json.object (j.item (keys [i]), Void)
+                a := json.instance (j.item (keys [i]), Void)
                 Result.put (a, h)
                 i := i + 1
             end
         end
 
-    to_json (o: like object): like value
+    to_json (o: attached like from_json): JSON_OBJECT
         local
             c: DS_HASH_TABLE_CURSOR [ANY, HASHABLE]
             js: JSON_STRING
             jv: JSON_VALUE
             failed: BOOLEAN
         do
-            create Result.make
+            create Result
             from
                 c := o.new_cursor
                 c.start
