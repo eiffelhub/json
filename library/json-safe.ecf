@@ -18,5 +18,6 @@
 			<cluster name="json_utility" location=".\utility\" recursive="true"/>
 		</cluster>
 		<cluster name="json_converter" location=".\converter\" recursive="true"/>
+		<cluster name="new_json_converter" location=".\new_converter\" recursive="true"/>
 	</target>
 </system>
