@@ -16,6 +16,7 @@
 			<cluster name="json_parser" location=".\parser" recursive="true"/>
 			<cluster name="json_utility" location=".\utility" recursive="true"/>
 		</cluster>
+		<cluster name="json_serialization" location=".\serialization\" recursive="true"/>
 		<cluster name="json_converter" location=".\converter" recursive="true"/>
 	</target>
 </system>
