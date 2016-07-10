@@ -185,13 +185,13 @@ feature -- Helpers
 			-- To avoid infinite recursion, be sure to not reuse the same serializer as `a_caller_serializer'.			
 		do
 			check is_accepted_object: is_accepted_object (obj) end
-			if
+			if attached {READABLE_STRING_GENERAL} obj as str and then attached default_serializer as conv then
+				Result := conv.to_json (obj, Current)
+			elseif
 				attached serializer (obj) as conv and then
 				a_caller_serializer /= conv
 			then
---				on_object_serialization_start (obj) -- To declare this object is being processed.
 				Result := conv.to_json (obj, Current)
---				on_object_serialization_end (Result, obj) -- To declare this object is being processed.
 			end
 		end
 

@@ -106,6 +106,7 @@ feature -- Access
 							-- Hack: use conformance of type, and reverse conformance of type of type.
 --						(is_strict implies attached k_type.attempted (o_type)) and then
 						attached k_type.conforms_to (o_type) and then
+						attached o_type.conforms_to (k_type) and then
 						attached o_type.generating_type.attempted (k_type)
 					then
 							-- Found
@@ -151,13 +152,38 @@ feature -- Factory
 			end
 			if conv /= Void then
 				Result := conv.from_json (a_json, Current, a_type)
+				if Result /= Void and then a_type /= Void and then a_type.attempted (Result) = Void then
+						-- Bad returned object !
+					Result := Void
+				end
 				if Result /= Void and attached {JSON_OBJECT} a_json as j_object then
 					on_object (Result, j_object)
 				end
 			end
 		end
 
-feature -- Callback event
+feature -- Callback event access
+
+	last_object: detachable ANY
+
+	last_feature_name: detachable READABLE_STRING_GENERAL
+
+	value_creation_callback: detachable JSON_DESERIALIZER_CREATION_CALLBACK
+
+feature -- Callback event operation
+
+	on_value_creation (a_value_info: JSON_DESERIALIZER_CREATION_INFORMATION)
+		do
+			if attached value_creation_callback as cb then
+				if attached last_object as o then
+					a_value_info.set_parent_object (o)
+					if attached last_feature_name as fn then
+						a_value_info.set_feature_name (fn)
+					end
+				end
+				cb.on_value_creation (a_value_info)
+			end
+		end
 
 	on_object (obj: ANY; a_json_object: JSON_OBJECT)
 			-- Event triggered when object `obj' is just instantiated or fully deserialized from `a_json_object'.
@@ -173,11 +199,13 @@ feature -- Callback event
 			end
 		end
 
-	on_deserialization_field_start (a_field_name: READABLE_STRING_GENERAL)
+	on_deserialization_field_start (a_obj: ANY; a_field_name: READABLE_STRING_GENERAL)
 			-- Event triggered just before processing a reference field `a_field_name' on Current object.
 		local
 			s: like deserializer_location
 		do
+			last_object := a_obj
+			last_feature_name := a_field_name
 			s := deserializer_location
 			if s.count > 0 then
 				s.append_character ('.')
@@ -185,7 +213,7 @@ feature -- Callback event
 			s.append_string_general (a_field_name)
 		end
 
-	on_deserialization_field_end (a_field_name: READABLE_STRING_GENERAL)
+	on_deserialization_field_end (a_obj: ANY; a_field_name: READABLE_STRING_GENERAL)
 			-- Event triggered just after reference field `a_field_name' on Current object was processed.
 		local
 			s: like deserializer_location
@@ -193,9 +221,16 @@ feature -- Callback event
 			s := deserializer_location
 			check s.ends_with_general (a_field_name) end
 			s.remove_tail (a_field_name.count + 1) -- Include the '.'
+			last_object := Void
+			last_feature_name := Void
 		end
 
 feature -- Element change
+
+	set_value_creation_callback (cb: like value_creation_callback)
+		do
+			value_creation_callback := cb
+		end
 
 	register_deserializer (conv: attached like deserializer; a_type: TYPE [detachable ANY])
 		do

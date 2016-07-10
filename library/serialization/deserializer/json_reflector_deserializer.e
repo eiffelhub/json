@@ -71,7 +71,7 @@ feature {NONE} -- Helpers
 						ctx.has_error
 					loop
 						fn := i.out
-						ctx.on_deserialization_field_start (fn)
+						ctx.on_deserialization_field_start (l_special, fn)
 						obj := ctx.value_from_json (ic.item, l_item_type)
 						if obj = Void then
 							if l_item_type.is_attached then
@@ -84,7 +84,7 @@ feature {NONE} -- Helpers
 						else
 							ctx.on_value_skipped (ic.item, l_item_type, "Deserialized Array item {" + obj.generating_type.name + "} mismatch with {" + l_item_type.name + "}")
 						end
-						ctx.on_deserialization_field_end (fn)
+						ctx.on_deserialization_field_end (l_special, fn)
 						i := i + 1
 					end
 				end
@@ -141,19 +141,17 @@ feature {NONE} -- Helpers
 						ctx.has_error
 					loop
 						fn := ic.key.unescaped_string_32
-----							if not fn.starts_with ("$") then
 						if attached l_field_static_types.item (fn) as l_field_info then
 							i := l_field_info.field_index
 							l_json_item := ic.item
-							ctx.on_deserialization_field_start (fn)
+							ctx.on_deserialization_field_start (Result, fn)
 							inspect
 								l_field_info.field_type_id
 							when reference_type, expanded_type then
 								if attached {JSON_STRING} l_json_item as j_string then
 									ref.set_reference_field (i, string_from_json (j_string, l_field_info.static_type))
-								else
---										ref.set_reference_field (i, from_json (l_json_item, ctx, l_field_info.static_type))
-									ref.set_reference_field (i, ctx.value_from_json (l_json_item, l_field_info.static_type))
+								elseif attached ctx.value_from_json (l_json_item, l_field_info.static_type) as l_obj then
+									ref.set_reference_field (i, l_obj)
 								end
 							when character_8_type then
 								ref.set_character_8_field (i, '%U')
@@ -184,7 +182,7 @@ feature {NONE} -- Helpers
 								ref.set_boolean_field (i, boolean_from_json (l_json_item))
 							else
 							end
-							ctx.on_deserialization_field_end (fn)
+							ctx.on_deserialization_field_end (Result, fn)
 						end
 					end
 				end

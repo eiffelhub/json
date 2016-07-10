@@ -92,6 +92,23 @@ feature -- Tests
 
 			create conv_from
 			create ctx_deser
+			ctx_deser.set_value_creation_callback (create {JSON_DESERIALIZER_CREATION_AGENT_CALLBACK}.make (agent (inf: JSON_DESERIALIZER_CREATION_INFORMATION)
+				do
+					if
+						attached {TEAM} inf.parent_object as l_team and then
+						attached inf.feature_name as fn and then
+						fn.is_case_insensitive_equal ("persons")
+					then
+						inf.set_object (create {ARRAYED_LIST [PERSON]}.make (0))
+					elseif
+						attached {PERSON} inf.parent_object as l_person and then
+						attached inf.feature_name as fn and then
+						fn.is_case_insensitive_equal ("co_workers")
+					then
+						inf.set_object (create {ARRAYED_LIST [ENTITY]}.make (0))
+					end
+
+				end))
 			ctx_deser.set_default_deserializer (create {JSON_REFLECTOR_DESERIALIZER})
 			ctx_deser.register_deserializer (create {LIST_JSON_DESERIALIZER [detachable ANY]}, {LIST [detachable ANY]})
 
