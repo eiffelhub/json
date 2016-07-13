@@ -17,6 +17,11 @@ feature {NONE} -- Initialization
 			add_vector ("abc")
 			add_vector ("def")
 			add_vector ("ghi")
+
+			create dico.make (3)
+			dico.force ("value1", "key1")
+			dico.force ("value2", "key2")
+			dico.force ("value3", "key3")
 		end
 
 feature -- Access
@@ -28,6 +33,8 @@ feature -- Access
 	owner: detachable PERSON
 
 	vectors: SPECIAL [STRING]
+
+	dico: STRING_TABLE [READABLE_STRING_32]
 
 feature -- Element change
 

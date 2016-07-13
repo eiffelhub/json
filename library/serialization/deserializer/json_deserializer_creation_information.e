@@ -12,9 +12,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_static_type: detachable TYPE [detachable ANY])
+	make (a_static_type: detachable TYPE [detachable ANY]; a_json: detachable JSON_VALUE)
 		do
 			static_type := a_static_type
+			json_value := a_json
 		end
 
 feature -- Access

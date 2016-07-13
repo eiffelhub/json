@@ -113,8 +113,8 @@ feature -- Tests
 			obj := new_cycling_full_team
 
 			create js.make_with_context (create {JSON_SERIALIZATION_CONTEXT_WITH_REFERENCE})
---			js.register (create {TEAM_JSON_SERIALIZATION}, {TEAM})
---			js.register (create {PERSON_JSON_SERIALIZATION}, {PERSON})
+			js.register (create {TEAM_JSON_SERIALIZATION}, {TEAM})
+			js.register (create {PERSON_JSON_SERIALIZATION}, {PERSON})
 			js.register_default (create {JSON_REFLECTOR_SERIALIZATION})
 
 			js.set_pretty_printing

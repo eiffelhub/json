@@ -75,7 +75,6 @@ feature {NONE} -- Implementation
 			refl_obj: REFLECTED_REFERENCE_OBJECT
 			j_object: JSON_OBJECT
 			j_array: JSON_ARRAY
-			j_value: detachable JSON_VALUE
 			fn: STRING_32
 		do
 			if obj = Void then
@@ -84,8 +83,6 @@ feature {NONE} -- Implementation
 					-- Never reuse string value ... as reference.
 					-- CHECK: or maybe for big string ?
 				create {JSON_STRING} Result.make_from_string_general (str)
---			elseif attached ctx.recorded_json_value (obj) as j_ref then
---				Result := j_ref
 			else
 				check
 					is_accepted_object: ctx.is_accepted_object (obj)
@@ -93,91 +90,50 @@ feature {NONE} -- Implementation
 				if attached ctx.to_json (obj, Current) as j then
 					Result := j
 				else
+					create refl_obj.make (obj)
 					ctx.on_object_serialization_start (obj) -- To declare this object is being processed.
-					if attached {HASH_TABLE [detachable ANY, READABLE_STRING_GENERAL]} obj as tb then
-						create j_object.make_with_capacity (tb.count)
+					if refl_obj.is_special and then attached {SPECIAL [detachable ANY]} obj as l_special then
+							-- Handle SPECIAL classes
+						create j_array.make (l_special.count)
+						Result := j_array
+						i := 1
 						across
-							tb as ic
+							l_special as ic
 						loop
-							ctx.on_field_start (ic.key)
-							if not attached ic.item as l_item then
-								create {JSON_NULL} j_value
-							elseif attached ctx.to_json (l_item, Void) as j then
-								j_value := j
-							else
-								j_value := to_json (l_item, ctx)
-							end
-
-							j_object.put (j_value, create {JSON_STRING}.make_from_string_general (ic.key))
-							ctx.on_field_end (ic.key)
+							fn := i.out
+							ctx.on_field_start (fn)
+							j_array.add (to_json (ic.item, ctx))
+							ctx.on_field_end (fn)
+							i := i + 1
 						end
-						Result := j_object
 					else
-						create refl_obj.make (obj)
+							-- Eiffel object.
 						l_type_name := refl_obj.type_name
 
-						if refl_obj.is_special then
-								-- Handle SPECIAL classes
-							if attached {SPECIAL [detachable ANY]} obj as l_special then
-								create j_array.make (l_special.count)
-								Result := j_array
-								i := 1
-								across
-									l_special as ic
-								loop
-									fn := i.out
-									ctx.on_field_start (fn)
-									j_array.add (to_json (ic.item, ctx))
-									ctx.on_field_end (fn)
-									i := i + 1
-								end
-							else
-								create {JSON_NULL} Result
-							end
---						elseif attached {ITERABLE [detachable ANY]} obj as arr then
---								-- Is this a good idea?
---								-- what about object exporting an ITERABLE interface, but containing other attributes
---								-- unrelated to that iterable nature!
---							create j_array.make_empty
---							across
---								arr as ic
---							loop
---								ctx.on_reference_field_start ((1 + j_array.count).out)
---								if attached ctx.serializer (ic.item) as conv then
---									j_value := conv.to_json (ic.item, ctx)
---								else
---									j_value := to_json (ic.item, ctx)
---								end
---								j_array.extend (j_value)
---								ctx.on_reference_field_end (j_array.count.out)
---							end
---							Result := j_array							
-						else
-							l_fields_count := refl_obj.field_count
+						l_fields_count := refl_obj.field_count
 
-							if ctx.is_type_name_included then
-								create j_object.make_with_capacity (1 + l_fields_count)
-								j_object.put_string (l_type_name, type_field_name)
-							else
-								create j_object.make_with_capacity (l_fields_count)
-							end
-							if l_fields_count > 0 then
-								from
-									i := 1
-								until
-									i > l_fields_count
-								loop
-									if
-										not refl_obj.is_field_transient (i) and then
-										attached refl_obj.field_name (i) as l_field_name
-									then
-										j_object.put (field_to_json (refl_obj, i, l_field_name, ctx), l_field_name)
-									end
-									i := i + 1
-								end
-							end
-							Result := j_object
+						if ctx.is_type_name_included then
+							create j_object.make_with_capacity (1 + l_fields_count)
+							j_object.put_string (l_type_name, type_field_name)
+						else
+							create j_object.make_with_capacity (l_fields_count)
 						end
+						if l_fields_count > 0 then
+							from
+								i := 1
+							until
+								i > l_fields_count
+							loop
+								if
+									not refl_obj.is_field_transient (i) and then
+									attached refl_obj.field_name (i) as l_field_name
+								then
+									j_object.put (field_to_json (refl_obj, i, l_field_name, ctx), l_field_name)
+								end
+								i := i + 1
+							end
+						end
+						Result := j_object
 					end
 					ctx.on_object_serialization_end (Result, obj)
 				end

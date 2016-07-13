@@ -45,6 +45,6 @@ feature -- Conversion
 		end
 
 note
-	copyright: "2016-2016, Jocelyn Fiat and Eiffel Software"
-	license: "Eiffel Forum License v2 (see https://www.eiffel.com/licensing/forum.txt)"
+	copyright: "2010-2016, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

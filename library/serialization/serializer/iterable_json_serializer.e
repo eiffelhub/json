@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {LIST_JSON_SERIALIZER}."
-	author: ""
+	description: "Summary description for {ITERABLE_JSON_SERIALIZER}."
 	date: "$Date$"
 	revision: "$Revision$"
 

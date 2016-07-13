@@ -37,7 +37,7 @@ feature -- Factory
 				Result := new_instance_for_type_name (a_type_name)
 			end
 			if Result = Void and a_type /= Void then
-				Result := new_instance_of_type (a_type)
+				Result := new_instance_of_effective_type (a_type)
 			end
 		end
 
@@ -47,11 +47,11 @@ feature -- Factory
 				attached reflector.dynamic_type_from_string (a_type_name) as l_type_id and then
 				l_type_id >= 0 and then attached type_of_type (l_type_id) as l_type
 			then
-				Result := new_instance_of_type (l_type)
+				Result := new_instance_of_effective_type (l_type)
 			end
 		end
 
-	new_instance_of_type (a_type: TYPE [detachable ANY]): detachable ANY
+	new_instance_of_effective_type (a_type: TYPE [detachable ANY]): detachable ANY
 		do
 			if a_type.has_default then
 				Result := a_type.default

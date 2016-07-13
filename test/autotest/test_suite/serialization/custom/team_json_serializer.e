@@ -13,7 +13,7 @@ feature -- Conversion
 
 	to_json (obj: detachable ANY; ctx: JSON_SERIALIZER_CONTEXT): JSON_VALUE
 		local
-			j_object: JSON_OBJECT
+			j_object, j_dico: JSON_OBJECT
 			j_array: JSON_ARRAY
 			j_value: detachable JSON_VALUE
 			i: INTEGER
@@ -70,8 +70,28 @@ feature -- Conversion
 					ctx.on_field_end (i.out)
 					i := i + 1
 				end
-				ctx.on_field_end ("owner")
+				ctx.on_field_end ("vectors")
 				j_object.put (j_array, "vectors")
+
+					-- "dico"
+				create j_dico.make_with_capacity (grp.dico.count)
+				ctx.on_field_start ("dico")
+				i := 1
+				across
+					grp.dico as ic
+				loop
+					ctx.on_field_start (ic.key)
+					j_value := ctx.to_json (ic.item, Current)
+					if j_value = Void then
+						check type_serializable: False end
+						create {JSON_NULL} j_value
+					end
+					j_dico.put (j_value, ic.key)
+					ctx.on_field_end (ic.key)
+					i := i + 1
+				end
+				ctx.on_field_end ("dico")
+				j_object.put (j_dico, "dico")
 
 				Result := j_object
 			else

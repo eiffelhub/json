@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {LIST_JSON_DESERIALIZER}."
+	description: "Summary description for {ARRAY_JSON_DESERIALIZER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	LIST_JSON_DESERIALIZER [G -> detachable ANY]
+	ARRAY_JSON_DESERIALIZER [G -> detachable ANY]
 
 inherit
 	JSON_DESERIALIZER
@@ -14,7 +14,7 @@ inherit
 
 feature -- Conversion
 
-	from_json (a_json: detachable JSON_VALUE; ctx: JSON_DESERIALIZER_CONTEXT; a_type: detachable TYPE [detachable ANY]): detachable LIST [G]
+	from_json (a_json: detachable JSON_VALUE; ctx: JSON_DESERIALIZER_CONTEXT; a_type: detachable TYPE [detachable ANY]): detachable ARRAY [G]
 			-- Eiffel value deserialized from `a_json' value, in the eventual context `ctx'.
 		local
 			inf: JSON_DESERIALIZER_CREATION_INFORMATION
