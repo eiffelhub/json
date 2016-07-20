@@ -38,6 +38,22 @@ feature -- Access
 
 	previous: detachable JSON_DESERIALIZER_ERROR
 
+feature -- Conversion
+
+	all_messages_as_string: STRING_32
+		do
+			create Result.make_empty
+			append_all_messages_to (Result)
+		end
+
+	append_all_messages_to (s: STRING_32)
+		do
+			s.append (message)
+			if attached previous as prev then
+				prev.append_all_messages_to (s)
+			end
+		end
+
 feature -- Element change
 
 	set_previous (e: like previous)
@@ -46,6 +62,6 @@ feature -- Element change
 		end
 
 ;note
-	copyright: "2016-2016, Jocelyn Fiat and Eiffel Software"
-	license: "Eiffel Forum License v2 (see https://www.eiffel.com/licensing/forum.txt)"
+	copyright: "2010-2016, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

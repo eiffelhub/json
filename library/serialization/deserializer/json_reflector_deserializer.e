@@ -47,11 +47,6 @@ feature -- Cleaning
 feature {NONE} -- Helpers	: Array	
 
 	reference_from_json_array (a_json: JSON_ARRAY; ctx: JSON_DESERIALIZER_CONTEXT; a_type: detachable TYPE [detachable ANY]): detachable ANY
-		local
-			l_item_type: detachable TYPE [detachable ANY]
-			fn: STRING
-			i: INTEGER
-			inf: JSON_DESERIALIZER_CREATION_INFORMATION
 		do
 			if a_type = Void then
 				ctx.on_value_skipped (a_json, a_type, "Unable to deserialize array without type information!")
@@ -91,7 +86,11 @@ feature {NONE} -- Helpers	: Array
 				loop
 					fn := i.out
 					ctx.on_deserialization_field_start (Result, fn)
-					process_array_item_value (ic.item, ctx, l_item_type, agent Result.extend)
+					process_array_item_value (ic.item, ctx, l_item_type, agent (spe: SPECIAL [detachable ANY]; ith: INTEGER; v: detachable ANY)
+							do
+								spe.force (v, ith)
+							end(Result,Result.lower + i - 1, ?)
+						)
 					ctx.on_deserialization_field_end (Result, fn)
 					i := i + 1
 				end
@@ -112,12 +111,17 @@ feature {NONE} -- Helpers	: Array
 			if attached {ARRAY [detachable ANY]} inf.object as arr then
 				Result := arr
 				l_item_type := a_type.generic_parameter_type (1)
+				i := 1
 				across
 					a_json as ic
 				loop
 					fn := i.out
 					ctx.on_deserialization_field_start (arr, fn)
---					process_array_item_value (ic.item, ctx, l_item_type, agent arr.extend)
+					process_array_item_value (ic.item, ctx, l_item_type, agent (i_arr: ARRAY [detachable ANY]; ith: INTEGER; v: detachable ANY)
+							do
+								i_arr.force (v, ith)
+							end(arr, arr.lower + i - 1, ?)
+						)
 					ctx.on_deserialization_field_end (arr, fn)
 					i := i + 1
 				end
@@ -132,13 +136,13 @@ feature {NONE} -- Helpers	: Array
 			i: INTEGER
 			fn: STRING
 			inf: JSON_DESERIALIZER_CREATION_INFORMATION
-			d: LIST_JSON_DESERIALIZER [detachable ANY]
 		do
 			create inf.make (a_type, a_json)
 			ctx.on_value_creation (inf)
 			if attached {LIST [detachable ANY]} inf.object as lst then
 				Result := lst
 				l_item_type := a_type.generic_parameter_type (1)
+				i := 1
 				across
 					a_json as ic
 				loop
@@ -297,23 +301,23 @@ feature {NONE} -- Helpers: Basic values
 				if a_type = Void then
 					Result := l_number.integer_64_item
 				elseif a_type = {INTEGER_8} then
-					Result := l_number.integer_64_item
+					Result := l_number.integer_64_item.to_integer_8
 				elseif a_type = {INTEGER_16} then
-					Result := l_number.integer_64_item
+					Result := l_number.integer_64_item.to_integer_16
 				elseif a_type = {INTEGER_32} then
-					Result := l_number.integer_64_item
+					Result := l_number.integer_64_item.to_integer_32
 				elseif a_type = {INTEGER_64} then
 					Result := l_number.integer_64_item
 				elseif a_type = {NATURAL_8} then
-					Result := l_number.natural_64_item
+					Result := l_number.natural_64_item.to_natural_8
 				elseif a_type = {NATURAL_16} then
-					Result := l_number.natural_64_item
+					Result := l_number.natural_64_item.to_natural_16
 				elseif a_type = {NATURAL_32} then
-					Result := l_number.natural_64_item
+					Result := l_number.natural_64_item.to_natural_32
 				elseif a_type = {NATURAL_64} then
 					Result := l_number.natural_64_item
 				elseif a_type = {REAL_32} then
-					Result := l_number.natural_64_item
+					Result := l_number.natural_64_item.to_real_32
 				elseif a_type = {REAL_64} then
 					Result := l_number.natural_64_item
 				else

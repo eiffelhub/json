@@ -105,8 +105,8 @@ feature -- Access
 					elseif
 							-- Hack: use conformance of type, and reverse conformance of type of type.
 --						(is_strict implies attached k_type.attempted (o_type)) and then
-						attached k_type.conforms_to (o_type) and then
-						attached o_type.conforms_to (k_type) and then
+						k_type.conforms_to (o_type) and then
+						o_type.conforms_to (k_type) and then
 						attached o_type.generating_type.attempted (k_type)
 					then
 							-- Found
