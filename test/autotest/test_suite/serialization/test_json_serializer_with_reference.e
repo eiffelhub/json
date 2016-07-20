@@ -108,15 +108,12 @@ feature -- Tests
 		local
 			obj: TEAM
 			js: JSON_SERIALIZATION
-			s: STRING
+			s,s2: STRING
 		do
 			obj := new_cycling_full_team
 
 			create js.make_with_context (create {JSON_SERIALIZATION_CONTEXT_WITH_REFERENCE})
-			js.register (create {TEAM_JSON_SERIALIZATION}, {TEAM})
-			js.register (create {PERSON_JSON_SERIALIZATION}, {PERSON})
 			js.register_default (create {JSON_REFLECTOR_SERIALIZATION})
-
 			js.set_pretty_printing
 
 
@@ -125,6 +122,9 @@ feature -- Tests
 
 			if attached js.from_json_string (s, {TEAM}) as o then
 				assert ("deserialized ok", recursively_same_objects (obj, o, Void))
+				js.reset
+				s2 := js.to_json_string (o)
+				assert ("deserialized ok", s.same_string (s2))
 			else
 				assert ("deserialized failed", js.context.has_deserialization_error)
 			end

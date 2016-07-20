@@ -12,14 +12,15 @@ create
 feature {NONE} -- Initialization
 
 	make
-		local
 		do
 			process_reflector_serialization
 			process_smart_serialization
+			process_custom_serialization
 		end
 
 	process_reflector_serialization
-			-- Instantiate Current object.
+			-- Use reflector serialization, mostly for storage since the serialized json contains internal attributes...
+			-- So not a simple json output.
 		local
 			fac: JSON_SERIALIZATION_FACTORY
 			conv: JSON_SERIALIZATION
@@ -56,7 +57,8 @@ feature {NONE} -- Initialization
 		end
 
 	process_smart_serialization
-			-- Instantiate Current object.
+			-- Use smart serialization, i.e use json array [ .. ] and json object { .. : .. }.
+			-- And deserialization is made possible thanks to specific callback.
 		local
 			fac: JSON_SERIALIZATION_FACTORY
 			conv: JSON_SERIALIZATION
@@ -101,6 +103,12 @@ feature {NONE} -- Initialization
 					end
 				end
 			end
+		end
+
+	process_custom_serialization
+		local
+		do
+			
 		end
 
 feature -- Object factory		

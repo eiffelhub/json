@@ -9,20 +9,30 @@ expanded class
 
 feature -- Factory
 
-	reflector_serialization: JSON_SERIALIZATION
+	serialization: JSON_SERIALIZATION
+			-- Simple empty serialization.
+			-- It requires either custom (de)serializers or reflector based solution.	
 		do
 			create Result
+		end
+
+	reflector_serialization: JSON_SERIALIZATION
+		do
+			Result := serialization
 			Result.register_default (create {JSON_REFLECTOR_SERIALIZATION})
 		end
 
 	smart_serialization: JSON_SERIALIZATION
+			-- Serialization based on reflector, but with specific handling of ITERABLE, LIST and TABLE objects.
 		do
-			create Result
-			Result.register_default (create {JSON_REFLECTOR_SERIALIZATION})
-			Result.context.register_serializer (create {TABLE_ITERABLE_JSON_SERIALIZER [detachable ANY, READABLE_STRING_GENERAL]}, {TABLE_ITERABLE [detachable ANY, READABLE_STRING_GENERAL]})
-			Result.context.register_serializer (create {ITERABLE_JSON_SERIALIZER [detachable ANY]}, {ITERABLE [detachable ANY]})
-			Result.context.register_deserializer (create {LIST_JSON_DESERIALIZER [detachable ANY]}, {LIST [detachable ANY]})
-			Result.context.register_deserializer (create {TABLE_JSON_DESERIALIZER [detachable ANY]}, {TABLE [detachable ANY, READABLE_STRING_GENERAL]})
+			Result := reflector_serialization
+
+				-- Serializers
+			Result.register (create {TABLE_ITERABLE_JSON_SERIALIZER [detachable ANY, READABLE_STRING_GENERAL]}, {TABLE_ITERABLE [detachable ANY, READABLE_STRING_GENERAL]})
+			Result.register (create {ITERABLE_JSON_SERIALIZER [detachable ANY]}, {ITERABLE [detachable ANY]})
+				-- Deserializers
+			Result.register (create {TABLE_JSON_DESERIALIZER [detachable ANY]}, {TABLE [detachable ANY, READABLE_STRING_GENERAL]})
+			Result.register (create {LIST_JSON_DESERIALIZER [detachable ANY]}, {LIST [detachable ANY]})
 		end
 
 note
