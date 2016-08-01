@@ -1,0 +1,2 @@
+Catcall detected in {JSON_HASH_TABLE_CONVERTER}.to_json for arg#1: expected HASH_TABLE [!ANY, !HASHABLE] but got HASH_TABLE [ANY, !STRING_GENERAL]
+Catcall detected in {JSON_HASH_TABLE_CONVERTER}.to_json for arg#1: expected HASH_TABLE [!ANY, !HASHABLE] but got HASH_TABLE [ANY, !STRING_GENERAL]
