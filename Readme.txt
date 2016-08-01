@@ -14,9 +14,8 @@ including a pretty printer.
 
 The converters part is now obsolete and not recommended (remember: the
 objective of converters were to provide two basic features Eiffel2JSON and
-JSON2Eiffel). 
-There is a new design called serialization within this library and require
-EiffelStudio 16.11.
+JSON2Eiffel). There will be a new design for converters as a standalone
+library on top of Current json library.
 
 2. Legal stuff
 --------------
@@ -50,11 +49,11 @@ Currently the only documentation on eJSON is available at:
 5. Requirements and installation
 --------------------------------
 
-e JSON lib requires that you have:
+EJSON requires that you have:
 
 1. One of the following compiler combinations installed:
-   * ISE Eiffel 16.05 or later.
-   * Note that for deserialization, it will require ISE Eiffel 16.11.
+   * ISE Eiffel 13.11 or later.
+   * gec [try to test]
 
 eJSON probably works fine with other versions of the above compilers.
 There are no known platform dependencies (Windows, Linux).
@@ -98,18 +97,14 @@ history.txt.
 
 Version Date            Description
 ------- ----            -----------
-0.7.0   2014-11-17      Fixed various issue with parsing string (such as \t and related),
-0.6.1   2016-07-04      Fixed pretty printing for boolean by generating "true" or "false"
-                        Fixed implementation of JSON_PARSER.is_valid_number (STRING): BOOLEAN
-                        
 0.6.0   2014-11-17      Fixed various issue with parsing string (such as \t and related),
-                        Implemented escaping of slash '/' only in case of '</' to avoid 
-                          potential issue with javascript and </script>
-                        Many feature renaming to match Eiffel style and naming convention, 
-                          kept previous feature as obsolete.
-                        Restructured the library to make easy extraction of "converter" 
-                          classes if needed in the future.
-                        Marked converters classes as obsolete.
+						Implemented escaping of slash '/' only in case of '</' to avoid 
+						  potential issue with javascript and </script>
+						Many feature renaming to match Eiffel style and naming convention, 
+						  kept previous feature as obsolete.
+				        Restructured the library to make easy extraction of "converter" 
+						  classes if needed in the future.
+				        Marked converters classes as obsolete.
 0.5.0   2013-11-dd      Added JSON_ITERATOR, simplified JSON_OBJECT
 0.4.0   2012-12-12      Updated documentation URI
 0.3.0   2011-07-06      JSON Factory Converters

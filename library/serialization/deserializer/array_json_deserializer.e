@@ -1,8 +1,8 @@
 note
 	description: "Summary description for {ARRAY_JSON_DESERIALIZER}."
 	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2016-08-01 09:11:38 +0200 (lun., 01 août 2016) $"
+	revision: "$Revision: 99097 $"
 
 class
 	ARRAY_JSON_DESERIALIZER [G -> detachable ANY]
@@ -19,6 +19,7 @@ feature -- Conversion
 		local
 			inf: JSON_DESERIALIZER_CREATION_INFORMATION
 			l_item_type: detachable TYPE [detachable ANY]
+			i: INTEGER
 		do
 			if attached {JSON_ARRAY} a_json as j_array then
 				create inf.make (a_type, a_json)
@@ -37,11 +38,13 @@ feature -- Conversion
 					if l_item_type = Void then
 						l_item_type := {G}
 					end
+					i := Result.lower
 					across
 						j_array as ic
 					loop
 						if attached {G} ctx.value_from_json (ic.item, l_item_type) as g then
-							Result.force (g)
+							Result.force (g, i)
+							i := i + 1
 						end
 					end
 				end

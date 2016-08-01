@@ -1,8 +1,8 @@
 note
 	description: "Summary description for {TEST_JSON_SERIALIZER}."
 	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2016-08-01 09:11:38 +0200 (lun., 01 août 2016) $"
+	revision: "$Revision: 99097 $"
 
 class
 	TEST_JSON_SERIALIZER
@@ -150,8 +150,8 @@ feature -- Tests
 			ctx_deser.set_default_deserializer (create {JSON_REFLECTOR_DESERIALIZER})
 			ctx_deser.register_deserializer (create {TEAM_JSON_DESERIALIZER}, {TEAM})
 			ctx_deser.register_deserializer (create {PERSON_JSON_DESERIALIZER}, {PERSON})
-			ctx_deser.register_deserializer (create {ARRAYED_LIST_JSON_DESERIALIZER [PERSON]}, {ARRAYED_LIST [PERSON]})
-			ctx_deser.register_deserializer (create {ARRAYED_LIST_JSON_DESERIALIZER [ENTITY]}, {ARRAYED_LIST [ENTITY]})
+			ctx_deser.register_deserializer (create {LIST_JSON_DESERIALIZER [PERSON]}, {ARRAYED_LIST [PERSON]})
+			ctx_deser.register_deserializer (create {LIST_JSON_DESERIALIZER [ENTITY]}, {ARRAYED_LIST [ENTITY]})
 
 			if attached conv_from.from_json_string (s, ctx_deser, {TEAM}) as o then
 				assert ("deserialized ok", recursively_one_includes_other (obj, o, Void))

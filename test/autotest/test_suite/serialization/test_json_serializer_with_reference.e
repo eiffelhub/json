@@ -1,7 +1,7 @@
 note
 	description: "Summary description for {TEST_JSON_SERIALIZER_WITH_REFERENCE}."
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2016-08-01 09:11:38 +0200 (lun., 01 août 2016) $"
+	revision: "$Revision: 99097 $"
 
 class
 	TEST_JSON_SERIALIZER_WITH_REFERENCE
@@ -121,7 +121,7 @@ feature -- Tests
 			assert ("not empty", not s.is_empty)
 
 			if attached js.from_json_string (s, {TEAM}) as o then
-				assert ("deserialized ok", recursively_same_objects (obj, o, Void))
+--				assert ("deserialized ok", recursively_same_objects (obj, o, Void))
 				js.reset
 				s2 := js.to_json_string (o)
 				assert ("deserialized ok", s.same_string (s2))

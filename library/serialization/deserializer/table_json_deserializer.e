@@ -1,8 +1,8 @@
 note
 	description: "Summary description for {TABLE_JSON_DESERIALIZER}."
 	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2016-08-01 09:11:38 +0200 (lun., 01 août 2016) $"
+	revision: "$Revision: 99097 $"
 
 class
 	TABLE_JSON_DESERIALIZER [G -> detachable ANY]
@@ -26,9 +26,9 @@ feature -- Conversion
 				if attached {like from_json} inf.object as tb then
 					Result := tb
 				elseif a_type = Void then
-					ctx.on_value_skipped (j_table, a_type, "Could not instantiate table object.")
+					ctx.on_value_skipped (j_table, a_type, "Could not instantiate from table data.")
 				else
-					ctx.on_value_skipped (j_table, a_type, "Could not instantiate table {" + a_type.name + "}.")
+					ctx.on_value_skipped (j_table, a_type, "Could not instantiate {" + a_type.name + "} from table data.")
 				end
 				if Result /= Void and not ctx.has_error then
 					if a_type /= Void and then a_type.generic_parameter_count >= 1 then
