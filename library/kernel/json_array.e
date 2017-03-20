@@ -17,7 +17,8 @@ class
 inherit
 	JSON_VALUE
 		redefine
-			is_array
+			is_array,
+			safe_item
 		end
 
 	ITERABLE [JSON_VALUE]
@@ -63,6 +64,16 @@ feature -- Access
 			is_valid_index: valid_index (i)
 		do
 			Result := items.i_th (i)
+		end
+
+	safe_item alias "@" (a_key: JSON_STRING): JSON_VALUE
+			-- <Precursor>.
+		do
+			if a_key.item.is_integer then
+				Result := i_th (a_key.item.to_integer)
+			else
+				Result := Precursor (a_key)
+			end
 		end
 
 	representation: STRING

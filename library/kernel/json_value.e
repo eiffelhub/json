@@ -51,6 +51,21 @@ feature -- Status report
 
 feature -- Access
 
+	has_key (a_key: JSON_STRING): BOOLEAN
+			-- Has Current an item associated with `a_key`?
+			-- relevant for object and array values!
+		do
+		end
+
+	safe_item alias "@" (a_key: JSON_STRING): JSON_VALUE
+			-- Item associated with key `a_key` if exists.
+			-- Note: if item does not exists, return also JSON_NULL.
+		do
+			create {JSON_NULL} Result
+		end
+
+feature -- Conversion		
+
 	representation: STRING
 			-- UTF-8 encoded Unicode string representation of Current
 		deferred

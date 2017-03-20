@@ -20,7 +20,9 @@ class
 inherit
 	JSON_VALUE
 		redefine
-			is_object
+			is_object,
+			has_key,
+			safe_item
 		end
 
 	TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
@@ -227,10 +229,20 @@ feature -- Status report
 
 feature -- Access
 
-	item (a_key: JSON_STRING): detachable JSON_VALUE
+	item alias "[]" (a_key: JSON_STRING): detachable JSON_VALUE
 			-- the json_value associated with a key `a_key'.
 		do
 			Result := items.item (a_key)
+		end
+
+	safe_item alias "@" (a_key: JSON_STRING): JSON_VALUE
+			-- <Precursor>.
+		do
+			if attached item (a_key) as v then
+				Result := v
+			else
+				Result := Precursor (a_key)
+			end
 		end
 
 	current_keys: ARRAY [JSON_STRING]
