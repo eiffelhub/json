@@ -102,7 +102,7 @@ feature -- Visitor pattern
 feature -- Access
 
 	new_cursor: ITERATION_CURSOR [JSON_VALUE]
-			-- Fresh cursor associated with current structure
+			-- <Precursor>
 		do
 			Result := items.new_cursor
 		end

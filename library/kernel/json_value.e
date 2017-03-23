@@ -61,7 +61,7 @@ feature -- Access
 			-- Item associated with key `a_key` if exists.
 			-- Note: if item does not exists, return also JSON_NULL.
 		do
-			create {JSON_NULL} Result
+			Result := not_found_value
 		end
 
 feature -- Conversion		
@@ -79,6 +79,13 @@ feature -- Visitor pattern
 		require
 			a_visitor_not_void: a_visitor /= Void
 		deferred
+		end
+
+feature {NONE} -- Implementation
+
+	not_found_value: JSON_NULL
+		once
+			create Result
 		end
 
 note
