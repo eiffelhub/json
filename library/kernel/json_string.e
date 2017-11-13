@@ -70,7 +70,7 @@ feature {NONE} -- Initialization
 	make_with_escaped_json (a_escaped_string: READABLE_STRING_8)
 			-- Initialize with `a_escaped_string' already JSON escaped.
 		obsolete
-			"Use `make_from_escaped_json_string' Sept/2014"
+			"Use `make_from_escaped_json_string' [2017-05-31]"
 		require
 			a_escaped_string_not_void: a_escaped_string /= Void
 		do
@@ -86,7 +86,7 @@ feature {NONE} -- Initialization
 	make_json (s: READABLE_STRING_8)
 			-- Initialize.
 		obsolete
-			"Use `make_from_string' Sept/2014"
+			"Use `make_from_string' [2017-05-31]"
 		require
 			item_not_void: s /= Void
 		do
@@ -96,7 +96,7 @@ feature {NONE} -- Initialization
 	make_json_from_string_32 (s: READABLE_STRING_32)
 			-- Initialize from STRING_32 `s'.
 		obsolete
-			"Use `make_from_string_32' Sept/2014"
+			"Use `make_from_string_32' [2017-05-31]"
 		require
 			item_not_void: s /= Void
 		do
@@ -117,7 +117,7 @@ feature -- Conversion
 
 	unescaped_string_8: STRING_8
 			-- Unescaped ascii string from `item'.
-			--| note: valid only if `item' does not encode any unicode character.
+			--| note: valid only if `item' does not encode any unicode character which is not a valid CHARACTER_8 value.
 		local
 			s: like item
 		do
@@ -149,11 +149,13 @@ feature -- Conversion
 
 	unescape_to_string_8 (a_output: STRING_8)
 			-- Unescape string `item' into `a_output'.
-			--| note: valid only if `item' does not encode any unicode character.
+			--| note: valid only if `item' does not encode any unicode character which is not a valid CHARACTER_8 value.
 		local
 			s: like item
 			i, n: INTEGER
 			c: CHARACTER
+			l_code: like hexadecimal_to_natural_32
+			hex: READABLE_STRING_8
 		do
 			s := item
 			n := s.count
@@ -191,9 +193,24 @@ feature -- Conversion
 							a_output.append_character ('%T')
 							i := i + 2
 						when 'u' then
-								--| Leave unicode \uXXXX unescaped
-							a_output.append_character (c) -- '\'
-							i := i + 1
+							if i + 5 <= n then
+								hex := s.substring (i + 2, i + 5) -- i+2 , i+2+4-1
+								check is_escaped_unicode: hex.count = 4 end
+								l_code := hexadecimal_to_natural_32 (hex)
+								if l_code.is_valid_character_8_code then
+									a_output.append_code (l_code)
+								else
+										--| Leave unicode \uXXXX unescaped
+									a_output.append_character (c) -- '\'
+									a_output.append_character ('u') -- 'u'
+									a_output.append (hex) -- "XXXX"
+								end
+								i := i + 6 -- i+2+4
+							else
+									--| Leave unicode \uXXXX unescaped
+								a_output.append_character (c) -- '\'
+								i := i + 1
+							end
 						else
 							a_output.append_character (c) -- '\'
 							i := i + 1
@@ -256,11 +273,16 @@ feature -- Conversion
 							a_output.append_character ('%T')
 							i := i + 2
 						when 'u' then
-							hex := s.substring (i + 2, i + 5) -- i+2 , i+2+4-1
-							if hex.count = 4 then
+							if i + 5 <= n then
+								hex := s.substring (i + 2, i + 5) -- i+2 , i+2+4-1
+								check hex.count = 4 end
 								a_output.append_code (hexadecimal_to_natural_32 (hex))
+								i := i + 6 -- i+2+4
+							else
+									-- Invalid escaped unicode ...
+								a_output.append_character (ch) -- '\'
+								i := i + 1
 							end
-							i := i + 6 -- i+2+4
 						else
 							a_output.append_character (ch) -- '\'
 							i := i + 1
@@ -506,6 +528,6 @@ invariant
 	item_not_void: item /= Void
 
 note
-	copyright: "2010-2017, Javier Velilla and others https://github.com/eiffelhub/json."
+	copyright: "2010-2017, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end
