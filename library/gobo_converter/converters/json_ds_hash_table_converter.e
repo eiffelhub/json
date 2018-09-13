@@ -1,9 +1,9 @@
 note
     description: "A JSON converter for DS_HASH_TABLE [ANY, HASHABLE]"
     author: "Paul Cohen"
-    date: "$Date: 2016-11-23 22:18:57 +0100 (mer., 23 nov. 2016) $"
-    revision: "$Revision: 99487 $"
-    file: "$HeadURL: $"
+    date: "$Date$"
+    revision: "$Revision$"
+    file: "$HeadURL$"
 
 class JSON_DS_HASH_TABLE_CONVERTER
 

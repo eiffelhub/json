@@ -1,8 +1,8 @@
 note
 	description: "Summary description for {ARRAYED_LIST_JSON_DESERIALIZER}."
 	author: ""
-	date: "$Date: 2016-08-01 09:11:38 +0200 (lun., 01 août 2016) $"
-	revision: "$Revision: 99097 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	ARRAYED_LIST_JSON_DESERIALIZER [G -> detachable ANY]

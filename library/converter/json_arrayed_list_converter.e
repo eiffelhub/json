@@ -3,7 +3,7 @@ note
 	author: "Paul Cohen"
 	date: "$Date$"
 	revision: "$Revision$"
-	file: "$HeadURL: $"
+	file: "$HeadURL$"
 
 class
 	JSON_ARRAYED_LIST_CONVERTER

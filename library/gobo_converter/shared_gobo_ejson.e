@@ -9,7 +9,7 @@ note
     author: "Paul Cohen"
     date: "$Date$"
     revision: "$Revision$"
-    file: "$HeadURL: $"
+    file: "$HeadURL$"
 
 class SHARED_GOBO_EJSON
 

@@ -1,7 +1,7 @@
 note
 	description: "Summary description for {TEST_JSON_SERIALIZER_WITH_REFERENCE}."
-	date: "$Date: 2016-08-01 09:11:38 +0200 (lun., 01 août 2016) $"
-	revision: "$Revision: 99097 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	TEST_JSON_SERIALIZER_WITH_REFERENCE
