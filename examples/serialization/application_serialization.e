@@ -1,6 +1,6 @@
 note
 	description: "[
-			Enter class description here!
+			Collection of JSON serialization examples.
 		]"
 
 class
@@ -12,10 +12,18 @@ create
 feature {NONE} -- Initialization
 
 	make
+		local
+			l_custom: CUSTOM_SERIALIZATION
+			l_basic: BASIC_SERIALIZATION
 		do
+				-- Example of basic serialization
+			create l_basic.make
+
+				-- Example of custom serialization
+			create l_custom.make
+
 			process_reflector_serialization
 			process_smart_serialization
-			process_custom_serialization
 		end
 
 	process_reflector_serialization
@@ -103,12 +111,6 @@ feature {NONE} -- Initialization
 					end
 				end
 			end
-		end
-
-	process_custom_serialization
-		local
-		do
-			
 		end
 
 feature -- Object factory		
