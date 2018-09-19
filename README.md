@@ -15,24 +15,18 @@ The "serialization" interfaces replace the obsolete converters interfaces.
 
 ## Legal stuff
 
-eJSON is copyrighted by the author Javier Velilla, Jocelyn Fiat and others. It is licensed
-under the MIT License. See the file license.txt in the same directory as this
-readme file.
+eJSON is copyrighted by the authors Jocelyn Fiat, Javier Velilla, and others. It is licensed under the MIT License. See the file license.txt in the same directory as this readme file.
 
 ## Versioning scheme
 
-eJSON version numbers has the form:
-
-`   "major number"."minor number"."patch level" `
+eJSON version numbers has the form: `"major number"."minor number"."patch level" `
 
 eJSON will retain the major number 0 as long as it has beta status. A change in major number indicates that a release is not backward compatible. A change in minor number indicates that a release is backward compatible (within that major
 number) but that new useful features may have been added. A change in patch level simply indicates that the release contains bug fixes for the previous release. Note that as long as eJSON is in beta status (0.Y.Z) backward compatibility is not guranteed for changes in minor numbers!
 
 ## Documentation
 
-Currently the only documentation on eJSON is available at:
-
-  https://github.com/eiffelhub/json/blob/master/doc/user_guide.md
+Currently the only documentation on eJSON is available at: `https://github.com/eiffelhub/json/blob/master/doc/user_guide.md`
 
 ## Requirements and installation
 
@@ -46,7 +40,7 @@ eJSON probably works fine with other versions of the above compilers.
 There are no known platform dependencies (Windows, Linux).
 
 To install eJSON simply extract the ejson-X.Y.Z.zip file to some appropriate place on your hard disk. There are no requirements on environment variables or registry variables. 
-Note eJSON is also delivered within EiffelStudio release, under $ISE_LIBRARY/contrib/library/text/parser/json
+Note eJSON is also delivered within EiffelStudio release, under `$ISE_LIBRARY/contrib/library/text/parser/json`
 
 To verify that everything works you should compile the example programs and/or
 the test program.
@@ -69,6 +63,12 @@ Contact the team: https://github.com/eiffelhub/json/issues
 ```
 Version Date            Description
 ------- ----            -----------
+0.9.0  2018-09-19	Added basic serialization
+					Updated the serialization example to demonstrate the use of custom (de)serializers.
+					Added JSON_VALUE.chained_item (a_key): JSON_VALUE to be able to access
+					  `json@"person"@"address"@"city"` and return associated JSON value if any, 
+					   otherwise JSON_NULL.
+
 0.8.0  2018-09-13	Ensure the `JSON_STRING`.item is really UTF-8 encoded (even for characters between 128 and 255)!
 					Properly encode null character as \u0000 .
 					Unescape escaped unicode in unescape_to_string_8 when it represents a valid `CHARACTER_8` value.
