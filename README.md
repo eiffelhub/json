@@ -14,8 +14,7 @@ including a pretty printer.
 
 The converters part is now obsolete and not recommended (remember: the
 objective of converters were to provide two basic features Eiffel2JSON and
-JSON2Eiffel). There will be a new design for converters as a standalone
-library on top of Current json library.
+JSON2Eiffel). It is recommended to use the "serialization" interfaces.
 
 2. Legal stuff
 --------------
@@ -29,7 +28,7 @@ readme file.
 
 eJSON version numbers has the form:
 
-   «major number».«minor number».«patch level»
+   "major number"."minor number"."patch level"
 
 eJSON will retain the major number 0 as long as it has beta status. A change in
 major number indicates that a release is not backward compatible. A change in
@@ -86,8 +85,8 @@ test        Contains test suite for eJSON.
 Contact the team: 
 
  https://github.com/eiffelhub/json/issues
- Javier Velilla «javier.hector@gmail.com»
- Jocelyn Fiat «jfiat@eiffel.com»
+ Javier Velilla "javier.hector@gmail.com"
+ Jocelyn Fiat "jfiat@eiffel.com"
 
 8. Releases
 -----------
@@ -97,16 +96,23 @@ history.txt.
 
 Version Date            Description
 ------- ----            -----------
-0.6.0   2014-11-17      Fixed various issue with parsing string (such as \t and related),
-						Implemented escaping of slash '/' only in case of '</' to avoid 
-						  potential issue with javascript and </script>
-						Many feature renaming to match Eiffel style and naming convention, 
-						  kept previous feature as obsolete.
-				        Restructured the library to make easy extraction of "converter" 
-						  classes if needed in the future.
-				        Marked converters classes as obsolete.
-0.5.0   2013-11-dd      Added JSON_ITERATOR, simplified JSON_OBJECT
-0.4.0   2012-12-12      Updated documentation URI
-0.3.0   2011-07-06      JSON Factory Converters
-0.2.0   2010-02-07      Adapted to EiffelStudio 6.4 or later, supports void-safety
-0.1.0   2010-02-07      First release, Adapted to SmartEiffel 1.2r7 and EiffelStudio 6.2 or previous
+0.8.0  2018-09-13	Ensure the `JSON_STRING`.item is really UTF-8 encoded (even for characters between 128 and 255)!
+					Properly encode null character as \u0000 .
+					Unescape escaped unicode in unescape_to_string_8 when it represents a valid `CHARACTER_8` value.
+					Fixed parsing of integer 64 value
+0.7.1   2017-03-20	Added `JSON_VALUE.is_string` ... `is_null` boolean query for convenience.
+0.7.1   2017-03-20	Added `JSON_VALUE.is_string` ... `is_null` boolean query for convenience.
+0.7.0   2016-08-01	New JSON serialization implementation (to replace the obsolete converters).
+0.6.0   2014-11-17	Fixed various issue with parsing string (such as \t and related),
+					Implemented escaping of slash '/' only in case of '</' to avoid 
+					  potential issue with javascript and </script>
+					Many feature renaming to match Eiffel style and naming convention, 
+					  kept previous feature as obsolete.
+					Restructured the library to make easy extraction of "converter" 
+					classes if needed in the future.
+					Marked converters classes as obsolete.
+0.5.0   2013-11-31	Added `JSON_ITERATOR`, simplified `JSON_OBJECT`
+0.4.0   2012-12-12	Updated documentation URI
+0.3.0   2011-07-06	JSON Factory Converters
+0.2.0   2010-02-07	Adapted to EiffelStudio 6.4 or later, supports void-safety
+0.1.0   2010-02-07	First release, Adapted to SmartEiffel 1.2r7 and EiffelStudio 6.2 or previous
