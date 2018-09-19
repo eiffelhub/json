@@ -23,7 +23,7 @@ feature -- Example
 
 	demonstrate_custom_serialization
 		local
-			l_custom: CUSTOM_SERIALIZATION
+			l_custom: DEMO_CUSTOM_SERIALIZATION
 		do
 				-- Example of custom serialization
 			create l_custom.make
@@ -31,7 +31,7 @@ feature -- Example
 
 	demonstrate_basic_serialization
 		local
-			l_basic: BASIC_SERIALIZATION
+			l_basic: DEMO_BASIC_SERIALIZATION
 		do
 				-- Example of basic serialization
 			create l_basic.make
