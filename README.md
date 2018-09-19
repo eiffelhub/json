@@ -55,12 +55,10 @@ the test program.
 
 All directory names below are relative to the root directory of your ejson installation. 
 
-Directory     Description
----------     -----------
-- doc         Contains documentation file.
-- examples    Contains example codes.
-- library     Contains the actual eJSON library classes.
-- test        Contains test suite for eJSON.
+- doc:         Contains documentation file.
+- examples:    Contains example codes.
+- library:     Contains the actual eJSON library classes.
+- test:        Contains test suite for eJSON.
 
 ## Contacting the Team
 
