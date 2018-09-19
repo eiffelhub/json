@@ -6,6 +6,9 @@ note
 class
 	CUSTOM_SERIALIZATION
 
+inherit
+	OUTPUT_UTILITIES
+
 create
 	make
 
@@ -15,31 +18,40 @@ feature {NONE} -- Initialization
 		local
 			fac: JSON_SERIALIZATION_FACTORY
 			conv: JSON_SERIALIZATION
-			arr: ARRAYED_LIST [PERSON]
-			p: PERSON
+			p,p2: PERSON
+			t: TEAM
 			s: STRING
 		do
 			p := person_john_smith
 
 			create conv
 			conv.set_pretty_printing
-			conv.register (create {TEAM_JSON_SERIALIZATION}, {TEAM})
-			conv.register (create {PERSON_JSON_SERIALIZATION}, {PERSON})
 			conv.register_default (create {JSON_REFLECTOR_SERIALIZATION}) -- for PERSON_DETAILS
+			conv.register (create {TEAM_JSON_SERIALIZATION}, {detachable TEAM})
+			conv.register (create {PERSON_JSON_SERIALIZATION}, {detachable PERSON})
 
 			s := conv.to_json_string (p)
+			print (s)
+			print ("%N")
 
-			if s /= Void and then attached {PERSON} conv.from_json_string (s, {PERSON}) as l_person then
+			if attached {PERSON} conv.from_json_string (s, {PERSON}) as l_person then
 				print (l_person)
 			end
 
+				-- Now to handle a team
+			create t.make ("The testers")
+			p2 := person_gustave_eiffel
+			t.put (p)
+			t.put (p2)
+			p.add_co_worker (p2)
+			print (t)
+			s := conv.to_json_string (t)
+			print (s)
+			print ("%N")
 
-				-- Now to handle a list of persons.			
-			create arr.make (2)
-			arr.force (p)
-			p := person_gustave_eiffel
-			arr.force (p)
-
+			if attached {TEAM} conv.from_json_string (s, {TEAM}) as l_team then
+				print (l_team)
+			end
 		end
 
 feature -- Object factory		

@@ -12,21 +12,32 @@ create
 feature {NONE} -- Initialization
 
 	make
+		do
+			demonstrate_custom_serialization
+			demonstrate_basic_serialization
+			demonstrate_reflector_serialization
+			demonstrate_smart_serialization
+		end
+
+feature -- Example		
+
+	demonstrate_custom_serialization
 		local
 			l_custom: CUSTOM_SERIALIZATION
+		do
+				-- Example of custom serialization
+			create l_custom.make
+		end
+
+	demonstrate_basic_serialization
+		local
 			l_basic: BASIC_SERIALIZATION
 		do
 				-- Example of basic serialization
 			create l_basic.make
-
-				-- Example of custom serialization
-			create l_custom.make
-
-			process_reflector_serialization
-			process_smart_serialization
 		end
 
-	process_reflector_serialization
+	demonstrate_reflector_serialization
 			-- Use reflector serialization, mostly for storage since the serialized json contains internal attributes...
 			-- So not a simple json output.
 		local
@@ -64,7 +75,7 @@ feature {NONE} -- Initialization
 			end
 		end
 
-	process_smart_serialization
+	demonstrate_smart_serialization
 			-- Use smart serialization, i.e use json array [ .. ] and json object { .. : .. }.
 			-- And deserialization is made possible thanks to specific callback.
 		local
