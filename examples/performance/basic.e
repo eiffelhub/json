@@ -1,0 +1,81 @@
+class
+	BASIC
+
+create
+	make
+
+feature {NONE} -- Initialization
+
+	make
+			-- Initialize `Current'.
+		local
+			parser: JSON_PARSER
+			l_stopwatch: DT_STOPWATCH
+			i: INTEGER
+		do
+			create file_reader
+				-- Create parser for content `json_content'
+			if attached json_file_from ("json60mb.json") as json_content then
+				from
+					i := 1
+				until i > 10
+				loop
+					create l_stopwatch.make
+					l_stopwatch.start
+					create parser.make_with_string (json_content)
+						-- Parse the content
+					parser.parse_content
+					if
+						attached {JSON_VALUE} parser.parsed_json_value as jv
+					then
+						print ("%NWas valid")
+						l_stopwatch.stop
+					else
+						print ("%NWas invalid")
+						l_stopwatch.stop
+					end
+					print ("%NElapsed time:" + l_stopwatch.elapsed_time.precise_time_out)
+					i := i + 1
+				end
+				print ("%NPress Enter to exit!!!")
+				io.read_line
+			end
+		end
+
+feature -- Status
+feature {NONE} -- Implementation
+
+	file_reader: JSON_FILE_READER
+			-- JSON file reader.
+
+	json_file_from (fn: READABLE_STRING_GENERAL): detachable STRING
+		local
+			f: RAW_FILE
+			l_path: PATH
+			test_dir: PATH
+			i: INTEGER
+		do
+			test_dir := (create {EXECUTION_ENVIRONMENT}).current_working_path.extended ("data")
+			l_path := test_dir.extended (fn)
+			create f.make_with_path (l_path)
+			if f.exists then
+					-- Found json file
+			else
+				from
+					i := 5
+				until
+					i = 0
+				loop
+					test_dir := test_dir.extended ("..")
+					i := i - 1
+				end
+				l_path := test_dir.extended (fn)
+			end
+			create f.make_with_path (l_path)
+			if f.exists then
+				Result := file_reader.read_json_from (l_path.name)
+			end
+ 			check File_contains_json_data: Result /= Void end
+ 		end
+invariant
+end

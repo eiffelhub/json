@@ -40,7 +40,7 @@ feature {NONE} -- Initialization
 	make_empty
 			-- Initialize empty JSON array.
 		do
-			make (0)
+			make (25)
 		end
 
 	make_array

@@ -81,7 +81,8 @@ feature -- Commands
 	json_substring (start_index, end_index: INTEGER_32): STRING
 			-- JSON representation between `start_index' and `end_index'
 		do
-			Result := representation.substring (start_index, end_index)
+			-- Result := representation.substring (start_index, end_index)
+			create Result.make_from_string (representation.substring (start_index, end_index))
 		end
 
 feature -- Status report
@@ -122,6 +123,6 @@ invariant
 	representation_not_void: representation /= Void
 
 note
-	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end
