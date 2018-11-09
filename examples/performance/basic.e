@@ -12,29 +12,30 @@ feature {NONE} -- Initialization
 			parser: JSON_PARSER
 			l_stopwatch: DT_STOPWATCH
 			i: INTEGER
+			mem: MEMORY
 		do
 			create file_reader
+			create mem
 				-- Create parser for content `json_content'
 			if attached json_file_from ("json60mb.json") as json_content then
 				from
 					i := 1
-				until i > 10
+				until
+					i > 10
 				loop
 					create l_stopwatch.make
+					mem.full_collect
 					l_stopwatch.start
 					create parser.make_with_string (json_content)
-						-- Parse the content
 					parser.parse_content
-					if
-						attached {JSON_VALUE} parser.parsed_json_value as jv
-					then
+					if parser.is_parsed and then parser.is_valid and then not parser.has_error then
 						print ("%NWas valid")
-						l_stopwatch.stop
 					else
 						print ("%NWas invalid")
-						l_stopwatch.stop
 					end
+					l_stopwatch.stop
 					print ("%NElapsed time:" + l_stopwatch.elapsed_time.precise_time_out)
+					parser.reset
 					i := i + 1
 				end
 				print ("%NPress Enter to exit!!!")
