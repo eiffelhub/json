@@ -29,6 +29,8 @@ feature {NONE} -- Initialize
 			a_content_not_empty: a_content /= Void and then not a_content.is_empty
 		do
 			create buffer_json_string.make (a_content.count.min (512))
+			create buffer_json_number.make (12)
+			create buffer_is_number.make (12)
 			create errors.make
 			make_reader (a_content)
 			reset
@@ -142,6 +144,8 @@ feature -- Commands
 			has_error := False
 			is_parsed := False
 			buffer_json_string.wipe_out
+			buffer_json_number.wipe_out
+			buffer_is_number.wipe_out
 		end
 
 	parse_content
@@ -455,9 +459,13 @@ feature {NONE} -- Implementation: parsing
 			flag: BOOLEAN
 			is_integer: BOOLEAN
 			c: like actual
+			buf: like buffer_json_number
 		do
-			create sb.make_empty
-			sb.append_character (actual)
+			-- create sb.make_empty
+			-- sb.append_character (actual)
+			buf := buffer_json_number
+			buf.wipe_out
+			buf.append_character (actual)
 			from
 				flag := True
 			until
@@ -469,20 +477,33 @@ feature {NONE} -- Implementation: parsing
 					flag := False
 					previous
 				else
-					sb.append_character (c)
+					-- sb.append_character (c)
+					buf.append_character (actual)
 				end
 			end
 
-			if is_valid_number (sb) then
-				if sb.is_integer_64 then
-					create Result.make_integer (sb.to_integer_64)
+--			if is_valid_number (sb) then
+--				if sb.is_integer_64 then
+--					create Result.make_integer (sb.to_integer_64)
+--					is_integer := True
+--				elseif sb.is_double and not is_integer then
+--					create Result.make_real (sb.to_double)
+--				end
+--			else
+--				report_error_at ("Expected a number, found [" + sb + "]", index)
+--			end
+			if is_valid_number (buf) then
+				if buf.is_integer_64 then
+					create Result.make_integer (buf.twin.to_integer_64)
 					is_integer := True
-				elseif sb.is_double and not is_integer then
-					create Result.make_real (sb.to_double)
+				elseif buf.is_double and not is_integer then
+					create Result.make_real (buf.twin.to_double)
 				end
 			else
-				report_error_at ("Expected a number, found [" + sb + "]", index)
+				report_error_at ("Expected a number, found [" + buf + "]", index)
 			end
+
+
 		end
 
 	is_null: BOOLEAN
@@ -552,8 +573,11 @@ feature {NONE} -- Implementation
 			s: detachable STRING
 			c: CHARACTER
 			i, n: INTEGER
+			buf: like buffer_is_number
 		do
-			create s.make_empty
+			-- create s.make_empty
+			buf := buffer_is_number
+			buf.wipe_out
 			n := a_number.count
 			if n = 0 then
 				Result := False
@@ -563,7 +587,8 @@ feature {NONE} -- Implementation
 					--| "-?"
 				c := a_number [i]
 				if c = token_minus then
-					s.extend (c)
+					-- s.extend (c)
+					buf.extend (c)
 					i := i + 1
 					if i > n then
 						Result := False
@@ -575,14 +600,16 @@ feature {NONE} -- Implementation
 				if Result and c.is_digit then
 					if c = '0' then
 							--| "0"
-						s.extend (c)
+						-- s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						if i <= n then
 							c := a_number [i]
 						end
 					else
 							--| "[1-9]"
-						s.extend (c)
+						--s.extend (c)
+						buf.extend (c)
 
 							--| "\d*"
 						i := i + 1
@@ -592,7 +619,8 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								s.extend (c)
+								-- s.extend (c)
+								buf.extend (c)
 								i := i + 1
 								if i <= n then
 									c := a_number [i]
@@ -609,7 +637,8 @@ feature {NONE} -- Implementation
 						--| "(\.\d+)?"
 					if c = token_dot then
 							--| "\.\d+"  =  "\.\d\d*"
-						s.extend (c)
+						-- s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						c := a_number [i]
 						if c.is_digit then
@@ -617,7 +646,8 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								s.extend (c)
+								--s.extend (c)
+								buf.extend (c)
 								i := i + 1
 								if i <= n then
 									c := a_number [i]
@@ -631,11 +661,13 @@ feature {NONE} -- Implementation
 				if Result then --| "(?:[eE][+-]?\d+)?\b"
 					if is_exp_token (c) then
 							--| "[eE][+-]?\d+"
-						s.extend (c)
+						--s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						c := a_number [i]
 						if c = token_plus or c = token_minus then
-							s.extend (c)
+							--s.extend (c)
+							buf.extend (c)
 							i := i + 1
 							if i <= n then
 								c := a_number [i]
@@ -646,7 +678,8 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								s.extend (c)
+								--s.extend (c)
+								buf.extend (c)
 								i := i + 1
 								if i <= n then
 									c := a_number [i]
@@ -662,13 +695,14 @@ feature {NONE} -- Implementation
 					until
 						i > n or not c.is_space
 					loop
-						s.extend (c)
+						-- s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						if i <= n then
 							c := a_number [i]
 						end
 					end
-					Result := i > n and then s.same_string (a_number)
+					Result := i > n and then buf.same_string (a_number)
 				end
 			end
 		end
@@ -735,6 +769,11 @@ feature {NONE} -- JSON String Buffer
 	buffer_json_string: STRING
 			-- JSON string buffer.
 
+	buffer_json_number: STRING
+			-- JSON number buffer.	
+
+	buffer_is_number: STRING
+			-- JSON is_number buffer.		
 ;note
 	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
