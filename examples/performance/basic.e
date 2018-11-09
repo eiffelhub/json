@@ -27,6 +27,9 @@ feature {NONE} -- Initialization
 					mem.full_collect
 					l_stopwatch.start
 					create parser.make_with_string (json_content)
+					parser.set_default_array_size (25)
+					parser.set_default_object_size (3)
+
 					parser.parse_content
 					if parser.is_parsed and then parser.is_valid and then not parser.has_error then
 						print ("%NWas valid")

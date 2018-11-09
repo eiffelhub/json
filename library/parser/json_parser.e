@@ -81,9 +81,25 @@ feature -- Status report
 
 feature -- Settings
 
-	default_array_size: INTEGER = 10
+	default_array_size: INTEGER
+			-- JSON array are initialized with `default_array_size` capability.
 
-	default_object_size: INTEGER = 3
+	default_object_size: INTEGER
+			-- JSON object are initialized with `default_object_size` capability.	
+
+feature -- Settings change
+
+	set_default_array_size (nb: INTEGER)
+			-- Set `default_array_size` to `nb`.
+		do
+			default_array_size := nb
+		end
+
+	set_default_object_size (nb: INTEGER)
+			-- Set `default_object_size` to `nb`.	
+		do
+			default_object_size := nb
+		end
 
 feature -- Access
 
