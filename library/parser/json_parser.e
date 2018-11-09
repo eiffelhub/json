@@ -79,6 +79,12 @@ feature -- Status report
 			Result := errors_as_string
 		end
 
+feature -- Settings
+
+	default_array_size: INTEGER = 10
+
+	default_object_size: INTEGER = 3
+
 feature -- Access
 
 	parsed_json_value: detachable JSON_VALUE
@@ -271,7 +277,7 @@ feature {NONE} -- Implementation: parsing
 			l_json_string: detachable JSON_STRING
 			l_value: detachable JSON_VALUE
 		do
-			create Result.make
+			create Result.make_with_capacity (default_object_size)
 				--| check if is an empty object {}
 			next
 			skip_white_spaces
@@ -391,7 +397,7 @@ feature {NONE} -- Implementation: parsing
 			l_value: detachable JSON_VALUE
 			c: like actual
 		do
-			create Result.make_empty
+			create Result.make (default_array_size)
 				-- check if is an empty array []
 			next
 			skip_white_spaces
