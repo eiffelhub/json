@@ -28,8 +28,7 @@ feature {NONE} -- Initialize
 		require
 			a_content_not_empty: a_content /= Void and then not a_content.is_empty
 		do
-			create buffer_json_string.make (512)
-			create buffer_unicode_string.make (4)
+			create buffer_json_string.make (a_content.count.min (512))
 			create errors.make
 			make_reader (a_content)
 			reset
@@ -121,7 +120,6 @@ feature -- Commands
 			has_error := False
 			is_parsed := False
 			buffer_json_string.wipe_out
-			buffer_unicode_string.wipe_out
 		end
 
 	parse_content
@@ -322,12 +320,14 @@ feature {NONE} -- Implementation: parsing
 			-- Parsed string
 		local
 			has_more: BOOLEAN
-			l_json_string: STRING
+--			l_json_string: STRING
 			l_unicode: STRING
 			c: like actual
+			buf: like buffer_json_string
 		do
 			-- create l_json_string.make_empty
-			buffer_json_string.wipe_out
+			buf := buffer_json_string
+			buf.wipe_out
 			if actual = token_double_quote then
 				from
 					has_more := True
@@ -343,11 +343,12 @@ feature {NONE} -- Implementation: parsing
 						c := actual
 						if c = 'u' then
 							create l_unicode.make_from_string ("\u")
-							l_unicode.append (read_unicode)
+							read_unicode_info (l_unicode)
+
 							c := actual
 							if is_valid_unicode (l_unicode) then
 								--- l_json_string.append (l_unicode)
-								buffer_json_string.append (l_unicode)
+								buf.append (l_unicode)
 							else
 								has_more := False
 								report_error_at ("Input string is not well formed JSON, expected Unicode value, found [" + c.out + "]", index)
@@ -357,9 +358,9 @@ feature {NONE} -- Implementation: parsing
 							report_error_at ("Input string is not well formed JSON, found [" + c.out + "]", index)
 						else
 							--l_json_string.append_character ('\')
-							buffer_json_string.append_character ('\')
+							buf.append_character ('\')
 							--l_json_string.append_character (c)
-							buffer_json_string.append_character (c)
+							buf.append_character (c)
 						end
 					else
 						if is_special_character (c) and c /= '/' then
@@ -368,14 +369,14 @@ feature {NONE} -- Implementation: parsing
 						elseif c = '%U' then
 								--| Accepts null character in string value.
 							 -- l_json_string.append_character (c)
-							buffer_json_string.append_character (c)
+							buf.append_character (c)
 						else
 							 -- l_json_string.append_character (c)
-							buffer_json_string.append_character (c)
+							buf.append_character (c)
 						end
 					end
 				end
-				create Result.make_from_escaped_json_string (buffer_json_string.twin)
+				create Result.make_from_escaped_json_string (buf.twin)
 			else
 				Result := Void
 			end
@@ -504,24 +505,20 @@ feature {NONE} -- Implementation: parsing
 			end
 		end
 
-	read_unicode: STRING
+	read_unicode_info (a_content: STRING)
 			-- Read unicode and return value.
 		local
 			i: INTEGER
 		do
-			-- create Result.make(4)
-			buffer_unicode_string.wipe_out
 			from
 				i := 1
 			until
 				i > 4 or not has_next
 			loop
 				next
-				-- Result.append_character (actual)
-				buffer_unicode_string.append_character (actual)
+				a_content.append_character (actual)
 				i := i + 1
 			end
-			create Result.make_from_string (buffer_unicode_string.twin)
 		end
 
 feature {NONE} -- Implementation
@@ -715,9 +712,6 @@ feature {NONE} -- JSON String Buffer
 
 	buffer_json_string: STRING
 			-- JSON string buffer.
-
-	buffer_unicode_string: STRING
-
 
 ;note
 	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
