@@ -17,29 +17,36 @@ feature {NONE} -- Initialization
 			create file_reader
 			create mem
 				-- Create parser for content `json_content'
-			if attached json_file_from ("json60mb.json") as json_content then
+			if attached json_file_from (file_name) as json_content then
 				from
 					i := 1
 				until
 					i > 10
 				loop
+					mem.collection_off
 					create l_stopwatch.make
-					mem.full_collect
 					l_stopwatch.start
 					create parser.make_with_string (json_content)
 					parser.set_default_array_size (25)
-					parser.set_default_object_size (3)
+					parser.set_default_object_size (10)
 
 					parser.parse_content
 					if parser.is_parsed and then parser.is_valid and then not parser.has_error then
-						print ("%NWas valid")
+						debug
+							print ("%NWas valid")
+						end
 					else
-						print ("%NWas invalid")
+						debug
+							print ("%NWas invalid")
+						end
 					end
 					l_stopwatch.stop
 					print ("%NElapsed time:" + l_stopwatch.elapsed_time.precise_time_out)
 					parser.reset
 					i := i + 1
+					mem.full_coalesce
+					mem.collection_on
+					mem.full_collect
 				end
 				print ("%NPress Enter to exit!!!")
 				io.read_line
@@ -48,6 +55,8 @@ feature {NONE} -- Initialization
 
 feature -- Status
 feature {NONE} -- Implementation
+
+	file_name: STRING ="YOUR-FILE-NAME"
 
 	file_reader: JSON_FILE_READER
 			-- JSON file reader.

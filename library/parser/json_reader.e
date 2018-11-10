@@ -85,6 +85,12 @@ feature -- Commands
 			create Result.make_from_string (representation.substring (start_index, end_index))
 		end
 
+	has_json_substring (a_string: READABLE_STRING_GENERAL; start_index, end_index: INTEGER_32): BOOLEAN
+			-- Has JSON representation between `start_index' and `end_index' the substring `a_string'
+		do
+			Result := representation.same_caseless_characters_general (a_string, start_index, end_index, index)
+		end
+
 feature -- Status report
 
 	has_next: BOOLEAN

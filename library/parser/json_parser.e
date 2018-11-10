@@ -29,8 +29,8 @@ feature {NONE} -- Initialize
 			a_content_not_empty: a_content /= Void and then not a_content.is_empty
 		do
 			create buffer_json_string.make (a_content.count.min (512))
-			create buffer_json_number.make (12)
-			create buffer_is_number.make (12)
+			create buffer_json_number.make (10)
+			create buffer_is_number.make (10)
 			create errors.make
 			make_reader (a_content)
 			reset
@@ -263,17 +263,20 @@ feature {NONE} -- Implementation: parsing
 					if c.is_digit or c = token_minus then
 						Result := parse_number
 					elseif is_null then
-						Result := create {JSON_NULL}
+						-- Result := create {JSON_NULL}
+						Result := null_object
 						next
 						next
 						next
 					elseif is_true then
-						Result := create {JSON_BOOLEAN}.make_true
+						--Result := create {JSON_BOOLEAN}.make_true
+						Result := true_object
 						next
 						next
 						next
 					elseif is_false then
-						Result := create {JSON_BOOLEAN}.make_false
+						-- Result := create {JSON_BOOLEAN}.make_false
+						Result := false_object
 						next
 						next
 						next
@@ -514,10 +517,12 @@ feature {NONE} -- Implementation: parsing
 		do
 			l_null := null_id
 			-- l_string := json_substring (index, index + l_null.count - 1)
-			create l_string.make_from_string (json_substring (index, index + l_null.count - 1))
-			if l_string.is_equal (l_null) then
-				Result := True
-			end
+--			create l_string.make_from_string (json_substring (index, index + l_null.count - 1))
+--			check has_null: has_json_substring (l_null, index, index + l_null.count - 1) end
+--			if l_string.is_equal (l_null) then
+--				Result := True
+--			end
+			Result := has_json_substring (l_null, 1, l_null.count)
 		end
 
 	is_false: BOOLEAN
@@ -528,10 +533,12 @@ feature {NONE} -- Implementation: parsing
 		do
 			l_false := false_id
 			 -- l_string := json_substring (index, index + l_false.count - 1)
-			create l_string.make_from_string (json_substring (index, index + l_false.count - 1))
-			if l_string.is_equal (l_false) then
-				Result := True
-			end
+--			create l_string.make_from_string (json_substring (index, index + l_false.count - 1))
+--			check has_false: has_json_substring (l_false, index, index + l_false.count - 1) end
+--			if l_string.is_equal (l_false) then
+--				Result := True
+--			end
+			Result := has_json_substring (l_false, 1, l_false.count)
 		end
 
 	is_true: BOOLEAN
@@ -542,10 +549,12 @@ feature {NONE} -- Implementation: parsing
 		do
 			l_true := true_id
 			--l_string := json_substring (index, index + l_true.count - 1)
-			create l_string.make_from_string (json_substring (index, index + l_true.count - 1))
-			if l_string.is_equal (l_true) then
-				Result := True
-			end
+--			create l_string.make_from_string (json_substring (index, index + l_true.count - 1))
+--			check has_true: has_json_substring (l_true, index, index + l_true.count - 1) end
+--			if l_string.is_equal (l_true)  then
+--				Result := True
+--			end
+			Result := has_json_substring (l_true, 1, l_true.count)
 		end
 
 	read_unicode_info (a_content: STRING)
@@ -743,6 +752,7 @@ feature {NONE} -- Implementation
 				c /= ' ' or c /= '%R' or c /= '%U' or c /= '%T' or c /= '%N' or not has_next
 			loop
 				next
+				c := actual
 			end
 			Result := has_next
 		end
@@ -774,6 +784,52 @@ feature {NONE} -- JSON String Buffer
 
 	buffer_is_number: STRING
 			-- JSON is_number buffer.		
+
+feature {NONE} -- Predefined objects
+
+	null_object: JSON_NULL
+		local
+			l_null: like null_object_cache
+		do
+			l_null := null_object_cache
+			if l_null = Void then
+				create l_null
+				null_object_cache := l_null
+			end
+			Result := l_null
+		end
+
+	null_object_cache: detachable JSON_NULL
+
+	true_object: JSON_BOOLEAN
+		local
+			l_true: like true_object_cache
+		do
+			l_true := true_object_cache
+			if l_true = Void then
+				create l_true.make_true
+				true_object_cache := l_true
+			end
+			Result := l_true
+		end
+
+	true_object_cache: detachable JSON_BOOLEAN
+
+
+	false_object: JSON_BOOLEAN
+		local
+			l_false: like false_object_cache
+		do
+			l_false := false_object_cache
+			if l_false = Void then
+				create l_false.make_false
+				false_object_cache := l_false
+			end
+			Result := l_false
+		end
+
+	false_object_cache: detachable JSON_BOOLEAN
+
 ;note
 	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
