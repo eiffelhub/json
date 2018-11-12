@@ -349,12 +349,10 @@ feature {NONE} -- Implementation: parsing
 			-- Parsed string
 		local
 			has_more: BOOLEAN
---			l_json_string: STRING
 			l_unicode: STRING
 			c: like actual
 			buf: like buffer_json_string
 		do
-			-- create l_json_string.make_empty
 			buf := buffer_json_string
 			buf.wipe_out
 			if actual = token_double_quote then
@@ -376,7 +374,6 @@ feature {NONE} -- Implementation: parsing
 
 							c := actual
 							if is_valid_unicode (l_unicode) then
-								--- l_json_string.append (l_unicode)
 								buf.append (l_unicode)
 							else
 								has_more := False
@@ -386,9 +383,7 @@ feature {NONE} -- Implementation: parsing
 							has_more := False
 							report_error_at ("Input string is not well formed JSON, found [" + c.out + "]", index)
 						else
-							--l_json_string.append_character ('\')
 							buf.append_character ('\')
-							--l_json_string.append_character (c)
 							buf.append_character (c)
 						end
 					else
@@ -397,10 +392,8 @@ feature {NONE} -- Implementation: parsing
 							report_error_at ("Input string is not well formed JSON, found [" + c.out + "]", index)
 						elseif c = '%U' then
 								--| Accepts null character in string value.
-							 -- l_json_string.append_character (c)
 							buf.append_character (c)
 						else
-							 -- l_json_string.append_character (c)
 							buf.append_character (c)
 						end
 					end
@@ -458,7 +451,6 @@ feature {NONE} -- Implementation: parsing
 	parse_number: detachable JSON_NUMBER
 			-- Parsed number
 		local
-			sb: STRING
 			flag: BOOLEAN
 			is_integer: BOOLEAN
 			c: like actual
@@ -485,16 +477,6 @@ feature {NONE} -- Implementation: parsing
 				end
 			end
 
---			if is_valid_number (sb) then
---				if sb.is_integer_64 then
---					create Result.make_integer (sb.to_integer_64)
---					is_integer := True
---				elseif sb.is_double and not is_integer then
---					create Result.make_real (sb.to_double)
---				end
---			else
---				report_error_at ("Expected a number, found [" + sb + "]", index)
---			end
 			if is_valid_number (buf) then
 				if buf.is_integer_64 then
 					create Result.make_integer (buf.twin.to_integer_64)
@@ -505,23 +487,14 @@ feature {NONE} -- Implementation: parsing
 			else
 				report_error_at ("Expected a number, found [" + buf + "]", index)
 			end
-
-
 		end
 
 	is_null: BOOLEAN
 			-- Word at index represents null?
 		local
 			l_null: STRING
-			l_string: STRING
 		do
 			l_null := null_id
-			-- l_string := json_substring (index, index + l_null.count - 1)
---			create l_string.make_from_string (json_substring (index, index + l_null.count - 1))
---			check has_null: has_json_substring (l_null, index, index + l_null.count - 1) end
---			if l_string.is_equal (l_null) then
---				Result := True
---			end
 			Result := has_json_substring (l_null, 1, l_null.count)
 		end
 
@@ -529,15 +502,8 @@ feature {NONE} -- Implementation: parsing
 			-- Word at index represents false?
 		local
 			l_false: STRING
-			l_string: STRING
 		do
 			l_false := false_id
-			 -- l_string := json_substring (index, index + l_false.count - 1)
---			create l_string.make_from_string (json_substring (index, index + l_false.count - 1))
---			check has_false: has_json_substring (l_false, index, index + l_false.count - 1) end
---			if l_string.is_equal (l_false) then
---				Result := True
---			end
 			Result := has_json_substring (l_false, 1, l_false.count)
 		end
 
@@ -545,15 +511,8 @@ feature {NONE} -- Implementation: parsing
 			-- Word at index represents true?
 		local
 			l_true: STRING
-			l_string: STRING
 		do
 			l_true := true_id
-			--l_string := json_substring (index, index + l_true.count - 1)
---			create l_string.make_from_string (json_substring (index, index + l_true.count - 1))
---			check has_true: has_json_substring (l_true, index, index + l_true.count - 1) end
---			if l_string.is_equal (l_true)  then
---				Result := True
---			end
 			Result := has_json_substring (l_true, 1, l_true.count)
 		end
 
@@ -579,12 +538,10 @@ feature {NONE} -- Implementation
 			-- is 'a_number' a valid number based on this regular expression
 			-- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
 		local
-			s: detachable STRING
 			c: CHARACTER
 			i, n: INTEGER
 			buf: like buffer_is_number
 		do
-			-- create s.make_empty
 			buf := buffer_is_number
 			buf.wipe_out
 			n := a_number.count
@@ -596,7 +553,6 @@ feature {NONE} -- Implementation
 					--| "-?"
 				c := a_number [i]
 				if c = token_minus then
-					-- s.extend (c)
 					buf.extend (c)
 					i := i + 1
 					if i > n then
@@ -609,7 +565,6 @@ feature {NONE} -- Implementation
 				if Result and c.is_digit then
 					if c = '0' then
 							--| "0"
-						-- s.extend (c)
 						buf.extend (c)
 						i := i + 1
 						if i <= n then
@@ -617,7 +572,6 @@ feature {NONE} -- Implementation
 						end
 					else
 							--| "[1-9]"
-						--s.extend (c)
 						buf.extend (c)
 
 							--| "\d*"
@@ -628,7 +582,6 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								-- s.extend (c)
 								buf.extend (c)
 								i := i + 1
 								if i <= n then
@@ -646,7 +599,6 @@ feature {NONE} -- Implementation
 						--| "(\.\d+)?"
 					if c = token_dot then
 							--| "\.\d+"  =  "\.\d\d*"
-						-- s.extend (c)
 						buf.extend (c)
 						i := i + 1
 						c := a_number [i]
@@ -655,7 +607,6 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								--s.extend (c)
 								buf.extend (c)
 								i := i + 1
 								if i <= n then
@@ -670,12 +621,10 @@ feature {NONE} -- Implementation
 				if Result then --| "(?:[eE][+-]?\d+)?\b"
 					if is_exp_token (c) then
 							--| "[eE][+-]?\d+"
-						--s.extend (c)
 						buf.extend (c)
 						i := i + 1
 						c := a_number [i]
 						if c = token_plus or c = token_minus then
-							--s.extend (c)
 							buf.extend (c)
 							i := i + 1
 							if i <= n then
@@ -687,7 +636,6 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								--s.extend (c)
 								buf.extend (c)
 								i := i + 1
 								if i <= n then
@@ -704,7 +652,6 @@ feature {NONE} -- Implementation
 					until
 						i > n or not c.is_space
 					loop
-						-- s.extend (c)
 						buf.extend (c)
 						i := i + 1
 						if i <= n then
@@ -814,7 +761,6 @@ feature {NONE} -- Predefined objects
 		end
 
 	true_object_cache: detachable JSON_BOOLEAN
-
 
 	false_object: JSON_BOOLEAN
 		local
