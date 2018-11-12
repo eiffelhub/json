@@ -1,4 +1,6 @@
-﻿Readme file for eJSON
+﻿[![Build Status](https://travis-ci.org/eiffelhub/json.svg?branch=master)](https://travis-ci.org/eiffelhub/json)
+
+Readme file for eJSON
 =====================
 
 - team: "Jocelyn Fiat, Javier Velilla"
