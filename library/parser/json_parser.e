@@ -28,6 +28,9 @@ feature {NONE} -- Initialize
 		require
 			a_content_not_empty: a_content /= Void and then not a_content.is_empty
 		do
+			create buffer_json_string.make (a_content.count.min (512))
+			create buffer_json_number.make (10)
+			create buffer_is_number.make (10)
 			create errors.make
 			make_reader (a_content)
 			reset
@@ -78,6 +81,28 @@ feature -- Status report
 			Result := errors_as_string
 		end
 
+feature -- Settings
+
+	default_array_size: INTEGER
+			-- JSON array are initialized with `default_array_size` capability.
+
+	default_object_size: INTEGER
+			-- JSON object are initialized with `default_object_size` capability.	
+
+feature -- Settings change
+
+	set_default_array_size (nb: INTEGER)
+			-- Set `default_array_size` to `nb`.
+		do
+			default_array_size := nb
+		end
+
+	set_default_object_size (nb: INTEGER)
+			-- Set `default_object_size` to `nb`.	
+		do
+			default_object_size := nb
+		end
+
 feature -- Access
 
 	parsed_json_value: detachable JSON_VALUE
@@ -118,6 +143,9 @@ feature -- Commands
 			errors.wipe_out
 			has_error := False
 			is_parsed := False
+			buffer_json_string.wipe_out
+			buffer_json_number.wipe_out
+			buffer_is_number.wipe_out
 		end
 
 	parse_content
@@ -235,17 +263,20 @@ feature {NONE} -- Implementation: parsing
 					if c.is_digit or c = token_minus then
 						Result := parse_number
 					elseif is_null then
-						Result := create {JSON_NULL}
+						-- Result := create {JSON_NULL}
+						Result := null_object
 						next
 						next
 						next
 					elseif is_true then
-						Result := create {JSON_BOOLEAN}.make_true
+						--Result := create {JSON_BOOLEAN}.make_true
+						Result := true_object
 						next
 						next
 						next
 					elseif is_false then
-						Result := create {JSON_BOOLEAN}.make_false
+						-- Result := create {JSON_BOOLEAN}.make_false
+						Result := false_object
 						next
 						next
 						next
@@ -269,7 +300,7 @@ feature {NONE} -- Implementation: parsing
 			l_json_string: detachable JSON_STRING
 			l_value: detachable JSON_VALUE
 		do
-			create Result.make
+			create Result.make_with_capacity (default_object_size)
 				--| check if is an empty object {}
 			next
 			skip_white_spaces
@@ -318,11 +349,12 @@ feature {NONE} -- Implementation: parsing
 			-- Parsed string
 		local
 			has_more: BOOLEAN
-			l_json_string: STRING
 			l_unicode: STRING
 			c: like actual
+			buf: like buffer_json_string
 		do
-			create l_json_string.make_empty
+			buf := buffer_json_string
+			buf.wipe_out
 			if actual = token_double_quote then
 				from
 					has_more := True
@@ -338,10 +370,11 @@ feature {NONE} -- Implementation: parsing
 						c := actual
 						if c = 'u' then
 							create l_unicode.make_from_string ("\u")
-							l_unicode.append (read_unicode)
+							read_unicode_info (l_unicode)
+
 							c := actual
 							if is_valid_unicode (l_unicode) then
-								l_json_string.append (l_unicode)
+								buf.append (l_unicode)
 							else
 								has_more := False
 								report_error_at ("Input string is not well formed JSON, expected Unicode value, found [" + c.out + "]", index)
@@ -350,8 +383,8 @@ feature {NONE} -- Implementation: parsing
 							has_more := False
 							report_error_at ("Input string is not well formed JSON, found [" + c.out + "]", index)
 						else
-							l_json_string.append_character ('\')
-							l_json_string.append_character (c)
+							buf.append_character ('\')
+							buf.append_character (c)
 						end
 					else
 						if is_special_character (c) and c /= '/' then
@@ -359,13 +392,13 @@ feature {NONE} -- Implementation: parsing
 							report_error_at ("Input string is not well formed JSON, found [" + c.out + "]", index)
 						elseif c = '%U' then
 								--| Accepts null character in string value.
-							l_json_string.append_character (c)
+							buf.append_character (c)
 						else
-							l_json_string.append_character (c)
+							buf.append_character (c)
 						end
 					end
 				end
-				create Result.make_from_escaped_json_string (l_json_string)
+				create Result.make_from_escaped_json_string (buf.twin)
 			else
 				Result := Void
 			end
@@ -380,7 +413,7 @@ feature {NONE} -- Implementation: parsing
 			l_value: detachable JSON_VALUE
 			c: like actual
 		do
-			create Result.make_empty
+			create Result.make (default_array_size)
 				-- check if is an empty array []
 			next
 			skip_white_spaces
@@ -418,13 +451,16 @@ feature {NONE} -- Implementation: parsing
 	parse_number: detachable JSON_NUMBER
 			-- Parsed number
 		local
-			sb: STRING
 			flag: BOOLEAN
 			is_integer: BOOLEAN
 			c: like actual
+			buf: like buffer_json_number
 		do
-			create sb.make_empty
-			sb.append_character (actual)
+			-- create sb.make_empty
+			-- sb.append_character (actual)
+			buf := buffer_json_number
+			buf.wipe_out
+			buf.append_character (actual)
 			from
 				flag := True
 			until
@@ -436,18 +472,20 @@ feature {NONE} -- Implementation: parsing
 					flag := False
 					previous
 				else
-					sb.append_character (c)
+					-- sb.append_character (c)
+					buf.append_character (actual)
 				end
 			end
-			if is_valid_number (sb) then
-				if sb.is_integer_64 then
-					create Result.make_integer (sb.to_integer_64)
+
+			if is_valid_number (buf) then
+				if buf.is_integer_64 then
+					create Result.make_integer (buf.twin.to_integer_64)
 					is_integer := True
-				elseif sb.is_double and not is_integer then
-					create Result.make_real (sb.to_double)
+				elseif buf.is_double and not is_integer then
+					create Result.make_real (buf.twin.to_double)
 				end
 			else
-				report_error_at ("Expected a number, found [" + sb + "]", index)
+				report_error_at ("Expected a number, found [" + buf + "]", index)
 			end
 		end
 
@@ -455,54 +493,41 @@ feature {NONE} -- Implementation: parsing
 			-- Word at index represents null?
 		local
 			l_null: STRING
-			l_string: STRING
 		do
 			l_null := null_id
-			l_string := json_substring (index, index + l_null.count - 1)
-			if l_string.is_equal (l_null) then
-				Result := True
-			end
+			Result := has_json_substring (l_null, 1, l_null.count)
 		end
 
 	is_false: BOOLEAN
 			-- Word at index represents false?
 		local
 			l_false: STRING
-			l_string: STRING
 		do
 			l_false := false_id
-			l_string := json_substring (index, index + l_false.count - 1)
-			if l_string.is_equal (l_false) then
-				Result := True
-			end
+			Result := has_json_substring (l_false, 1, l_false.count)
 		end
 
 	is_true: BOOLEAN
 			-- Word at index represents true?
 		local
 			l_true: STRING
-			l_string: STRING
 		do
 			l_true := true_id
-			l_string := json_substring (index, index + l_true.count - 1)
-			if l_string.is_equal (l_true) then
-				Result := True
-			end
+			Result := has_json_substring (l_true, 1, l_true.count)
 		end
 
-	read_unicode: STRING
+	read_unicode_info (a_content: STRING)
 			-- Read unicode and return value.
 		local
 			i: INTEGER
 		do
-			create Result.make_empty
 			from
 				i := 1
 			until
 				i > 4 or not has_next
 			loop
 				next
-				Result.append_character (actual)
+				a_content.append_character (actual)
 				i := i + 1
 			end
 		end
@@ -513,11 +538,12 @@ feature {NONE} -- Implementation
 			-- is 'a_number' a valid number based on this regular expression
 			-- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
 		local
-			s: detachable STRING
 			c: CHARACTER
 			i, n: INTEGER
+			buf: like buffer_is_number
 		do
-			create s.make_empty
+			buf := buffer_is_number
+			buf.wipe_out
 			n := a_number.count
 			if n = 0 then
 				Result := False
@@ -527,7 +553,7 @@ feature {NONE} -- Implementation
 					--| "-?"
 				c := a_number [i]
 				if c = token_minus then
-					s.extend (c)
+					buf.extend (c)
 					i := i + 1
 					if i > n then
 						Result := False
@@ -539,14 +565,14 @@ feature {NONE} -- Implementation
 				if Result and c.is_digit then
 					if c = '0' then
 							--| "0"
-						s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						if i <= n then
 							c := a_number [i]
 						end
 					else
 							--| "[1-9]"
-						s.extend (c)
+						buf.extend (c)
 
 							--| "\d*"
 						i := i + 1
@@ -556,7 +582,7 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								s.extend (c)
+								buf.extend (c)
 								i := i + 1
 								if i <= n then
 									c := a_number [i]
@@ -573,7 +599,7 @@ feature {NONE} -- Implementation
 						--| "(\.\d+)?"
 					if c = token_dot then
 							--| "\.\d+"  =  "\.\d\d*"
-						s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						c := a_number [i]
 						if c.is_digit then
@@ -581,7 +607,7 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								s.extend (c)
+								buf.extend (c)
 								i := i + 1
 								if i <= n then
 									c := a_number [i]
@@ -595,11 +621,11 @@ feature {NONE} -- Implementation
 				if Result then --| "(?:[eE][+-]?\d+)?\b"
 					if is_exp_token (c) then
 							--| "[eE][+-]?\d+"
-						s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						c := a_number [i]
 						if c = token_plus or c = token_minus then
-							s.extend (c)
+							buf.extend (c)
 							i := i + 1
 							if i <= n then
 								c := a_number [i]
@@ -610,7 +636,7 @@ feature {NONE} -- Implementation
 							until
 								i > n or not c.is_digit
 							loop
-								s.extend (c)
+								buf.extend (c)
 								i := i + 1
 								if i <= n then
 									c := a_number [i]
@@ -626,13 +652,13 @@ feature {NONE} -- Implementation
 					until
 						i > n or not c.is_space
 					loop
-						s.extend (c)
+						buf.extend (c)
 						i := i + 1
 						if i <= n then
 							c := a_number [i]
 						end
 					end
-					Result := i > n and then s.same_string (a_number)
+					Result := i > n and then buf.same_string (a_number)
 				end
 			end
 		end
@@ -673,6 +699,7 @@ feature {NONE} -- Implementation
 				c /= ' ' or c /= '%R' or c /= '%U' or c /= '%T' or c /= '%N' or not has_next
 			loop
 				next
+				c := actual
 			end
 			Result := has_next
 		end
@@ -693,7 +720,63 @@ feature {NONE} -- Constants
 
 	null_id: STRING = "null"
 
-note
+
+feature {NONE} -- JSON String Buffer
+
+	buffer_json_string: STRING
+			-- JSON string buffer.
+
+	buffer_json_number: STRING
+			-- JSON number buffer.	
+
+	buffer_is_number: STRING
+			-- JSON is_number buffer.		
+
+feature {NONE} -- Predefined objects
+
+	null_object: JSON_NULL
+		local
+			l_null: like null_object_cache
+		do
+			l_null := null_object_cache
+			if l_null = Void then
+				create l_null
+				null_object_cache := l_null
+			end
+			Result := l_null
+		end
+
+	null_object_cache: detachable JSON_NULL
+
+	true_object: JSON_BOOLEAN
+		local
+			l_true: like true_object_cache
+		do
+			l_true := true_object_cache
+			if l_true = Void then
+				create l_true.make_true
+				true_object_cache := l_true
+			end
+			Result := l_true
+		end
+
+	true_object_cache: detachable JSON_BOOLEAN
+
+	false_object: JSON_BOOLEAN
+		local
+			l_false: like false_object_cache
+		do
+			l_false := false_object_cache
+			if l_false = Void then
+				create l_false.make_false
+				false_object_cache := l_false
+			end
+			Result := l_false
+		end
+
+	false_object_cache: detachable JSON_BOOLEAN
+
+;note
 	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end
