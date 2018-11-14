@@ -210,6 +210,7 @@ feature -- Commands
 		do
 			set_representation (a_json_content)
 			parse_content
+			check input_cleared: representation.is_empty end
 		end
 
 	parse_content
@@ -233,6 +234,7 @@ feature -- Commands
 					-- Free memory
 				free_buffers
 				representation := ""
+				check input_cleared: representation.is_empty end
 			end
 		ensure
 			is_parsed: is_parsed
@@ -792,16 +794,15 @@ feature {NONE} -- Constants
 feature {NONE} -- JSON String Buffer
 
 	initialize_buffers
-		local
-			s: like representation
+			-- Initialize size of buffers used during parsing.
 		do
-			s := representation
-			create buffer_json_string.make (s.count.min (json_string_buffer_size))
+			create buffer_json_string.make (representation.count.min (json_string_buffer_size))
 			create buffer_json_number.make (json_number_buffer_size)
 			create buffer_is_number.make (json_number_buffer_size)
 		end
 
 	free_buffers
+			-- Free memory of buffers used during parsing.
 		local
 			s: STRING
 		do

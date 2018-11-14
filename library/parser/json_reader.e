@@ -81,8 +81,7 @@ feature -- Commands
 	json_substring (start_index, end_index: INTEGER_32): STRING
 			-- JSON representation between `start_index' and `end_index'
 		do
-			-- Result := representation.substring (start_index, end_index)
-			create Result.make_from_string (representation.substring (start_index, end_index))
+			Result := representation.substring (start_index, end_index)
 		end
 
 	has_json_substring (a_string: READABLE_STRING_GENERAL; start_index, end_index: INTEGER_32): BOOLEAN
