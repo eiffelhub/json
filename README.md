@@ -65,6 +65,8 @@ Contact the team: https://github.com/eiffelhub/json/issues
 ```
 Version Date            Description
 ------- ----            -----------
+0.10.0 2018-11-14	Improved parsing performance (speed and memory).
+					Allow to change default size for json array and object created during parsing.
 0.9.0  2018-09-19	Added basic serialization
 					Updated the serialization example to demonstrate the use of custom (de)serializers.
 					Added JSON_VALUE.chained_item (a_key): JSON_VALUE to be able to access
