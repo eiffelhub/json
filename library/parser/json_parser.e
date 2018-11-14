@@ -11,29 +11,38 @@ class
 inherit
 	JSON_READER
 		rename
-			make as make_reader,
-			reset as reset_reader
+			make as make_reader
+		redefine
+			reset
 		end
 
 	JSON_TOKENS
 
 create
+	make,
 	make_with_string,
 	make_parser
 
 feature {NONE} -- Initialize
+
+	make
+		do
+			initialize
+
+				-- Initialize JSON_READER with default values.
+			representation := ""
+			index := 1
+		end
 
 	make_with_string (a_content: STRING)
 			-- Initialize parser with JSON content `a_content'.
 		require
 			a_content_not_empty: a_content /= Void and then not a_content.is_empty
 		do
-			create buffer_json_string.make (a_content.count.min (512))
-			create buffer_json_number.make (10)
-			create buffer_is_number.make (10)
-			create errors.make
+			initialize
+
+				-- Reader
 			make_reader (a_content)
-			reset
 		end
 
 	make_parser (a_json: STRING)
@@ -42,6 +51,26 @@ feature {NONE} -- Initialize
 			"Use `make_with_string' [2017-05-31]."
 		do
 			make_with_string (a_json)
+		end
+
+	initialize
+		local
+			l_empty: STRING
+		do
+				-- Set buffers to same empty string
+				-- the real size initialization will be done by `parse_content`.
+			create l_empty.make_empty
+			buffer_json_string := l_empty
+			buffer_json_number := l_empty
+			buffer_is_number := l_empty
+
+				-- Create default value
+			create false_value.make_false
+			create true_value.make_true
+			create null_value
+
+				-- Errors
+			create errors.make
 		end
 
 feature -- Status report
@@ -93,14 +122,34 @@ feature -- Settings change
 
 	set_default_array_size (nb: INTEGER)
 			-- Set `default_array_size` to `nb`.
+		require
+			is_not_yet_parsed: not is_parsed
 		do
 			default_array_size := nb
 		end
 
 	set_default_object_size (nb: INTEGER)
 			-- Set `default_object_size` to `nb`.	
+		require
+			is_not_yet_parsed: not is_parsed
 		do
 			default_object_size := nb
+		end
+
+feature -- Constants			
+
+	json_string_buffer_size: INTEGER
+			-- JSON string parsing is using a buffer with `json_string_buffer_size` capability.
+		do
+				-- Redefine to fine tune.
+			Result := 512
+		end
+
+	json_number_buffer_size: INTEGER
+			-- JSON number parsing is using a buffer with `json_number_buffer_size` capability.
+		do
+				-- Redefine to fine tune.
+			Result := 10
 		end
 
 feature -- Access
@@ -139,33 +188,55 @@ feature -- Commands
 	reset
 			-- Reset parsing values.
 		do
+			Precursor
+
+				-- Reset previous parsing values.
 			parsed_json_value := Void
 			errors.wipe_out
 			has_error := False
 			is_parsed := False
-			buffer_json_string.wipe_out
-			buffer_json_number.wipe_out
-			buffer_is_number.wipe_out
+
+				-- Reset buffers.
+			free_buffers
+
+				-- Reset default values, to avoid reusing those objects outside previous parsing result.
+			create null_value
+			create false_value.make_false
+			create true_value.make_true
+		end
+
+	parse_string (a_json_content: STRING_8)
+			-- Parse string `a_json_content`.
+		do
+			set_representation (a_json_content)
+			parse_content
 		end
 
 	parse_content
 			-- Parse JSON content `representation'.
 			-- start ::= object | array
 		do
-			reset
-			reset_reader
-
-			if is_valid_start_symbol then
-				parsed_json_value := next_json_value
-				if not has_error and extra_elements then
-					report_error_at ("Remaining element outside the main json value", index)
+			if not is_parsed then
+					-- Initialize parsing buffers
+				initialize_buffers
+					-- Parse ...
+				if is_valid_start_symbol then
+					parsed_json_value := next_json_value
+					if not has_error and extra_elements then
+						report_error_at ("Remaining element outside the main json value", index)
+					end
+				else
+					report_error_at ("Syntax error unexpected token, expecting '{' or '['", index)
 				end
-			else
-				report_error_at ("Syntax error unexpected token, expecting '{' or '['", index)
-			end
-			is_parsed := is_valid
-		end
+				is_parsed := True -- Note: this does not implies is_valid!
 
+					-- Free memory
+				free_buffers
+				representation := ""
+			end
+		ensure
+			is_parsed: is_parsed
+		end
 
 feature -- Element change
 
@@ -206,7 +277,7 @@ feature -- Obsolete commands
 			"Use `parse_content' and `parsed_json_value'  [2017-05-31]."
 		do
 			parse_content
-			if is_parsed then
+			if is_valid then
 				Result := parsed_json_value
 			end
 		end
@@ -218,7 +289,7 @@ feature -- Obsolete commands
 			"Use `parse_content' and `parsed_json_value'  [2017-05-31]."
 		do
 			parse_content
-			if is_parsed and then attached {JSON_OBJECT} parsed_json_value as jo then
+			if is_valid and then attached {JSON_OBJECT} parsed_json_value as jo then
 				Result := jo
 			end
 		end
@@ -229,17 +300,25 @@ feature -- Obsolete commands
 			"Use restricted `next_parsed_json_value' [2017-05-31]."
 		do
 			Result := next_parsed_json_value
-			is_parsed := is_valid
+			is_parsed := True
 		end
 
 feature {JSON_PARSER_ACCESS} -- Obsolete commands: restricted area		
 
 	next_parsed_json_value: detachable JSON_VALUE
 			-- Return next json value from current position.
-			--| this does not call `reset_reader'.
+			--| this does not reset the reader index!
+		local
+			l_reader_index: INTEGER
 		do
+			l_reader_index := index
 			reset
+				-- Undo the `JSON_READER.reset`.
+			index := l_reader_index
+
+			initialize_buffers
 			Result := next_json_value
+			free_buffers
 		end
 
 feature {NONE} -- Implementation: parsing
@@ -256,27 +335,24 @@ feature {NONE} -- Implementation: parsing
 				when token_object_open then
 					Result := next_json_object
 				when token_double_quote then
-					Result := parse_string
+					Result := next_json_string
 				when token_array_open then
 					Result := parse_array
 				else
 					if c.is_digit or c = token_minus then
-						Result := parse_number
+						Result := next_json_number
 					elseif is_null then
-						-- Result := create {JSON_NULL}
-						Result := null_object
+						Result := null_value
 						next
 						next
 						next
 					elseif is_true then
-						--Result := create {JSON_BOOLEAN}.make_true
-						Result := true_object
+						Result := true_value
 						next
 						next
 						next
 					elseif is_false then
-						-- Result := create {JSON_BOOLEAN}.make_false
-						Result := false_object
+						Result := false_value
 						next
 						next
 						next
@@ -300,14 +376,15 @@ feature {NONE} -- Implementation: parsing
 			l_json_string: detachable JSON_STRING
 			l_value: detachable JSON_VALUE
 		do
-			create Result.make_with_capacity (default_object_size)
 				--| check if is an empty object {}
 			next
 			skip_white_spaces
 			if actual = token_object_close then
 					--| is an empty object
+				create Result.make_with_capacity (0)
 			else
 					--| a complex object {"key" : "value"}
+				create Result.make_with_capacity (default_object_size)
 				previous
 				from
 					has_more := True
@@ -316,7 +393,7 @@ feature {NONE} -- Implementation: parsing
 				loop
 					next
 					skip_white_spaces
-					l_json_string := parse_string
+					l_json_string := next_json_string
 					next
 					skip_white_spaces
 					if actual = token_colon then --| token_colon = ':'
@@ -345,13 +422,13 @@ feature {NONE} -- Implementation: parsing
 			end
 		end
 
-	parse_string: detachable JSON_STRING
+	next_json_string: detachable JSON_STRING
 			-- Parsed string
 		local
 			has_more: BOOLEAN
-			l_unicode: STRING
 			c: like actual
 			buf: like buffer_json_string
+			i: INTEGER
 		do
 			buf := buffer_json_string
 			buf.wipe_out
@@ -369,13 +446,11 @@ feature {NONE} -- Implementation: parsing
 						next
 						c := actual
 						if c = 'u' then
-							create l_unicode.make_from_string ("\u")
-							read_unicode_info (l_unicode)
-
+							i := buf.count + 1
+							buf.append ("\u")
+							read_unicode_info (buf)
 							c := actual
-							if is_valid_unicode (l_unicode) then
-								buf.append (l_unicode)
-							else
+							if not is_substring_valid_unicode (buf, i, buf.count) then
 								has_more := False
 								report_error_at ("Input string is not well formed JSON, expected Unicode value, found [" + c.out + "]", index)
 							end
@@ -448,7 +523,7 @@ feature {NONE} -- Implementation: parsing
 			end
 		end
 
-	parse_number: detachable JSON_NUMBER
+	next_json_number: detachable JSON_NUMBER
 			-- Parsed number
 		local
 			flag: BOOLEAN
@@ -456,8 +531,6 @@ feature {NONE} -- Implementation: parsing
 			c: like actual
 			buf: like buffer_json_number
 		do
-			-- create sb.make_empty
-			-- sb.append_character (actual)
 			buf := buffer_json_number
 			buf.wipe_out
 			buf.append_character (actual)
@@ -472,17 +545,16 @@ feature {NONE} -- Implementation: parsing
 					flag := False
 					previous
 				else
-					-- sb.append_character (c)
 					buf.append_character (actual)
 				end
 			end
 
 			if is_valid_number (buf) then
 				if buf.is_integer_64 then
-					create Result.make_integer (buf.twin.to_integer_64)
+					create Result.make_integer (buf.to_integer_64)
 					is_integer := True
-				elseif buf.is_double and not is_integer then
-					create Result.make_real (buf.twin.to_double)
+				elseif buf.is_double then
+					create Result.make_real (buf.to_double)
 				end
 			else
 				report_error_at ("Expected a number, found [" + buf + "]", index)
@@ -491,29 +563,20 @@ feature {NONE} -- Implementation: parsing
 
 	is_null: BOOLEAN
 			-- Word at index represents null?
-		local
-			l_null: STRING
 		do
-			l_null := null_id
-			Result := has_json_substring (l_null, 1, l_null.count)
+			Result := has_json_substring (null_id, 1, 4) -- 4 = null_id.count
 		end
 
 	is_false: BOOLEAN
 			-- Word at index represents false?
-		local
-			l_false: STRING
 		do
-			l_false := false_id
-			Result := has_json_substring (l_false, 1, l_false.count)
+			Result := has_json_substring (false_id, 1, 5) -- 5 = false_id.count
 		end
 
 	is_true: BOOLEAN
 			-- Word at index represents true?
-		local
-			l_true: STRING
 		do
-			l_true := true_id
-			Result := has_json_substring (l_true, 1, l_true.count)
+			Result := has_json_substring (true_id, 1, 4) -- 4 = true_id.count
 		end
 
 	read_unicode_info (a_content: STRING)
@@ -663,19 +726,19 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	is_valid_unicode (a_unicode: STRING): BOOLEAN
-			-- is 'a_unicode' a valid unicode based on the regular expression "\\u[0-9a-fA-F]{4}" .
+	is_substring_valid_unicode (a_string: STRING; a_lower, a_upper: INTEGER): BOOLEAN
+			-- is 'a_string [a_lower:a_upper]' a valid unicode based on the regular expression "\\u[0-9a-fA-F]{4}" .
 		local
 			i: INTEGER
 		do
-			if a_unicode.count = 6 and then a_unicode [1] = '\' and then a_unicode [2] = 'u' then
+			if a_upper - a_lower = 5 and then a_string [a_lower] = '\' and then a_string [a_lower + 1] = 'u' then
 				from
 					Result := True
-					i := 3
+					i := a_lower + 2
 				until
-					i > 6 or Result = False
+					i > a_upper or Result = False
 				loop
-					inspect a_unicode [i]
+					inspect a_string [i]
 					when '0'..'9', 'a'..'f', 'A'..'F' then
 					else
 						Result := False
@@ -720,8 +783,33 @@ feature {NONE} -- Constants
 
 	null_id: STRING = "null"
 
+	false_value: JSON_BOOLEAN
+
+	true_value: JSON_BOOLEAN
+
+	null_value: JSON_NULL
 
 feature {NONE} -- JSON String Buffer
+
+	initialize_buffers
+		local
+			s: like representation
+		do
+			s := representation
+			create buffer_json_string.make (s.count.min (json_string_buffer_size))
+			create buffer_json_number.make (json_number_buffer_size)
+			create buffer_is_number.make (json_number_buffer_size)
+		end
+
+	free_buffers
+		local
+			s: STRING
+		do
+			create s.make_empty
+			buffer_json_string := s
+			buffer_json_number := s
+			buffer_is_number := s
+		end
 
 	buffer_json_string: STRING
 			-- JSON string buffer.
@@ -731,50 +819,6 @@ feature {NONE} -- JSON String Buffer
 
 	buffer_is_number: STRING
 			-- JSON is_number buffer.		
-
-feature {NONE} -- Predefined objects
-
-	null_object: JSON_NULL
-		local
-			l_null: like null_object_cache
-		do
-			l_null := null_object_cache
-			if l_null = Void then
-				create l_null
-				null_object_cache := l_null
-			end
-			Result := l_null
-		end
-
-	null_object_cache: detachable JSON_NULL
-
-	true_object: JSON_BOOLEAN
-		local
-			l_true: like true_object_cache
-		do
-			l_true := true_object_cache
-			if l_true = Void then
-				create l_true.make_true
-				true_object_cache := l_true
-			end
-			Result := l_true
-		end
-
-	true_object_cache: detachable JSON_BOOLEAN
-
-	false_object: JSON_BOOLEAN
-		local
-			l_false: like false_object_cache
-		do
-			l_false := false_object_cache
-			if l_false = Void then
-				create l_false.make_false
-				false_object_cache := l_false
-			end
-			Result := l_false
-		end
-
-	false_object_cache: detachable JSON_BOOLEAN
 
 ;note
 	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
