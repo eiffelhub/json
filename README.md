@@ -65,6 +65,8 @@ Contact the team: https://github.com/eiffelhub/json/issues
 ```
 Version Date            Description
 ------- ----            -----------
+0.11.0 2019-02-08	REAL NaN, Negative and Positive Infinity values are serialized as "null" 
+					(as JSON has no support for such values).
 0.10.0 2018-11-14	Improved parsing performance (speed and memory).
 					Allow to change default size for json array and object created during parsing.
 0.9.0  2018-09-19	Added basic serialization
@@ -94,3 +96,4 @@ Version Date            Description
 0.2.0   2010-02-07	Adapted to EiffelStudio 6.4 or later, supports void-safety
 0.1.0   2010-02-07	First release, Adapted to SmartEiffel 1.2r7 and EiffelStudio 6.2 or previous
 ```
+
