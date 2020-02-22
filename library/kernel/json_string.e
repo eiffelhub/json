@@ -24,6 +24,7 @@ inherit
 create
 	make_from_string, make_from_string_32, make_from_string_general,
 	make_from_escaped_json_string,
+	make_from_separate,
 	make_with_escaped_json, make_json, make_json_from_string_32
 
 convert
@@ -105,6 +106,15 @@ feature {NONE} -- Initialization
 			item_not_void: s /= Void
 		do
 			make_with_escaped_json (escaped_json_string (s))
+		end
+
+	make_from_separate (other: separate like Current)
+			-- <Precursor>
+		local
+			l_s: like escaped_json_string
+		do
+			create l_s.make_from_separate (other.item)
+			make_from_string (l_s)
 		end
 
 feature -- Access
@@ -561,6 +571,6 @@ invariant
 	item_not_void: item /= Void
 
 note
-	copyright: "2010-2019, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

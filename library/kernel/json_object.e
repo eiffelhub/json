@@ -27,10 +27,18 @@ inherit
 
 	TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
 
+	JSON_COLLECTION
+		redefine
+			items
+		end
+
 	DEBUG_OUTPUT
 
 create
-	make_empty, make_with_capacity, make
+	make_empty,
+	make_with_capacity,
+	make_from_separate,
+	make
 
 feature {NONE} -- Initialization
 
@@ -50,6 +58,13 @@ feature {NONE} -- Initialization
 			-- Initialize with default capacity.
 		do
 			make_with_capacity (10)
+		end
+
+	make_from_separate (other: separate like Current)
+			-- <Precursor>
+		do
+			make_with_capacity (other.count)
+
 		end
 
 feature -- Status report			
@@ -203,6 +218,19 @@ feature -- Change Element
 			replace (l_value, a_key)
 		end
 
+	append_from_separate (other: separate like Current)
+			-- Appends Current with content of other `other'
+		local
+			l_item_non_sep: JSON_VALUE
+		do
+			across
+				other as l_item
+			loop
+				l_item_non_sep := {JSON_ARRAY}.non_sep_json_value (l_item.item)
+				put (l_item_non_sep, create {JSON_STRING}.make_from_separate (l_item.key))
+			end
+		end
+
 	remove (a_key: JSON_STRING)
 			-- Remove item indexed by `a_key' if any.
 		do
@@ -227,6 +255,19 @@ feature -- Status report
 			-- has the JSON_OBJECT contain a specfic item `a_value'
 		do
 			Result := items.has_item (a_value)
+		end
+
+feature -- Measurement
+
+	capacity: like items.capacity
+			-- Number of items that may be stored.
+		do
+			Result := items.capacity
+		end
+
+	count: like items.count
+		do
+			Result := items.count
 		end
 
 feature -- Access
@@ -306,14 +347,6 @@ feature -- Access
 			Result.append_character ('}')
 		end
 
-feature -- Mesurement
-
-	count: INTEGER
-			-- Number of field.
-		do
-			Result := items.count
-		end
-
 feature -- Access
 
 	new_cursor: TABLE_ITERATION_CURSOR [JSON_VALUE, JSON_STRING]
@@ -382,6 +415,6 @@ invariant
 	items_not_void: items /= Void
 
 note
-	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

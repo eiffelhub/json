@@ -22,6 +22,13 @@ inherit
 
 	DEBUG_OUTPUT
 
+feature {NONE} -- Initialization
+
+	make_from_separate (other: separate like Current)
+			-- Initialize current from `other'.
+		deferred
+		end
+
 feature -- Status report
 
 	is_string: BOOLEAN
@@ -85,6 +92,19 @@ feature -- Conversion
 		deferred
 		end
 
+--	non_sep_json_o (a_json_o: separate JSON_OBJECT): JSON_OBJECT
+--		do
+--			check
+--				attached {JSON_OBJECT} non_sep_json_value (a_json_o) as l_res
+--			then
+--				Result := l_res
+--			end
+--		ensure
+--			instance_free: Class
+--		end
+
+
+
 feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR)
@@ -96,6 +116,6 @@ feature -- Visitor pattern
 		end
 
 note
-	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

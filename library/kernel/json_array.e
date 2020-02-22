@@ -23,12 +23,17 @@ inherit
 
 	ITERABLE [JSON_VALUE]
 
+	JSON_COLLECTION
+		redefine
+			items
+		end
+
 	DEBUG_OUTPUT
 
 create
 	make,
 	make_empty,
---	make_from_separate,
+	make_from_separate,
 	make_array
 
 
@@ -55,9 +60,13 @@ feature {NONE} -- Initialization
 		end
 
 	make_from_separate (other: separate like Current)
+			-- <Precursor>
 		do
-			create items.make (other.count)
-			fill_from_separate (other)
+			create items.make (other.capacity)
+			append_from_separate (other)
+		ensure then
+			capacity = other.capacity
+			count = other.count
 		end
 
 feature -- Status report			
@@ -121,10 +130,16 @@ feature -- Access
 
 feature -- Mesurement
 
-	count: INTEGER
+	count: like items.count
 			-- Number of items.
 		do
 			Result := items.count
+		end
+
+	capacity: like items.capacity
+			-- Number of items that may be stored.
+		do
+			Result := items.capacity
 		end
 
 feature -- Status report
@@ -171,15 +186,16 @@ feature -- Change Element
 			not_has_new_value: not items.has (v)
 		end
 
-	fill_from_separate (other: separate like Current)
+	append_from_separate (other: separate like Current)
+			-- Appends Current with content of other `other'
+		local
+			l_item_non_sep: JSON_VALUE
 		do
-			check
-				not_yet_implemented: False
-			end
 			across
 				other as l_item
 			loop
---				extend (l_item.item)
+				l_item_non_sep := non_sep_json_value (l_item.item)
+				extend (l_item_non_sep)
 			end
 		end
 
@@ -218,6 +234,80 @@ feature -- Conversion
 			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object.		
 		do
 			Result := items
+		end
+
+	non_sep_json_value (a_json_v: separate JSON_VALUE): JSON_VALUE
+			-- dirty but don't see any other option, see https://github.com/eiffelhub/json/issues/19#issuecomment-592171283 issue for details
+		local
+			l_json_s: JSON_STRING
+			l_s: STRING
+		do
+--			 - JSON_ARRAY: no assertion
+--			 - JSON_BOOLEAN: no assertion
+--			 - JSON_NULL: no assertion
+--			 - JSON_NUMBER: no assertion
+--			 - JSON_OBJECT: no assertion
+--			 - JSON_STRING: no assertion
+			if attached {separate JSON_ARRAY} a_json_v as l_json then
+				create {JSON_ARRAY} Result.make (l_json.count)
+				check
+					attached {JSON_ARRAY} Result as l_res
+				then
+					across
+						l_json as l_item
+					loop
+						check
+							attached {JSON_VALUE} non_sep_json_value (l_item.item) as l_non_sep_json_value
+						then
+							l_res.extend (l_non_sep_json_value)
+						end
+					end
+				end
+			elseif attached {separate JSON_BOOLEAN} a_json_v as l_json then
+				create {JSON_BOOLEAN} Result.make (l_json.item)
+			elseif attached {separate JSON_STRING} a_json_v as l_json then
+				create l_s.make_from_separate (l_json.item)
+				create {JSON_STRING} Result.make_from_string (l_s)
+			elseif attached {separate JSON_NULL} a_json_v as l_json then
+				create {JSON_NULL} Result
+			elseif attached {separate JSON_NUMBER} a_json_v as l_json then
+				if l_json.is_integer then
+					create {JSON_NUMBER} Result.make_integer (l_json.integer_64_item)
+				elseif l_json.is_real then
+					create {JSON_NUMBER} Result.make_real (l_json.real_64_item)
+				elseif l_json.is_natural then
+					create {JSON_NUMBER} Result.make_natural (l_json.natural_64_item)
+				else
+					create {JSON_NUMBER} Result.make_natural (0)
+					check
+						invalid_json_number: False
+					end
+				end
+			elseif attached {separate JSON_OBJECT} a_json_v as l_json then
+				create {JSON_OBJECT} Result.make_with_capacity (l_json.count)
+				check
+					attached {JSON_OBJECT} Result as l_res
+				then
+					across
+						l_json as l_item
+					loop
+						check
+							attached {JSON_VALUE} non_sep_json_value (l_item.item) as l_non_sep_json_value
+						then
+							create l_s.make_from_separate (l_item.key.item)
+							create l_json_s.make_from_string (l_s)
+							l_res.put (l_non_sep_json_value, l_json_s)
+						end
+					end
+				end
+			else
+				create {JSON_ARRAY} Result.make_empty
+				check
+					not_implemented: False
+				end
+			end
+		ensure
+			instance_free: Class
 		end
 
 feature -- Status report

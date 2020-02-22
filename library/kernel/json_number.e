@@ -16,7 +16,10 @@ inherit
 		end
 
 create
-	make_integer, make_natural, make_real
+	make_integer,
+	make_natural,
+	make_from_separate,
+	make_real
 
 feature {NONE} -- initialization
 
@@ -47,6 +50,15 @@ feature {NONE} -- initialization
 				item := an_argument.out
 			end
 			numeric_type := double_type
+		end
+
+	make_from_separate (other: separate like Current)
+			-- <Precursor>
+		do
+			item := create {STRING}.make_from_separate (other.item.out) -- Not quite sure of that
+			numeric_type := other.numeric_type
+		ensure then
+			numeric_type = other.numeric_type
 		end
 
 feature -- Status report			
@@ -199,6 +211,6 @@ invariant
 	inf_only_for_real: inv_item.is_case_insensitive_equal_general (positive_infinity_real_value) implies is_real
 
 note
-	copyright: "2010-2019, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end
