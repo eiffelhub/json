@@ -92,15 +92,8 @@ feature -- Conversion
 		deferred
 		end
 
---	non_sep_json_o (a_json_o: separate JSON_OBJECT): JSON_OBJECT
---		do
---			check
---				attached {JSON_OBJECT} non_sep_json_value (a_json_o) as l_res
---			then
---				Result := l_res
---			end
---		ensure
---			instance_free: Class
+--	deep_twin_not_separate: like Current
+--		deferred
 --		end
 
 
