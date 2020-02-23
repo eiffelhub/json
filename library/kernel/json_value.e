@@ -92,12 +92,6 @@ feature -- Conversion
 		deferred
 		end
 
---	deep_twin_not_separate: like Current
---		deferred
---		end
-
-
-
 feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR)
