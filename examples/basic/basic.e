@@ -42,7 +42,7 @@ feature {NONE} -- Initialization
 				print ("The JSON formatted using a pretty printer:%N")
 				print (s)
 			else
-				print("There was some errors parsing the json string:%N" + json_content + "%NError:" + parser.errors_as_string)
+				print("Error(s) occurred while parsing the json string:%N" + json_content + "%NError:" + parser.errors_as_string)
 			end
 		end
 
