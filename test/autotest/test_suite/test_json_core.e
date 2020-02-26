@@ -21,7 +21,77 @@ feature -- Factory
 			create Result.make_with_string (a_string)
 		end
 
+	new_empty_parser: JSON_PARSER
+		do
+			create Result.make
+		end
+
 feature -- Test
+
+	test_parser_reuse
+		local
+			jrep: STRING
+			parser: like new_parser
+		do
+			jrep := "{%"num%": 123, %"text%": %"abc%", %"true%": True, %"null%": null, %"empty-obj%": { }, %"arr%": [ 123, %"abc%", True, null] }"
+			parser := new_parser (jrep)
+			assert ("not parsed", not parser.is_parsed)
+			assert ("no error", not parser.has_error)
+			parser.parse_content
+			assert ("parsed", parser.is_parsed)
+			assert ("is valid", parser.is_valid)
+
+				-- Reuse with same content
+			parser.set_representation (jrep)
+			assert ("not parsed", not parser.is_parsed)
+			assert ("no error", not parser.has_error)
+			parser.parse_content
+			assert ("parsed", parser.is_parsed)
+			assert ("is valid", parser.is_valid)
+
+				-- Reuse with bad content
+			parser.set_representation ("{ bad content }")
+			assert ("not parsed", not parser.is_parsed)
+			assert ("no error", not parser.has_error)
+			parser.parse_content
+			assert ("parsed", parser.is_parsed)
+			assert ("is not valid", not parser.is_valid)
+
+				-- Reuse with first jrep content
+			parser.set_representation (jrep)
+			assert ("not parsed", not parser.is_parsed)
+			assert ("no error", not parser.has_error)
+			parser.parse_content
+			assert ("parsed", parser.is_parsed)
+			assert ("is valid", parser.is_valid)
+		end
+
+	test_parse_string
+		local
+			jrep: STRING
+			parser: like new_empty_parser
+		do
+			parser := new_empty_parser
+			jrep := "{%"num%": 123, %"text%": %"abc%", %"true%": True, %"null%": null, %"empty-obj%": { }, %"arr%": [ 123, %"abc%", True, null] }"
+			parser.parse_string (jrep)
+			assert ("parsed", parser.is_parsed)
+			assert ("is valid", parser.is_valid)
+
+				-- Reuse with same content
+			parser.parse_string (jrep)
+			assert ("parsed", parser.is_parsed)
+			assert ("is valid", parser.is_valid)
+
+				-- Reuse with bad content
+			parser.parse_string ("{ bad content }")
+			assert ("parsed", parser.is_parsed)
+			assert ("is not valid", not parser.is_valid)
+
+				-- Reuse with first jrep content
+			parser.parse_string (jrep)
+			assert ("parsed", parser.is_parsed)
+			assert ("is valid", parser.is_valid)
+		end
 
 	test_json_number_and_integer
 		local
@@ -437,6 +507,39 @@ feature -- Test
 			end
 		end
 
+	test_json_number_and_eiffel_real_nan
+		local
+			r64: REAL_64
+			jn: JSON_NUMBER
+		do
+			r64 := {REAL_64}.nan
+			create jn.make_real (r64)
+			assert ("jn.representation.same_string (%"" + r64.out + "%")", jn.representation.same_string ({JSON_NULL}.representation))
+			if attached {JSON_NUMBER} json_value (r64) as l_jn then
+				assert ("l_jn.representation.same_string (%""+r64.out+"%")", l_jn.representation.same_string ({JSON_NULL}.representation))
+			else
+				assert ("json_value (r64) is a JSON_NUMBER", False)
+			end
+
+			r64 := {REAL_64}.negative_infinity
+			create jn.make_real (r64)
+			assert ("jn.representation.same_string (%"" + r64.out + "%")", jn.representation.same_string ({JSON_NULL}.representation))
+			if attached {JSON_NUMBER} json_value (r64) as l_jn then
+				assert ("l_jn.representation.same_string (%""+r64.out+"%")", l_jn.representation.same_string ({JSON_NULL}.representation))
+			else
+				assert ("json_value (r64) is a JSON_NUMBER", False)
+			end
+
+			r64 := {REAL_64}.positive_infinity
+			create jn.make_real (r64)
+			assert ("jn.representation.same_string (%"" + r64.out + "%")", jn.representation.same_string ({JSON_NULL}.representation))
+			if attached {JSON_NUMBER} json_value (r64) as l_jn then
+				assert ("l_jn.representation.same_string (%""+r64.out+"%")", l_jn.representation.same_string ({JSON_NULL}.representation))
+			else
+				assert ("json_value (r64) is a JSON_NUMBER", False)
+			end
+		end
+
 	test_json_boolean
 		local
 			parser: like new_parser
@@ -649,7 +752,7 @@ feature -- Test
 			create ucs.make_from_string (s)
 
 				-- Eiffel value -> JSON value -> JSON representation
-			create js.make_from_string (ucs)
+			create js.make_from_string_general (ucs)
 			assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.is_equal (jrep))
 
 				-- Eiffel value -> JSON value -> JSON representation with factory

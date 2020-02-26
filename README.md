@@ -1,4 +1,6 @@
-﻿Readme file for eJSON
+﻿[![Build Status](https://travis-ci.org/eiffelhub/json.svg?branch=master)](https://travis-ci.org/eiffelhub/json)
+
+Readme file for eJSON
 =====================
 
 - team: "Jocelyn Fiat, Javier Velilla"
@@ -63,6 +65,10 @@ Contact the team: https://github.com/eiffelhub/json/issues
 ```
 Version Date            Description
 ------- ----            -----------
+0.11.0 2019-02-08	REAL NaN, Negative and Positive Infinity values are serialized as "null" 
+					(as JSON has no support for such values).
+0.10.0 2018-11-14	Improved parsing performance (speed and memory).
+					Allow to change default size for json array and object created during parsing.
 0.9.0  2018-09-19	Added basic serialization
 					Updated the serialization example to demonstrate the use of custom (de)serializers.
 					Added JSON_VALUE.chained_item (a_key): JSON_VALUE to be able to access
@@ -90,3 +96,4 @@ Version Date            Description
 0.2.0   2010-02-07	Adapted to EiffelStudio 6.4 or later, supports void-safety
 0.1.0   2010-02-07	First release, Adapted to SmartEiffel 1.2r7 and EiffelStudio 6.2 or previous
 ```
+

@@ -12,7 +12,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_json: STRING)
+	make (a_json: READABLE_STRING_8)
 			-- Initialize Reader
 		do
 			set_representation (a_json)
@@ -26,12 +26,12 @@ feature -- Commands
 			index := 1
 		end
 
-	set_representation (a_json: STRING)
+	set_representation (a_json: READABLE_STRING_8)
 			-- Set `representation'.
 		do
-			a_json.left_adjust
-			a_json.right_adjust
-			representation := a_json
+			representation := a_json.to_string_8
+			representation.left_adjust
+			representation.right_adjust
 			reset
 		end
 
@@ -84,6 +84,12 @@ feature -- Commands
 			Result := representation.substring (start_index, end_index)
 		end
 
+	has_json_substring (a_string: READABLE_STRING_GENERAL; start_index, end_index: INTEGER_32): BOOLEAN
+			-- Has JSON representation between `start_index' and `end_index' the substring `a_string'
+		do
+			Result := representation.same_caseless_characters_general (a_string, start_index, end_index, index)
+		end
+
 feature -- Status report
 
 	has_next: BOOLEAN
@@ -122,6 +128,6 @@ invariant
 	representation_not_void: representation /= Void
 
 note
-	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	copyright: "2010-2019, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

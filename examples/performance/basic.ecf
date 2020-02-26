@@ -2,12 +2,22 @@
 <system xmlns="http://www.eiffel.com/developers/xml/configuration-1-20-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-20-0 http://www.eiffel.com/developers/xml/configuration-1-20-0.xsd" name="basic" uuid="5156B9EE-0436-42A3-BDA1-74710DF05A35">
 	<target name="basic">
 		<root class="BASIC" feature="make"/>
+		<option profile="false" warning="false">
+		</option>
 		<setting name="console_application" value="true"/>
+		<setting name="inlining_size" value="100"/>
 		<capability>
 			<concurrency support="none"/>
 		</capability>
-		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="json" location="..\..\library\json.ecf" readonly="false"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf">
+			<option profile="false">
+			</option>
+		</library>
+		<library name="gobo_time" location="$ISE_LIBRARY\library\gobo\gobo_time.ecf"/>
+		<library name="json" location="..\..\library\json-safe.ecf" readonly="false">
+			<option profile="false">
+			</option>
+		</library>
 		<cluster name="basic" location=".\"/>
 	</target>
 </system>
