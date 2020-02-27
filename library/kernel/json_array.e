@@ -26,8 +26,11 @@ inherit
 	DEBUG_OUTPUT
 
 create
-	make, make_empty,
+	make,
+	make_empty,
+--	make_from_separate,
 	make_array
+
 
 feature {NONE} -- Initialization
 
@@ -51,6 +54,12 @@ feature {NONE} -- Initialization
 			make (10)
 		end
 
+	make_from_separate (other: separate like Current)
+		do
+			create items.make (other.count)
+			fill_from_separate (other)
+		end
+
 feature -- Status report			
 
 	is_array: BOOLEAN = True
@@ -58,7 +67,7 @@ feature -- Status report
 
 feature -- Access
 
-	i_th alias "[]" (i: INTEGER): JSON_VALUE
+	i_th alias "[]" (i: INTEGER): like items.item
 			-- Item at `i'-th position
 		require
 			is_valid_index: valid_index (i)
@@ -66,7 +75,7 @@ feature -- Access
 			Result := items.i_th (i)
 		end
 
-	chained_item alias "@" (a_key: JSON_STRING): JSON_VALUE
+	chained_item alias "@" (a_key: JSON_STRING): like items.item
 			-- <Precursor>.
 		do
 			if a_key.item.is_integer then
@@ -88,6 +97,9 @@ feature -- Access
 				Result.append (ic.item.representation)
 			end
 			Result.append_character (']')
+		ensure then
+			Result.starts_with ("[")
+			Result.ends_with ("]")
 		end
 
 feature -- Visitor pattern
@@ -101,7 +113,7 @@ feature -- Visitor pattern
 
 feature -- Access
 
-	new_cursor: ITERATION_CURSOR [JSON_VALUE]
+	new_cursor: ITERATION_CURSOR [like items.item]
 			-- Fresh cursor associated with current structure
 		do
 			Result := items.new_cursor
@@ -117,6 +129,12 @@ feature -- Mesurement
 
 feature -- Status report
 
+	is_empty: BOOLEAN
+			-- Is structure empty?
+		do
+			Result := count = 0
+		end
+
 	valid_index (i: INTEGER): BOOLEAN
 			-- Is `i' a valid index?
 		do
@@ -125,7 +143,7 @@ feature -- Status report
 
 feature -- Change Element
 
-	put_front (v: JSON_VALUE)
+	put_front (v: like items.item)
 		require
 			v_not_void: v /= Void
 		do
@@ -134,7 +152,7 @@ feature -- Change Element
 			has_new_value: old items.count + 1 = items.count and items.first = v
 		end
 
-	add, extend (v: JSON_VALUE)
+	add, extend (v: like items.item)
 		require
 			v_not_void: v /= Void
 		do
@@ -143,7 +161,7 @@ feature -- Change Element
 			has_new_value: old items.count + 1 = items.count and items.has (v)
 		end
 
-	prune_all (v: JSON_VALUE)
+	prune_all (v: like items.item)
 			-- Remove all occurrences of `v'.
 		require
 			v_not_void: v /= Void
@@ -153,10 +171,24 @@ feature -- Change Element
 			not_has_new_value: not items.has (v)
 		end
 
+	fill_from_separate (other: separate like Current)
+		do
+			check
+				not_yet_implemented: False
+			end
+			across
+				other as l_item
+			loop
+--				extend (l_item.item)
+			end
+		end
+
 	wipe_out
 			-- Remove all items.
 		do
 			items.wipe_out
+		ensure
+			is_empty
  		end
 
 feature -- Report
@@ -181,7 +213,7 @@ feature -- Report
 
 feature -- Conversion
 
-	array_representation: ARRAYED_LIST [JSON_VALUE]
+	array_representation: like items
 			-- Representation as a sequences of values.
 			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object.		
 		do
@@ -205,6 +237,6 @@ invariant
 	items_not_void: items /= Void
 
 note
-	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

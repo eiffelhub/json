@@ -11,6 +11,11 @@
 		<option trace="false" profile="false" debug="false" warning="true" full_class_checking="true" void_safety="none" syntax="standard" namespace="EJSON.Library">
 			<assertions/>
 		</option>
+                <capability>
+                        <catcall_detection support="none"/>
+                        <concurrency support="scoop" use="scoop"/>
+                        <void_safety support="all" use="all"/>
+                </capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
 		<cluster name="json" location=".\">
 			<cluster name="json_kernel" location=".\kernel\" recursive="true"/>
