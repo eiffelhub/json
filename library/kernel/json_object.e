@@ -49,7 +49,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize with default capacity.
 		do
-			make_with_capacity (3)
+			make_with_capacity (10)
 		end
 
 feature -- Status report			
