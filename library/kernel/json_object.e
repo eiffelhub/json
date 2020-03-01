@@ -64,7 +64,10 @@ feature {NONE} -- Initialization
 			-- <Precursor>
 		do
 			make_with_capacity (other.count)
-
+			append_from_separate (other)
+		ensure then
+			capacity = other.capacity
+			count = other.count
 		end
 
 feature -- Status report			
