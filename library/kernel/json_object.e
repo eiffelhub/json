@@ -77,7 +77,7 @@ feature -- Status report
 
 feature -- Change Element
 
-	put (a_value: detachable JSON_VALUE; a_key: JSON_STRING)
+	put (a_value: detachable like items.item; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		require
@@ -90,7 +90,7 @@ feature -- Change Element
 			end
 		end
 
-	put_string (a_value: READABLE_STRING_GENERAL; a_key: JSON_STRING)
+	put_string (a_value: READABLE_STRING_GENERAL; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		require
@@ -108,7 +108,7 @@ feature -- Change Element
 			put (l_value, a_key)
 		end
 
-	put_integer (a_value: INTEGER_64; a_key: JSON_STRING)
+	put_integer (a_value: INTEGER_64; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		require
@@ -120,7 +120,7 @@ feature -- Change Element
 			put (l_value, a_key)
 		end
 
-	put_natural (a_value: NATURAL_64; a_key: JSON_STRING)
+	put_natural (a_value: NATURAL_64; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		require
@@ -132,7 +132,7 @@ feature -- Change Element
 			put (l_value, a_key)
 		end
 
-	put_real (a_value: DOUBLE; a_key: JSON_STRING)
+	put_real (a_value: DOUBLE; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		require
@@ -144,7 +144,7 @@ feature -- Change Element
 			put (l_value, a_key)
 		end
 
-	put_boolean (a_value: BOOLEAN; a_key: JSON_STRING)
+	put_boolean (a_value: BOOLEAN; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		require
@@ -156,7 +156,7 @@ feature -- Change Element
 			put (l_value, a_key)
 		end
 
-	replace (a_value: detachable JSON_VALUE; a_key: JSON_STRING)
+	replace (a_value: like items.item; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		do
@@ -167,7 +167,7 @@ feature -- Change Element
 			end
 		end
 
-	replace_with_string (a_value: READABLE_STRING_GENERAL; a_key: JSON_STRING)
+	replace_with_string (a_value: READABLE_STRING_GENERAL; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		local
@@ -181,7 +181,7 @@ feature -- Change Element
 			replace (l_value, a_key)
 		end
 
-	replace_with_integer (a_value: INTEGER_64; a_key: JSON_STRING)
+	replace_with_integer (a_value: INTEGER_64; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		local
@@ -191,7 +191,7 @@ feature -- Change Element
 			replace (l_value, a_key)
 		end
 
-	replace_with_with_natural (a_value: NATURAL_64; a_key: JSON_STRING)
+	replace_with_with_natural (a_value: NATURAL_64; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		local
@@ -201,7 +201,7 @@ feature -- Change Element
 			replace (l_value, a_key)
 		end
 
-	replace_with_real (a_value: DOUBLE; a_key: JSON_STRING)
+	replace_with_real (a_value: DOUBLE; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		local
@@ -211,7 +211,7 @@ feature -- Change Element
 			replace (l_value, a_key)
 		end
 
-	replace_with_boolean (a_value: BOOLEAN; a_key: JSON_STRING)
+	replace_with_boolean (a_value: BOOLEAN; a_key: like items.key_for_iteration)
 			-- Assuming there is no item of key `a_key',
 			-- insert `a_value' with `a_key'.
 		local
@@ -234,7 +234,7 @@ feature -- Change Element
 			end
 		end
 
-	remove (a_key: JSON_STRING)
+	remove (a_key: like items.key_for_iteration)
 			-- Remove item indexed by `a_key' if any.
 		do
 			items.remove (a_key)
@@ -248,13 +248,13 @@ feature -- Change Element
 
 feature -- Status report
 
-	has_key (a_key: JSON_STRING): BOOLEAN
+	has_key (a_key: like items.key_for_iteration): BOOLEAN
 			-- has the JSON_OBJECT contains a specific key `a_key'.
 		do
 			Result := items.has (a_key)
 		end
 
-	has_item (a_value: JSON_VALUE): BOOLEAN
+	has_item (a_value: like items.item_for_iteration): BOOLEAN
 			-- has the JSON_OBJECT contain a specfic item `a_value'
 		do
 			Result := items.has_item (a_value)
@@ -275,48 +275,57 @@ feature -- Measurement
 
 feature -- Access
 
-	item alias "[]" (a_key: JSON_STRING): detachable JSON_VALUE
+	item alias "[]" (a_key: like items.key_for_iteration): like items.item
  			-- the json_value associated with a key `a_key'.
  		do
  			Result := items.item (a_key)
  		end
 
-	string_item (a_key: JSON_STRING): detachable JSON_STRING
+	item_separate (a_key: separate like items.key_for_iteration): like items.item
+ 			-- the json_value associated with a key `a_key'.
+ 		local
+ 			l_s: like items.key_for_iteration
+ 		do
+ 			create l_s.make_from_string_separate (a_key.item)
+ 			Result := items.item (l_s)
+ 		end
+
+	string_item (a_key: like items.key_for_iteration): detachable JSON_STRING
 		do
 			if attached {JSON_STRING} item (a_key) as js then
 				Result := js
 			end
 		end
 
-	number_item (a_key: JSON_STRING): detachable JSON_NUMBER
+	number_item (a_key: like items.key_for_iteration): detachable JSON_NUMBER
 		do
 			if attached {JSON_NUMBER} item (a_key) as jn then
 				Result := jn
 			end
 		end
 
-	boolean_item (a_key: JSON_STRING): detachable JSON_BOOLEAN
+	boolean_item (a_key: like items.key_for_iteration): detachable JSON_BOOLEAN
 		do
 			if attached {JSON_BOOLEAN} item (a_key) as jb then
 				Result := jb
 			end
 		end
 
-	object_item (a_key: JSON_STRING): detachable JSON_OBJECT
+	object_item (a_key: like items.key_for_iteration): detachable JSON_OBJECT
 		do
 			if attached {JSON_OBJECT} item (a_key) as jo then
 				Result := jo
 			end
 		end
 
-	array_item (a_key: JSON_STRING): detachable JSON_ARRAY
+	array_item (a_key: like items.key_for_iteration): detachable JSON_ARRAY
 		do
 			if attached {JSON_ARRAY} item (a_key) as ja then
 				Result := ja
 			end
 		end
 
-	chained_item alias "@" (a_key: JSON_STRING): JSON_VALUE
+	chained_item alias "@" (a_key: like items.key_for_iteration): like items.item_for_iteration
 			-- <Precursor>.
 		do
 			if attached item (a_key) as v then
@@ -352,7 +361,7 @@ feature -- Access
 
 feature -- Access
 
-	new_cursor: TABLE_ITERATION_CURSOR [JSON_VALUE, JSON_STRING]
+	new_cursor: like items.new_cursor
 			-- Fresh cursor associated with current structure
 		do
 			Result := items.new_cursor
@@ -377,7 +386,7 @@ feature -- Visitor pattern
 
 feature -- Conversion
 
-	map_representation: HASH_TABLE [JSON_VALUE, JSON_STRING]
+	map_representation: HASH_TABLE [like items.item_for_iteration, like items.key_for_iteration]
 			-- A representation that maps keys to values
 		do
 			Result := items

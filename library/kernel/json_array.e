@@ -122,7 +122,7 @@ feature -- Visitor pattern
 
 feature -- Access
 
-	new_cursor: ITERATION_CURSOR [like items.item]
+	new_cursor: like items.new_cursor
 			-- Fresh cursor associated with current structure
 		do
 			Result := items.new_cursor

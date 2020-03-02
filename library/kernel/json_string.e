@@ -24,7 +24,7 @@ inherit
 create
 	make_from_string, make_from_string_32, make_from_string_general,
 	make_from_escaped_json_string,
-	make_from_separate,
+	make_from_separate, make_from_string_separate,
 	make_with_escaped_json, make_json, make_json_from_string_32
 
 convert
@@ -114,6 +114,14 @@ feature {NONE} -- Initialization
 			l_s: like escaped_json_string
 		do
 			create l_s.make_from_separate (other.item)
+			make_from_string (l_s)
+		end
+
+	make_from_string_separate (s: separate READABLE_STRING_8)
+		local
+			l_s: STRING
+		do
+			create l_s.make_from_separate (s)
 			make_from_string (l_s)
 		end
 
