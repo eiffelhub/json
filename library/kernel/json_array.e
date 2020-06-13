@@ -76,6 +76,20 @@ feature -- Status report
 
 feature -- Access
 
+	first: like items.item
+		require
+			not_empty: not is_empty
+		do
+			Result := items.i_th (1)
+		end
+
+	last: like items.item
+		require
+			not_empty: not is_empty
+		do
+			Result := items.i_th (count)
+		end
+
 	i_th alias "[]" (i: INTEGER): like items.item
 			-- Item at `i'-th position
 		require
