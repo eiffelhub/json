@@ -135,6 +135,11 @@ feature -- Status report
 	is_string: BOOLEAN = True
 			-- <Precursor>
 
+	is_empty: BOOLEAN
+		do
+			Result := item.is_empty
+		end
+
 	same_string (a_string: READABLE_STRING_GENERAL): BOOLEAN
 			-- Current value is a string value, and same content as `a_string`?
 		do
