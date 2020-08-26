@@ -24,6 +24,7 @@ inherit
 create
 	make_from_string, make_from_string_32, make_from_string_general,
 	make_from_escaped_json_string,
+	make_from_separate, make_from_string_separate,
 	make_with_escaped_json, make_json, make_json_from_string_32
 
 convert
@@ -107,6 +108,23 @@ feature {NONE} -- Initialization
 			make_with_escaped_json (escaped_json_string (s))
 		end
 
+	make_from_separate (other: separate like Current)
+			-- <Precursor>
+		local
+			l_s: like escaped_json_string
+		do
+			create l_s.make_from_separate (other.item)
+			make_from_string (l_s)
+		end
+
+	make_from_string_separate (s: separate READABLE_STRING_8)
+		local
+			l_s: STRING
+		do
+			create l_s.make_from_separate (s)
+			make_from_string (l_s)
+		end
+
 feature -- Access
 
 	item: STRING
@@ -116,6 +134,11 @@ feature -- Status report
 
 	is_string: BOOLEAN = True
 			-- <Precursor>
+
+	is_empty: BOOLEAN
+		do
+			Result := item.is_empty
+		end
 
 	same_string (a_string: READABLE_STRING_GENERAL): BOOLEAN
 			-- Current value is a string value, and same content as `a_string`?
@@ -561,6 +584,6 @@ invariant
 	item_not_void: item /= Void
 
 note
-	copyright: "2010-2019, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

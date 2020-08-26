@@ -13,7 +13,9 @@ inherit
 
 create
 	make,
-	make_true, make_false,
+	make_true,
+	make_false,
+	make_from_separate,
 	make_boolean
 
 feature {NONE} -- Initialization
@@ -42,6 +44,12 @@ feature {NONE} -- Initialization
 			"Use `make' [2017-05-31]"
 		do
 			make (a_item)
+		end
+
+	make_from_separate (other: separate like Current)
+			-- <Precursor>
+		do
+			make (other.item)
 		end
 
 feature -- Access
@@ -82,6 +90,6 @@ feature -- Status report
 		end
 
 note
-	copyright: "2010-2017, Javier Velilla and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

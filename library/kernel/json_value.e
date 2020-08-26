@@ -22,6 +22,13 @@ inherit
 
 	DEBUG_OUTPUT
 
+feature {NONE} -- Initialization
+
+	make_from_separate (other: separate like Current)
+			-- Initialize current from `other'.
+		deferred
+		end
+
 feature -- Status report
 
 	is_string: BOOLEAN
@@ -96,6 +103,6 @@ feature -- Visitor pattern
 		end
 
 note
-	copyright: "2010-2018, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

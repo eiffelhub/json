@@ -13,6 +13,17 @@ inherit
 			is_null
 		end
 
+create
+	default_create,
+	make_from_separate
+
+feature {NONE} -- Initialization
+
+	make_from_separate (other: separate like Current)
+			-- <Precursor>
+		do
+		end
+
 feature -- Status report			
 
 	is_null: BOOLEAN = True
@@ -57,6 +68,6 @@ feature {NONE} -- Implementation
 	null_value: STRING = "null"
 
 note
-	copyright: "2010-2019, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
+	copyright: "2010-2020, Javier Velilla, Jocelyn Fiat, Eiffel Software and others https://github.com/eiffelhub/json."
 	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end
